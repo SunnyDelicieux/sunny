@@ -46,34 +46,87 @@
           el("span", { class: "campaign-name", text: c.nom }), tags, content)));
   }
 
-  /* ---------- une fenêtre ---------- */
-  function windowBlock(title, list) {
-    var body = el("div", { class: "window-body" });
-    list.forEach(function (c) { body.append(entry(c)); });
-    var controls = el("div", { class: "title-bar-controls" });
-    ["Minimize", "Maximize", "Close"].forEach(function (l) { controls.append(el("button", { "aria-label": l })); });
-    return el("div", { class: "window" },
-      el("div", { class: "title-bar" },
-        el("div", { class: "title-bar-text" }, el("img", { src: ICON_GIF, alt: "" }), document.createTextNode(title + " (" + list.length + ")")),
-        controls),
-      body);
-  }
-
   /* ---------- rangement ---------- */
   var rank = { encours: 0, prep: 1 };
   var groupes = [
-    ["En ce moment", JDR.filter(function (c) { return c.statut === "encours" || c.statut === "prep"; })
-                        .sort(function (a, b) { return rank[a.statut] - rank[b.statut]; })],
-    ["Je veux MJ", JDR.filter(function (c) { return c.statut === "envie"; })],
-    ["Je mène", JDR.filter(function (c) { return c.statut === "termine" && c.role === "st"; })],
-    ["Je joue", JDR.filter(function (c) { return c.statut === "termine" && c.role === "joueur"; })],
-    ["Fan pages", JDR.filter(function (c) { return c.statut === "fanpage"; })]
-  ];
+    { id: "en-ce-moment", titre: "En ce moment", list: JDR.filter(function (c) { return c.statut === "encours" || c.statut === "prep"; })
+                                                       .sort(function (a, b) { return rank[a.statut] - rank[b.statut]; }) },
+    { id: "je-veux-mj", titre: "Je veux MJ", list: JDR.filter(function (c) { return c.statut === "envie"; }) },
+    { id: "je-mene", titre: "Je mène", list: JDR.filter(function (c) { return c.statut === "termine" && c.role === "st"; }) },
+    { id: "je-joue", titre: "Je joue", list: JDR.filter(function (c) { return c.statut === "termine" && c.role === "joueur"; }) },
+    { id: "fan-pages", titre: "Fan pages", list: JDR.filter(function (c) { return c.statut === "fanpage"; }) }
+  ].filter(function (g) { return g.list.length; });
+
+  /* ---------- une seule fenêtre, avec des onglets ---------- */
+  var tabs = [], panels = [];
+  var winTitle = document.createTextNode("");
+  var tablist = el("div", { class: "jdr-tabs", role: "tablist", "aria-label": "Campagnes" });
+  var stack = el("div", { class: "jdr-panels" });
+
+  groupes.forEach(function (g, i) {
+    var tab = el("button", { class: "jdr-tab", type: "button", role: "tab", id: "onglet-" + g.id,
+                             "aria-controls": "panneau-" + g.id, "aria-selected": "false", tabindex: "-1" },
+      el("span", { text: g.titre }), el("span", { class: "jdr-tab-count", text: String(g.list.length) }));
+    tab.addEventListener("click", function () { select(i, true); });
+    tablist.append(tab); tabs.push(tab);
+
+    var panel = el("div", { class: "jdr-panel", role: "tabpanel", id: "panneau-" + g.id, "aria-labelledby": "onglet-" + g.id, hidden: "" });
+    g.list.forEach(function (c) { panel.append(entry(c)); });
+    stack.append(panel); panels.push(panel);
+  });
+
+  tablist.addEventListener("keydown", function (e) {
+    var cur = tabs.indexOf(document.activeElement);
+    if (cur < 0) return;
+    var next = e.key === "ArrowRight" ? cur + 1 : e.key === "ArrowLeft" ? cur - 1 : e.key === "Home" ? 0 : e.key === "End" ? tabs.length - 1 : null;
+    if (next === null) return;
+    e.preventDefault();
+    next = (next + tabs.length) % tabs.length;
+    select(next, true); tabs[next].focus();
+  });
+
+  function select(i, updateHash) {
+    tabs.forEach(function (t, j) {
+      var on = j === i;
+      t.setAttribute("aria-selected", String(on));
+      t.tabIndex = on ? 0 : -1;
+      t.classList.toggle("is-active", on);
+      panels[j].hidden = !on;
+    });
+    winTitle.textContent = "Campagnes — " + groupes[i].titre;
+    if (updateHash) history.replaceState(null, "", "#" + groupes[i].id);
+  }
+
+  /* ouvre l'onglet demandé par l'adresse : #je-joue, ou #jdr-nom-de-campagne */
+  function openFromHash() {
+    var h = decodeURIComponent(location.hash.slice(1));
+    if (!h) return false;
+    for (var i = 0; i < groupes.length; i++) {
+      if (groupes[i].id === h) { select(i, false); return true; }
+      var hit = panels[i].querySelector("#" + CSS.escape(h));
+      if (hit) {
+        select(i, false);
+        hit.classList.add("is-highlight");
+        setTimeout(function () { hit.scrollIntoView({ block: "center" }); }, 0);
+        setTimeout(function () { hit.classList.remove("is-highlight"); }, 2200);
+        return true;
+      }
+    }
+    return false;
+  }
 
   var zone = document.getElementById("jdr-campagnes");
-  if (zone) {
+  if (zone && groupes.length) {
+    var controls = el("div", { class: "title-bar-controls" });
+    ["Minimize", "Maximize", "Close"].forEach(function (l) { controls.append(el("button", { "aria-label": l, tabindex: "-1" })); });
     zone.innerHTML = "";
-    groupes.forEach(function (g) { if (g[1].length) zone.append(windowBlock(g[0], g[1])); });
+    zone.append(el("div", { class: "window jdr-window" },
+      el("div", { class: "title-bar" },
+        el("div", { class: "title-bar-text" }, el("img", { src: ICON_GIF, alt: "" }), winTitle),
+        controls),
+      el("div", { class: "window-body jdr-window-body" }, tablist, stack)));
+    if (!openFromHash()) select(0, false);
+    window.addEventListener("hashchange", openFromHash);
   }
 
   /* ---------- planning (rempli d'après le champ "jour") ---------- */
