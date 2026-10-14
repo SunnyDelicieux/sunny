@@ -10,7 +10,7 @@
   var JOURS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
   var STATUT = { encours: ["tag-encours", "en cours"], prep: ["tag-prep", "en préparation"], envie: ["tag-prep", "envie de mener"], termine: ["tag-termine", "terminé"], fanpage: ["tag-fanpage", "fan page"] };
   var ROLE = { st: ["tag-st", "Storyteller"], joueur: ["tag-joueur", "Joueuse"] };
-  var TYPE = { vampire: "tag-vampire", ghoule: "tag-ghoule", hunter: "tag-hunter", sabbat: "tag-sabbat", "one-shot": "tag-oneshot" };
+  var TYPE = { vampire: "tag-vampire", ghoule: "tag-ghoule", hunter: "tag-hunter", sabbat: "tag-sabbat", cthulhu: "tag-cthulhu", "one-shot": "tag-oneshot" };
   var MAX_VISIBLES = 7;   /* au-delà, la liste de l'onglet défile */
 
   function el(tag, attrs) {

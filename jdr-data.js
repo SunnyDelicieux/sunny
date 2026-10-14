@@ -8,7 +8,7 @@
                ("envie" = campagne que je veux mener)
      role    : "st" (Storyteller) | "joueur"
      types   : étiquettes en plus, parmi
-               "vampire", "ghoule", "hunter", "sabbat", "one-shot"
+               "vampire", "ghoule", "hunter", "sabbat", "cthulhu", "one-shot"
      icone   : lien de l'image (facultatif)
      resume  : petite phrase (facultatif)
      lien    : page de la campagne (facultatif)
@@ -132,28 +132,28 @@ const JDR = [
   {
     nom: "L'Appel de Cthulhu",
     jeu: "L'Appel de Cthulhu",
-    statut: "termine", role: "joueur"
+    statut: "termine", role: "joueur", types: ["cthulhu"]
   },
   /* one-shots officiels de L'Appel de Cthulhu */
   {
-    nom: "The Lightless Beacon",
+    nom: "Le Phare défaillant",
     jeu: "L'Appel de Cthulhu",
-    statut: "termine", role: "joueur", types: ["one-shot"]
+    statut: "termine", role: "joueur", types: ["cthulhu", "one-shot"]
   },
   {
-    nom: "Mr. Corbitt",
+    nom: "Monsieur Corbitt",
     jeu: "L'Appel de Cthulhu",
-    statut: "termine", role: "joueur", types: ["one-shot"]
+    statut: "termine", role: "joueur", types: ["cthulhu", "one-shot"]
   },
   {
     nom: "La Nécropole",
     jeu: "L'Appel de Cthulhu",
-    statut: "termine", role: "joueur", types: ["one-shot"]
+    statut: "termine", role: "joueur", types: ["cthulhu", "one-shot"]
   },
   {
-    nom: "Amidst the Ancient Trees",
+    nom: "Au milieu des arbres millénaires",
     jeu: "L'Appel de Cthulhu",
-    statut: "termine", role: "joueur", types: ["one-shot"],
+    statut: "termine", role: "joueur", types: ["cthulhu", "one-shot"],
     resume: "Engagés par un homme très riche pour retrouver sa fille kidnappée, jusque dans une forêt où l'on finit empalé sur les arbres."
   },
   {
