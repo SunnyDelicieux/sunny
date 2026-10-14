@@ -134,23 +134,27 @@ const JDR = [
     jeu: "L'Appel de Cthulhu",
     statut: "termine", role: "joueur"
   },
-  /* one-shots officiels de L'Appel de Cthulhu (noms provisoires, à remplacer par les titres officiels) */
+  /* one-shots officiels de L'Appel de Cthulhu */
   {
-    nom: "Le manoir de Karakov",
+    nom: "The Lightless Beacon",
     jeu: "L'Appel de Cthulhu",
     statut: "termine", role: "joueur", types: ["one-shot"]
   },
   {
-    nom: "Le lac, la gemme et les cercueils",
+    nom: "Mr. Corbitt",
     jeu: "L'Appel de Cthulhu",
-    statut: "termine", role: "joueur", types: ["one-shot"],
-    resume: "Un lac, une gemme, et des cercueils enfouis sous la forêt."
+    statut: "termine", role: "joueur", types: ["one-shot"]
   },
   {
-    nom: "La pyramide",
+    nom: "La Nécropole",
+    jeu: "L'Appel de Cthulhu",
+    statut: "termine", role: "joueur", types: ["one-shot"]
+  },
+  {
+    nom: "Amidst the Ancient Trees",
     jeu: "L'Appel de Cthulhu",
     statut: "termine", role: "joueur", types: ["one-shot"],
-    resume: "Une pyramide, et au bout, le subordonné d'un des masques de Nyarlathotep."
+    resume: "Engagés par un homme très riche pour retrouver sa fille kidnappée, jusque dans une forêt où l'on finit empalé sur les arbres."
   },
   {
     nom: "Mission Ork",
