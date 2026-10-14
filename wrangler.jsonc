@@ -1,0 +1,13 @@
+// Configuration du Worker Cloudflare "site" (sunnydelicieux.com).
+// Le site est 100 % statique : Cloudflare sert directement les fichiers du dépôt.
+// Les fichiers listés dans .assetsignore ne sont pas mis en ligne.
+{
+  "name": "site",
+  "compatibility_date": "2026-10-12",
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": "."
+  }
+}
