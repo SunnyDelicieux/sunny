@@ -17,8 +17,8 @@
    La page range toute seule :
      - "En ce moment" : statut "encours"
      - "Je veux MJ"   : statut "envie"
-     - "Je mène"      : terminées, role "st"
-     - "Je joue"      : terminées, role "joueur"
+     - "J'ai MJ"      : terminées, role "st"
+     - "J'ai joué"    : terminées, role "joueur"
      - "Fan pages"    : statut "fanpage"
    ========================================================= */
 
@@ -62,7 +62,7 @@ const JDR = [
     statut: "envie", role: "st"
   },
 
-  /* ---------- je mène (terminées) ---------- */
+  /* ---------- j'ai MJ (terminées) ---------- */
   {
     nom: "Amiens By Night",
     jeu: "Vampire : la Mascarade",
@@ -91,7 +91,7 @@ const JDR = [
     icone: "https://files.catbox.moe/3wlwfj.png"
   },
 
-  /* ---------- je joue (terminées) ---------- */
+  /* ---------- j'ai joué (terminées) ---------- */
   {
     nom: "FOL",
     jeu: "Vampire : la Mascarade",

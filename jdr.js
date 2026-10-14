@@ -52,8 +52,8 @@
     { id: "en-ce-moment", titre: "En ce moment", list: JDR.filter(function (c) { return c.statut === "encours" || c.statut === "prep"; })
                                                        .sort(function (a, b) { return rank[a.statut] - rank[b.statut]; }) },
     { id: "je-veux-mj", titre: "Je veux MJ", list: JDR.filter(function (c) { return c.statut === "envie"; }) },
-    { id: "je-mene", titre: "Je mène", list: JDR.filter(function (c) { return c.statut === "termine" && c.role === "st"; }) },
-    { id: "je-joue", titre: "Je joue", list: JDR.filter(function (c) { return c.statut === "termine" && c.role === "joueur"; }) },
+    { id: "jai-mj", titre: "J'ai MJ", list: JDR.filter(function (c) { return c.statut === "termine" && c.role === "st"; }) },
+    { id: "jai-joue", titre: "J'ai joué", list: JDR.filter(function (c) { return c.statut === "termine" && c.role === "joueur"; }) },
     { id: "fan-pages", titre: "Fan pages", list: JDR.filter(function (c) { return c.statut === "fanpage"; }) }
   ].filter(function (g) { return g.list.length; });
 
@@ -97,7 +97,7 @@
     if (updateHash) history.replaceState(null, "", "#" + groupes[i].id);
   }
 
-  /* ouvre l'onglet demandé par l'adresse : #je-joue, ou #jdr-nom-de-campagne */
+  /* ouvre l'onglet demandé par l'adresse : #jai-joue, ou #jdr-nom-de-campagne */
   function openFromHash() {
     var h = decodeURIComponent(location.hash.slice(1));
     if (!h) return false;
