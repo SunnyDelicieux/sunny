@@ -8,7 +8,7 @@
                ("envie" = campagne que je veux mener)
      role    : "st" (Storyteller) | "joueur"
      types   : étiquettes en plus, parmi
-               "vampire", "ghoule", "hunter", "sabbat"
+               "vampire", "ghoule", "hunter", "sabbat", "one-shot"
      icone   : lien de l'image (facultatif)
      resume  : petite phrase (facultatif)
      lien    : page de la campagne (facultatif)
@@ -134,11 +134,23 @@ const JDR = [
     jeu: "L'Appel de Cthulhu",
     statut: "termine", role: "joueur"
   },
+  /* one-shots officiels de L'Appel de Cthulhu (noms provisoires, à remplacer par les titres officiels) */
   {
-    nom: "One-shots officiels",
+    nom: "Le manoir de Karakov",
     jeu: "L'Appel de Cthulhu",
-    statut: "termine", role: "joueur",
-    resume: "Le manoir de Karakov ; le lac, la gemme et les cercueils sous la forêt ; la pyramide et le subordonné d'un des masques de Nyarlathotep."
+    statut: "termine", role: "joueur", types: ["one-shot"]
+  },
+  {
+    nom: "Le lac, la gemme et les cercueils",
+    jeu: "L'Appel de Cthulhu",
+    statut: "termine", role: "joueur", types: ["one-shot"],
+    resume: "Un lac, une gemme, et des cercueils enfouis sous la forêt."
+  },
+  {
+    nom: "La pyramide",
+    jeu: "L'Appel de Cthulhu",
+    statut: "termine", role: "joueur", types: ["one-shot"],
+    resume: "Une pyramide, et au bout, le subordonné d'un des masques de Nyarlathotep."
   },
   {
     nom: "Mission Ork",

@@ -10,7 +10,8 @@
   var JOURS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
   var STATUT = { encours: ["tag-encours", "en cours"], prep: ["tag-prep", "en préparation"], envie: ["tag-prep", "envie de mener"], termine: ["tag-termine", "terminé"], fanpage: ["tag-fanpage", "fan page"] };
   var ROLE = { st: ["tag-st", "Storyteller"], joueur: ["tag-joueur", "Joueuse"] };
-  var TYPE = { vampire: "tag-vampire", ghoule: "tag-ghoule", hunter: "tag-hunter", sabbat: "tag-sabbat" };
+  var TYPE = { vampire: "tag-vampire", ghoule: "tag-ghoule", hunter: "tag-hunter", sabbat: "tag-sabbat", "one-shot": "tag-oneshot" };
+  var MAX_VISIBLES = 7;   /* au-delà, la liste de l'onglet défile */
 
   function el(tag, attrs) {
     var n = document.createElement(tag);
@@ -93,9 +94,26 @@
       t.classList.toggle("is-active", on);
       panels[j].hidden = !on;
     });
+    stack.scrollTop = 0;
     winTitle.textContent = "Campagnes — " + groupes[i].titre;
+    fitPanel(panels[i]);
     if (updateHash) history.replaceState(null, "", "#" + groupes[i].id);
   }
+
+  /* limite la hauteur de l'onglet à MAX_VISIBLES fiches, le reste défile */
+  function fitPanel(panel) {
+    stack.style.maxHeight = "";
+    var items = panel.querySelectorAll(".campaign-entry");
+    if (items.length <= MAX_VISIBLES) return;
+    var last = items[MAX_VISIBLES - 1];
+    var top = stack.getBoundingClientRect().top - stack.scrollTop;
+    var limit = last.getBoundingClientRect().bottom - top + 6;
+    stack.style.maxHeight = Math.ceil(limit) + "px";
+  }
+  window.addEventListener("resize", function () {
+    var open = panels.filter(function (p) { return !p.hidden; })[0];
+    if (open) fitPanel(open);
+  });
 
   /* ouvre l'onglet demandé par l'adresse : #jai-joue, ou #jdr-nom-de-campagne */
   function openFromHash() {
@@ -107,6 +125,7 @@
       if (hit) {
         select(i, false);
         hit.classList.add("is-highlight");
+        stack.scrollTop = hit.offsetTop - stack.offsetTop - 10;
         setTimeout(function () { hit.scrollIntoView({ block: "center" }); }, 0);
         setTimeout(function () { hit.classList.remove("is-highlight"); }, 2200);
         return true;
