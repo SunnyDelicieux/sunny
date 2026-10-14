@@ -58,9 +58,8 @@
     { id: "fan-pages", titre: "Fan pages", list: JDR.filter(function (c) { return c.statut === "fanpage"; }) }
   ].filter(function (g) { return g.list.length; });
 
-  /* ---------- une seule fenêtre, avec des onglets ---------- */
+  /* ---------- les onglets ---------- */
   var tabs = [], panels = [];
-  var winTitle = document.createTextNode("");
   var tablist = el("div", { class: "jdr-tabs", role: "tablist", "aria-label": "Campagnes" });
   var stack = el("div", { class: "jdr-panels" });
 
@@ -95,7 +94,6 @@
       panels[j].hidden = !on;
     });
     stack.scrollTop = 0;
-    winTitle.textContent = "Campagnes — " + groupes[i].titre;
     fitPanel(panels[i]);
     if (updateHash) history.replaceState(null, "", "#" + groupes[i].id);
   }
@@ -136,14 +134,8 @@
 
   var zone = document.getElementById("jdr-campagnes");
   if (zone && groupes.length) {
-    var controls = el("div", { class: "title-bar-controls" });
-    ["Minimize", "Maximize", "Close"].forEach(function (l) { controls.append(el("button", { "aria-label": l, tabindex: "-1" })); });
     zone.innerHTML = "";
-    zone.append(el("div", { class: "window jdr-window" },
-      el("div", { class: "title-bar" },
-        el("div", { class: "title-bar-text" }, el("img", { src: ICON_GIF, alt: "" }), winTitle),
-        controls),
-      el("div", { class: "window-body jdr-window-body" }, tablist, stack)));
+    zone.append(el("div", { class: "jdr-onglets" }, tablist, stack));
     if (!openFromHash()) select(0, false);
     window.addEventListener("hashchange", openFromHash);
   }
