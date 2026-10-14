@@ -4,7 +4,8 @@
    Une campagne = un bloc { ... }. Champs :
      nom     : nom affiché
      jeu     : "Vampire : la Mascarade", "Jabrainor", ...
-     statut  : "encours" | "prep" | "termine" | "fanpage"
+     statut  : "encours" | "envie" | "termine" | "fanpage"
+               ("envie" = campagne que je veux mener)
      role    : "st" (Storyteller) | "joueur"
      types   : étiquettes en plus, parmi
                "vampire", "ghoule", "hunter", "sabbat"
@@ -14,14 +15,15 @@
      jour    : jour de session, pour le planning (facultatif)
 
    La page range toute seule :
-     - "En ce moment" : statut "encours" ou "prep"
+     - "En ce moment" : statut "encours"
+     - "Je veux MJ"   : statut "envie"
      - "Je mène"      : terminées, role "st"
      - "Je joue"      : terminées, role "joueur"
      - "Fan pages"    : statut "fanpage"
    ========================================================= */
 
 const JDR = [
-  /* ---------- en cours / en préparation ---------- */
+  /* ---------- en cours ---------- */
   {
     nom: "Izmir By Night",
     jeu: "Vampire : la Mascarade",
@@ -39,25 +41,25 @@ const JDR = [
     lien: "jeuderole/jabrainor/jabrainor2.html",
     jour: "Lundi"
   },
-  {
-    nom: "Sigils & Shadow",
-    jeu: "Sigils & Shadow",
-    statut: "encours", role: "joueur",
-    icone: "https://i.postimg.cc/fWfXVrkm/image-2026-05-05-143549328.png",
-    resume: "Après avoir frôlé la mort deux fois, ils s'en sortent plutôt bien... pour l'instant."
-  },
+
+  /* ---------- je veux MJ ---------- */
   {
     nom: "Pest Control",
     jeu: "Vampire : la Mascarade",
-    statut: "prep", role: "st", types: ["hunter"],
+    statut: "envie", role: "st", types: ["hunter"],
     lien: "jeuderole/VTM/shibuya/main.html"
   },
   {
     nom: "Leopold",
     jeu: "Vampire : la Mascarade",
-    statut: "prep", role: "st", types: ["vampire"],
+    statut: "envie", role: "st", types: ["vampire"],
     resume: "Ce sera probablement pas avant turbo longtemps.",
     lien: "jeuderole/VTM/leopold/accueil.html"
+  },
+  {
+    nom: "Mage : l'Ascension",
+    jeu: "Mage : l'Ascension",
+    statut: "envie", role: "st"
   },
 
   /* ---------- je mène (terminées) ---------- */
@@ -121,9 +123,22 @@ const JDR = [
     lien: "jeuderole/MOTW.html"
   },
   {
+    nom: "Sigils & Shadow",
+    jeu: "Sigils & Shadow",
+    statut: "termine", role: "joueur",
+    icone: "https://i.postimg.cc/fWfXVrkm/image-2026-05-05-143549328.png",
+    resume: "Après avoir frôlé la mort deux fois, ils s'en sont plutôt bien sortis."
+  },
+  {
     nom: "L'Appel de Cthulhu",
     jeu: "L'Appel de Cthulhu",
     statut: "termine", role: "joueur"
+  },
+  {
+    nom: "One-shots officiels",
+    jeu: "L'Appel de Cthulhu",
+    statut: "termine", role: "joueur",
+    resume: "Le manoir de Karakov ; le lac, la gemme et les cercueils sous la forêt ; la pyramide et le subordonné d'un des masques de Nyarlathotep."
   },
   {
     nom: "Mission Ork",

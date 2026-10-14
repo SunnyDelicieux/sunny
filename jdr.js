@@ -8,7 +8,7 @@
 
   var ICON_GIF = "https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114";
   var JOURS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
-  var STATUT = { encours: ["tag-encours", "en cours"], prep: ["tag-prep", "en préparation"], termine: ["tag-termine", "terminé"], fanpage: ["tag-fanpage", "fan page"] };
+  var STATUT = { encours: ["tag-encours", "en cours"], prep: ["tag-prep", "en préparation"], envie: ["tag-prep", "envie de mener"], termine: ["tag-termine", "terminé"], fanpage: ["tag-fanpage", "fan page"] };
   var ROLE = { st: ["tag-st", "Storyteller"], joueur: ["tag-joueur", "Joueuse"] };
   var TYPE = { vampire: "tag-vampire", ghoule: "tag-ghoule", hunter: "tag-hunter", sabbat: "tag-sabbat" };
 
@@ -64,6 +64,7 @@
   var groupes = [
     ["En ce moment", JDR.filter(function (c) { return c.statut === "encours" || c.statut === "prep"; })
                         .sort(function (a, b) { return rank[a.statut] - rank[b.statut]; })],
+    ["Je veux MJ", JDR.filter(function (c) { return c.statut === "envie"; })],
     ["Je mène", JDR.filter(function (c) { return c.statut === "termine" && c.role === "st"; })],
     ["Je joue", JDR.filter(function (c) { return c.statut === "termine" && c.role === "joueur"; })],
     ["Fan pages", JDR.filter(function (c) { return c.statut === "fanpage"; })]
