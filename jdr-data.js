@@ -29,7 +29,7 @@ const JDR = [
     jeu: "Vampire : la Mascarade",
     statut: "encours", role: "st", types: ["vampire"],
     icone: "galerie/emotes/izmir/mariko-hehe.webp",
-    lien: "https://izmir-vtm.neocities.org",
+    lien: "https://izmir.sunnydelicieux.com",
     jour: "Dimanche"
   },
   {
@@ -133,6 +133,12 @@ const JDR = [
     nom: "L'Appel de Cthulhu",
     jeu: "L'Appel de Cthulhu",
     statut: "termine", role: "joueur", types: ["cthulhu"]
+  },
+  {
+    nom: "Phandelver",
+    jeu: "Donjons & Dragons",
+    statut: "termine", role: "joueur",
+    lien: "jeuderole/mine.html"
   },
   /* one-shots officiels de L'Appel de Cthulhu */
   {

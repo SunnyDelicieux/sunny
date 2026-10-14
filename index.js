@@ -98,9 +98,6 @@ const tree = [
       { label: 'jabrainor',           href: B+'jeuderole/jabrainor/jabrainor2' },
     ]},
   ]},
-  { label: 'files', children: [
-    { label: 'skyghoul', href: B+'jeuderole/asset/marseillefiles' },
-  ]},
 ];
 
 const sectionIcons = { 'home': '🏠', 'jeu de role': '🎲', 'files': '📁' };
