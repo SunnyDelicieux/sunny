@@ -157,28 +157,3 @@ if (feed) {
   }
 }
 
-// === Updates (la liste est dans updates-data.js) ===
-const updatesFeed = document.getElementById('updates-feed');
-if (updatesFeed && typeof UPDATES !== 'undefined' && UPDATES.length) {
-  const newest = UPDATES[0].date;
-  updatesFeed.innerHTML = '';
-  UPDATES.forEach(function (u) {
-    const row = document.createElement('li');
-    row.className = 'upd-row' + (u.date && u.date === newest ? ' is-new' : '');
-    const date = document.createElement('span');
-    date.className = 'upd-date';
-    date.textContent = u.date || '★';
-    const text = document.createElement(u.lien ? 'a' : 'span');
-    text.className = 'upd-text';
-    text.textContent = u.texte;
-    if (u.lien) text.href = u.lien;
-    row.append(date, text);
-    if (u.date && u.date === newest) {
-      const badge = document.createElement('span');
-      badge.className = 'upd-new';
-      badge.textContent = 'NEW';
-      row.append(badge);
-    }
-    updatesFeed.append(row);
-  });
-}
