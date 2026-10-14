@@ -67,40 +67,52 @@ document.querySelectorAll('.fish').forEach((fish, index) => {
 });
 
 // === Sitemap builder ===
-const B = 'https://sunnydelicieux.neocities.org/';
+// Plan du site : liens vers les pages du site (chemins depuis la racine).
 const tree = [
   { label: 'home', children: [
-    { label: 'emote', href: B+'perso/gallery' },
-    { label: 'maison', href: B+'house/couloir', children: [
-      { label: 'painting',      href: B+'house/painting' },
-      { label: 'salle de bain', href: B+'house/skin' },
-      { label: 'chambre', children: [
-        { label: 'pins',             href: B+'house/pins' },
-        { label: "what's in my bag", href: B+'house/bag' },
+    { label: 'emote',   href: '/perso/gallery.html' },
+    { label: 'galerie', href: '/image.html' },
+    { label: 'maison', href: '/house/couloir.html', children: [
+      { label: 'painting',      href: '/house/painting.html' },
+      { label: 'salle de bain', href: '/house/skin.html' },
+      { label: 'chambre', href: '/house/chambre.html', children: [
+        { label: 'pins',             href: '/house/pins.html' },
+        { label: "what's in my bag", href: '/house/bag.html' },
       ]},
     ]},
     { label: 'other', children: [
-      { label: 'shoes',       href: B+'perso/shoes' },
-      { label: 'old drawing', href: B+'perso/olddrawing' },
+      { label: 'shoes',       href: '/perso/shoes.html' },
+      { label: 'old drawing', href: '/perso/olddrawing.html' },
     ]},
   ]},
-  { label: 'jeu de role', children: [
+  { label: 'jeu de role', href: '/jeuderole.html', children: [
     { label: 'vampire la mascarade', children: [
-      { label: 'amiens by night',    href: B+'jeuderole/VTM/AMIENS/index' },
-      { label: 'liege by night',     href: B+'jeuderole/VTM/LiegeByNight/page' },
-      { label: 'marseille by day',   href: B+'jeuderole/VTM/marseille' },
-      { label: 'fall of london',     href: B+'jeuderole/VTM/FOL' },
-      { label: 'society st leopold', href: B+'jeuderole/VTM/leopold/accueil' },
-      { label: 'soul4sale',          href: B+'jeuderole/VTM/S4S' },
+      { label: 'izmir by night', href: 'https://izmir.sunnydelicieux.com' },
+      { label: 'amiens by night', href: '/jeuderole/VTM/AMIENS/index.html', children: [
+        { label: 'galerie',      href: '/jeuderole/VTM/AMIENS/gallery.html' },
+        { label: 'lore',         href: '/jeuderole/VTM/AMIENS/lore.html' },
+        { label: 'constitution', href: '/jeuderole/VTM/AMIENS/constitution.html' },
+      ]},
+      { label: 'pest control', href: '/jeuderole/VTM/shibuya/main.html' },
+      { label: 'society st leopold', href: '/jeuderole/VTM/leopold/accueil.html' },
+      { label: 'liege by night',   href: '/jeuderole/VTM/LiegeByNight/page.html' },
+      { label: 'marseille by day', href: '/jeuderole/VTM/marseille.html' },
+      { label: 'fall of london',   href: '/jeuderole/VTM/FOL.html' },
+      { label: 'soul4sale',        href: '/jeuderole/VTM/S4S.html' },
     ]},
     { label: 'other games', children: [
-      { label: 'monster of the week', href: B+'jeuderole/MOTW' },
-      { label: 'jabrainor',           href: B+'jeuderole/jabrainor/jabrainor2' },
+      { label: 'jabrainor', href: '/jeuderole/jabrainor/jabrainor2.html', children: [
+        { label: 'galerie', href: '/jeuderole/jabrainor/jabrainor-galerie.html' },
+        { label: 'journal', href: '/jeuderole/jabrainor/jabrainor-journal.html' },
+        { label: 'carte',   href: '/jeuderole/jabrainor/jabrainor-carte.html' },
+      ]},
+      { label: 'phandelver',          href: '/jeuderole/mine.html' },
+      { label: 'monster of the week', href: '/jeuderole/MOTW.html' },
     ]},
   ]},
 ];
 
-const sectionIcons = { 'home': '🏠', 'jeu de role': '🎲', 'files': '📁' };
+const sectionIcons = { 'home': '🏠', 'jeu de role': '🎲' };
 const folderIcon = '📂';
 const leafIcon = '▸';
 
@@ -137,8 +149,36 @@ if (feed) {
     det.className = 'sitemap-folder';
     det.open = true;
     const icon = sectionIcons[section.label] || '📁';
-    det.innerHTML = `<summary>${icon} ${section.label}</summary>`;
+    det.innerHTML = section.href
+      ? `<summary>${icon} <a href="${section.href}">${section.label}</a></summary>`
+      : `<summary>${icon} ${section.label}</summary>`;
     det.appendChild(buildTree(section.children, false));
     feed.appendChild(det);
   }
+}
+
+// === Updates (la liste est dans updates-data.js) ===
+const updatesFeed = document.getElementById('updates-feed');
+if (updatesFeed && typeof UPDATES !== 'undefined' && UPDATES.length) {
+  const newest = UPDATES[0].date;
+  updatesFeed.innerHTML = '';
+  UPDATES.forEach(function (u) {
+    const row = document.createElement('li');
+    row.className = 'upd-row' + (u.date && u.date === newest ? ' is-new' : '');
+    const date = document.createElement('span');
+    date.className = 'upd-date';
+    date.textContent = u.date || '★';
+    const text = document.createElement(u.lien ? 'a' : 'span');
+    text.className = 'upd-text';
+    text.textContent = u.texte;
+    if (u.lien) text.href = u.lien;
+    row.append(date, text);
+    if (u.date && u.date === newest) {
+      const badge = document.createElement('span');
+      badge.className = 'upd-new';
+      badge.textContent = 'NEW';
+      row.append(badge);
+    }
+    updatesFeed.append(row);
+  });
 }
