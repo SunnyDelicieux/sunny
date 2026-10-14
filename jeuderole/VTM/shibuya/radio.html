@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<title>PEST CONTROL — RADIO</title>
+<style>
+  /* ===== Fonts ===== */
+  @font-face {
+    font-family: "Pixelated MS Sans Serif";
+    src: url("https://files.catbox.moe/1za99g.woff") format("woff");
+  }
+
+  /* ===== Theme Variables ===== */
+  :root {
+    --gold:       #E5AF1E;
+    --gold-dim:   #b88a10;
+    --red:        #D1382B;
+    --crimson:    #81021F;
+    --ink:        #0c0204;
+    --ink-mid:    #180407;
+    --ink-light:  #28080e;
+    --glass:      rgba(12, 2, 4, 0.93);
+    --cream:      #f5e6c8;
+    --text-main:  #f5e6c8;
+  }
+
+  html {
+    background: transparent;
+  }
+
+  body {
+    margin: 0;
+    background: transparent;
+    color: var(--text-main);
+    font-family: "Pixelated MS Sans Serif", monospace;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    user-select: none;
+    overflow: hidden;
+  }
+
+  /* Scanline overlay */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999;
+    background-image: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(0, 0, 0, 0.09) 3px,
+      rgba(0, 0, 0, 0.09) 4px
+    );
+    mix-blend-mode: multiply;
+  }
+
+  #app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    position: relative;
+    width: 704px; /* 880 * 0.8 */
+    pointer-events: auto;
+    transform: scale(0.8);
+    transform-origin: top left;
+  }
+
+  /* ===== CD Holder (pile) ===== */
+  #cd-holder {
+    position: relative;
+    width: 250px;
+    height: 400px;
+    user-select: none;
+  }
+
+  .cd-img {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border-radius: 45%;
+    border: 2px solid var(--crimson);
+    cursor: grab;
+    user-select: none;
+    transition: opacity 0.3s ease, transform 0.3s ease, border-color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 8px rgba(129, 2, 31, 0.5), 3px 3px 0 var(--crimson);
+    z-index: 1;
+  }
+
+  .cd-img.locked {
+    opacity: 0.3;
+    filter: grayscale(100%);
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .cd-img.hidden {
+    display: none !important;
+  }
+
+  .cd-img:hover {
+    transform: scale(1.08) rotate(3deg);
+    border-color: var(--gold);
+    box-shadow: 0 0 16px rgba(229, 175, 30, 0.6), 4px 4px 0 var(--crimson);
+  }
+
+  /* ===== Walkman Container ===== */
+  #walkman-container {
+    position: relative;
+    width: 400px;
+    height: 420px;
+    z-index: 20;
+    animation: floaty 3s ease-in-out infinite;
+  }
+
+  @keyframes floaty {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  #walkman {
+    width: 400px;
+    height: 400px;
+    background-image: url('https://i.postimg.cc/SRns8Pc9/walkman.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    box-shadow: none;
+    cursor: pointer;
+    position: relative;
+    z-index: 50;
+    filter: drop-shadow(0 0 12px rgba(209, 56, 43, 0.3));
+  }
+
+  #glow-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    box-shadow:
+      0 0 8px 4px rgba(229, 175, 30, 0.8),
+      0 0 16px 8px rgba(209, 56, 43, 0.5);
+    animation: pulseGlow 2s ease forwards;
+    z-index: 25;
+  }
+
+  @keyframes pulseGlow {
+    0% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(0.9);
+      box-shadow:
+        0 0 8px 4px rgba(229, 175, 30, 0.8),
+        0 0 16px 8px rgba(209, 56, 43, 0.5);
+    }
+    50% {
+      opacity: 0.5;
+      transform: translate(-50%, -50%) scale(1.05);
+      box-shadow:
+        0 0 12px 6px rgba(229, 175, 30, 0.6),
+        0 0 24px 12px rgba(209, 56, 43, 0.4);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(1.2);
+      box-shadow:
+        0 0 16px 8px rgba(229, 175, 30, 0),
+        0 0 32px 16px rgba(209, 56, 43, 0);
+    }
+  }
+
+  @keyframes shake {
+    0% { transform: translate(0, 0); }
+    20% { transform: translate(-5px, 0); }
+    40% { transform: translate(5px, 0); }
+    60% { transform: translate(-5px, 0); }
+    80% { transform: translate(5px, 0); }
+    100% { transform: translate(0, 0); }
+  }
+
+  .shake {
+    animation: shake 0.6s ease;
+  }
+
+  /* ===== Track Display ===== */
+  #current-track {
+    margin-top: 4px;
+    font-weight: 700;
+    min-height: 1.2em;
+    text-align: center;
+    user-select: none;
+    font-size: 11px;
+    color: #fff;
+    text-shadow: 0 0 6px rgba(229, 175, 30, 0.7), 1px 1px 0 var(--crimson);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: pulseText 2.5s ease-in-out infinite;
+  }
+
+  @keyframes pulseText {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+
+  /* ===== Controls ===== */
+  #controls {
+    margin-top: 14px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  button {
+    padding: 6px 14px;
+    background: var(--crimson);
+    border: 2px solid var(--red);
+    border-radius: 0;
+    color: var(--gold);
+    font-weight: 900;
+    font-size: 12px;
+    cursor: pointer;
+    user-select: none;
+    font-family: "Pixelated MS Sans Serif", monospace;
+    text-shadow: 1px 1px 0 #000;
+    box-shadow:
+      inset -1px -1px #000,
+      inset 1px 1px #4a0010,
+      3px 3px 0 var(--ink),
+      0 0 8px rgba(209, 56, 43, 0.4);
+    transition: transform 0.12s, box-shadow 0.12s, border-color 0.12s;
+  }
+
+  button:hover {
+    border-color: var(--gold);
+    transform: translate(-2px, -2px);
+    box-shadow:
+      inset -1px -1px #000,
+      inset 1px 1px #4a0010,
+      5px 5px 0 var(--ink),
+      0 0 16px rgba(229, 175, 30, 0.5);
+  }
+
+  button:active {
+    transform: translate(1px, 1px);
+    box-shadow:
+      inset -1px -1px #000,
+      inset 1px 1px #4a0010,
+      1px 1px 0 var(--ink);
+  }
+
+  /* ===== Volume ===== */
+  #volume-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+    color: var(--gold-dim);
+    font-size: 11px;
+  }
+
+  #volume-control input[type="range"] {
+    width: 130px;
+    accent-color: var(--red);
+    cursor: pointer;
+  }
+
+  /* ===== Big CD ===== */
+  #cd-big {
+    position: absolute;
+    top: 20%;
+    left: calc(0px - 200px * 0.45);
+    width: 200px;
+    height: 200px;
+    transform: translate(0, -50%);
+    transition: transform 0.5s ease;
+    user-select: none;
+    z-index: 10;
+    border: 2px solid var(--crimson);
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(209, 56, 43, 0.4), 0 0 40px rgba(129, 2, 31, 0.2);
+  }
+
+  #cd-big.playing {
+    animation: spin 3s linear infinite;
+    box-shadow: 0 0 24px rgba(229, 175, 30, 0.5), 0 0 48px rgba(209, 56, 43, 0.3);
+    border-color: var(--gold-dim);
+  }
+
+  @keyframes spin {
+    from { transform: translate(0, -50%) rotate(0deg); }
+    to { transform: translate(0, -50%) rotate(360deg); }
+  }
+</style>
+</head>
+<body>
+  <div id="app">
+    <div id="walkman-container">
+      <div id="walkman" title="Dépose un CD ici pour jouer">
+        <div id="glow-overlay" style="display:none;"></div>
+      </div>
+      <div id="current-track">AUCUN CD INSÉRÉ</div>
+      <div id="controls">
+        <button id="prev" title="Piste précédente">⏮ PREV</button>
+        <button id="pause" title="Pause / Reprendre">⏸ PAUSE</button>
+        <button id="next" title="Piste suivante">⏭ NEXT</button>
+      </div>
+      <div id="volume-control">
+        🔉 <input type="range" min="0" max="100" step="1" value="50" id="volume" /> 🔊
+      </div>
+      <img id="cd-big" alt="CD en cours" style="display:none" />
+    </div>
+    <div id="cd-holder" title="Glisse un CD sur le walkman pour écouter">
+      <!--
+        ====== CDs — YouTube links! ======
+        To add a new CD, copy an <img> and change:
+          data-cd    = unique key (anything)
+          data-video = YouTube video ID  (the ?v=XXXX part)
+          data-list  = YouTube playlist/radio ID  (the &list=XXXX part)
+          src        = CD cover image URL
+          title      = CD name shown on hover & track display
+      -->
+      <img src="https://static.wixstatic.com/media/7cbe3b_1a1593d47012422ba3d56e46d17bc792~mv2.png"
+           class="cd-img" draggable="true"
+           data-cd="mix1"
+           data-video="IhPlLjvxRe8"
+           data-list="RDIhPlLjvxRe8"
+           alt="Mix Radio 1" title="Mix Radio 1">
+      <img src="https://static.wixstatic.com/media/7cbe3b_0c25c7c7864943519535ad22e3bc2eb8~mv2.png"
+           class="cd-img" draggable="true"
+           data-cd="mix2"
+           data-video="phAoChN1nC4"
+           data-list="RDphAoChN1nC4"
+           alt="Mix Radio 2" title="Mix Radio 2">
+    </div>
+
+  <!-- Hidden YouTube Player -->
+  <div id="yt-player-wrapper" style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;z-index:-1;">
+    <div id="yt-player"></div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <!-- YouTube IFrame API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+
+  <script>
+    var firebaseConfig = {
+      apiKey: "AIzaSyAxLIG0vQUWo2zlVYJdF99OnN1wdscIKSM",
+      authDomain: "telgoules.firebaseapp.com",
+      databaseURL: "https://telgoules-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "telgoules",
+      storageBucket: "telgoules.firebasestorage.app",
+      messagingSenderId: "109988992794",
+      appId: "1:109988992794:web:4934e3e3169a3bb8e1fea3"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    var db = firebase.firestore();
+
+    /* ─── CD definitions ───
+       Built automatically from data-* attributes on each .cd-img.
+       To add a new CD you only need to add an <img> in the HTML above.
+    */
+    var cds = {};
+    document.querySelectorAll(".cd-img").forEach(function(el) {
+      cds[el.dataset.cd] = {
+        title: el.title,
+        videoId: el.dataset.video,
+        listId: el.dataset.list
+      };
+    });
+
+    var ytPlayer = null;
+    var ytReady = false;
+    var currentCdName = null;
+    var ignoreFirestoreUpdates = false;
+    var dragSuccessful = false;
+    var isPlaying = false;
+
+    var volumeSlider = document.getElementById("volume");
+    var walkman = document.getElementById("walkman");
+    var currentTrackDisplay = document.getElementById("current-track");
+    var cdBig = document.getElementById("cd-big");
+    var glowOverlay = document.getElementById("glow-overlay");
+
+    /* ─── YouTube IFrame API callback ─── */
+    function onYouTubeIframeAPIReady() {
+      // Player created on first CD drop
+    }
+
+    function createPlayer(cd, autoplay) {
+      if (ytPlayer) {
+        try { ytPlayer.destroy(); } catch(e) {}
+        document.getElementById('yt-player-wrapper').innerHTML = '<div id="yt-player"></div>';
+      }
+      ytReady = false;
+      ytPlayer = new YT.Player('yt-player', {
+        height: '1',
+        width: '1',
+        videoId: cd.videoId,
+        playerVars: {
+          autoplay: autoplay ? 1 : 0,
+          controls: 0,
+          disablekb: 1,
+          list: cd.listId,
+          listType: 'playlist',
+          origin: window.location.origin
+        },
+        events: {
+          onReady: function(event) {
+            ytReady = true;
+            event.target.setVolume(parseInt(volumeSlider.value));
+            if (autoplay) event.target.playVideo();
+            updateTrackDisplay();
+          },
+          onStateChange: function(event) {
+            isPlaying = (event.data === YT.PlayerState.PLAYING);
+            updateTrackDisplay();
+            updateCDSpinState();
+            if (event.data === YT.PlayerState.PLAYING || event.data === YT.PlayerState.PAUSED) {
+              updateStateInFirestore();
+            }
+          }
+        }
+      });
+    }
+
+    function positionCDsInPile() {
+      var cdsElements = document.querySelectorAll('#cd-holder .cd-img:not(.hidden)');
+      var centerX = 100;
+      var centerY = 170;
+      var maxXSpread = 320;
+      var maxYSpread = 340;
+      var maxRotate = 30;
+
+      cdsElements.forEach(function(el, i) {
+        var offsetX = (Math.random() - 0.5) * maxXSpread;
+        var offsetY = (Math.random() - 0.5) * maxYSpread;
+        var rotate = (Math.random() - 0.5) * 2 * maxRotate;
+        el.style.left = (centerX + offsetX) + 'px';
+        el.style.top = (centerY + offsetY) + 'px';
+        el.style.transform = 'rotate(' + rotate.toFixed(1) + 'deg)';
+        el.style.zIndex = i + 1;
+      });
+    }
+
+    function updateTrackDisplay() {
+      if (!ytPlayer || !ytReady) return;
+      try {
+        var data = ytPlayer.getVideoData();
+        var title = data.title || '...';
+        var cdTitle = currentCdName ? cds[currentCdName].title : '';
+        currentTrackDisplay.textContent = '\u266B [' + cdTitle + '] ' + title;
+      } catch(e) {}
+    }
+
+    function updateCDSpinState() {
+      if (isPlaying) {
+        cdBig.classList.add('playing');
+      } else {
+        cdBig.classList.remove('playing');
+      }
+    }
+
+    function hideCDInPile(cdName) {
+      var cdImg = document.querySelector('.cd-img[data-cd="' + cdName + '"]');
+      if (cdImg) cdImg.classList.add('hidden');
+    }
+
+    function showCDInPile(cdName) {
+      var cdImg = document.querySelector('.cd-img[data-cd="' + cdName + '"]');
+      if (cdImg) cdImg.classList.remove('hidden');
+    }
+
+    function setBigCD(cdName) {
+      if (!cdName) {
+        cdBig.style.display = 'none';
+        cdBig.src = '';
+        return;
+      }
+      var cdImg = document.querySelector('.cd-img[data-cd="' + cdName + '"]');
+      if (!cdImg) {
+        cdBig.style.display = 'none';
+        cdBig.src = '';
+        return;
+      }
+      cdBig.src = cdImg.src;
+      cdBig.alt = cdImg.alt;
+      cdBig.title = cdImg.title;
+      cdBig.style.display = 'block';
+      updateCDSpinState();
+    }
+
+    function loadCD(cdName, autoplay) {
+      var cd = cds[cdName];
+      if (!cd) return;
+      if (currentCdName) showCDInPile(currentCdName);
+      currentCdName = cdName;
+      hideCDInPile(currentCdName);
+      setBigCD(currentCdName);
+      createPlayer(cd, autoplay);
+    }
+
+    /* ─── Firebase sync ─── */
+    function updateStateInFirestore() {
+      if (!currentCdName || !ytPlayer || !ytReady) return;
+      ignoreFirestoreUpdates = true;
+      var playlistIndex = 0;
+      try { playlistIndex = ytPlayer.getPlaylistIndex() || 0; } catch(e) {}
+      db.collection("sharedPlayer").doc("state").set({
+        currentCd: currentCdName,
+        currentIndex: playlistIndex,
+        isPlaying: isPlaying,
+        timestamp: Date.now()
+      }).then(function() {
+        setTimeout(function() { ignoreFirestoreUpdates = false; }, 500);
+      });
+    }
+
+    var playerDoc = db.collection("sharedPlayer").doc("state");
+    playerDoc.onSnapshot(function(doc) {
+      if (ignoreFirestoreUpdates) return;
+      if (!doc.exists) return;
+
+      var data = doc.data();
+      if (!data.currentCd || !cds[data.currentCd]) return;
+
+      if (currentCdName !== data.currentCd) {
+        loadCD(data.currentCd, data.isPlaying);
+      } else if (ytPlayer && ytReady) {
+        var idx = data.currentIndex || 0;
+        try {
+          if (ytPlayer.getPlaylistIndex() !== idx) {
+            ytPlayer.playVideoAt(idx);
+          }
+        } catch(e) {}
+        if (data.isPlaying) ytPlayer.playVideo();
+        else ytPlayer.pauseVideo();
+      }
+
+      updateTrackDisplay();
+      updateCDSpinState();
+    });
+
+    /* ─── Controls ─── */
+    document.getElementById("next").onclick = function() {
+      if (!ytPlayer || !ytReady) return;
+      ytPlayer.nextVideo();
+      setTimeout(function() { updateStateInFirestore(); }, 300);
+    };
+
+    document.getElementById("prev").onclick = function() {
+      if (!ytPlayer || !ytReady) return;
+      ytPlayer.previousVideo();
+      setTimeout(function() { updateStateInFirestore(); }, 300);
+    };
+
+    document.getElementById("pause").onclick = function() {
+      if (!ytPlayer || !ytReady) return;
+      var state = ytPlayer.getPlayerState();
+      if (state === YT.PlayerState.PLAYING) {
+        ytPlayer.pauseVideo();
+        isPlaying = false;
+      } else {
+        ytPlayer.playVideo();
+        isPlaying = true;
+      }
+      updateCDSpinState();
+      updateStateInFirestore();
+    };
+
+    /* ─── Volume ─── */
+    volumeSlider.addEventListener("input", function() {
+      if (ytPlayer && ytReady) {
+        ytPlayer.setVolume(parseInt(volumeSlider.value));
+      }
+    });
+
+    /* ─── Drag & Drop ─── */
+    walkman.ondragover = function(e) { e.preventDefault(); };
+
+    walkman.ondrop = function(e) {
+      e.preventDefault();
+      dragSuccessful = true;
+      var cdName = e.dataTransfer.getData("text/plain");
+      if (!cdName || !cds[cdName]) {
+        alert("CD inconnu ou non disponible.");
+        return;
+      }
+
+      glowOverlay.style.display = "block";
+      glowOverlay.style.animation = "pulseGlow 2s ease forwards";
+      walkman.classList.add("shake");
+      setTimeout(function() {
+        walkman.classList.remove("shake");
+        glowOverlay.style.display = "none";
+      }, 2000);
+
+      loadCD(cdName, true);
+      updateStateInFirestore();
+    };
+
+    document.querySelectorAll(".cd-img").forEach(function(cd) {
+      cd.ondragstart = function(e) {
+        if (cd.classList.contains("locked")) {
+          e.preventDefault();
+          return;
+        }
+        dragSuccessful = false;
+        e.dataTransfer.setData("text/plain", cd.dataset.cd);
+      };
+      cd.ondragend = function(e) {
+        if (!dragSuccessful) {
+          showCDInPile(e.target.dataset.cd);
+        }
+      };
+    });
+
+    /* ─── Init ─── */
+    window.onload = function() {
+      positionCDsInPile();
+    };
+  </script>
+</body>
+</html>

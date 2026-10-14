@@ -1,0 +1,64 @@
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+ 
+<!-------MUSIC PLAYER BY GLENTHEMES------->
+<script src="//static.tumblr.com/gtjt4bo/QRmphdsdv/glenplayer02.js"></script>
+ 
+<style type="text/css">
+/*-------MUSIC PLAYER BY GLENTHEMES-------*/
+#glenplayer02 {
+position:fixed;
+top:2em;
+margin-bottom:20px;
+left:0;
+margin-left:20px;
+display:flex;
+z-index:99;
+text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000, 0 0;
+}
+#glenplayer02 a {text-decoration:none;}
+ 
+#glenplayer02 > div {
+align-self:center;
+-webkit-align-self:center;
+}
+ 
+.music-controls {
+user-select:none;
+-webkit-user-select:none;
+width:13px;
+font-size:13px;
+cursor:pointer;
+}
+ 
+.playy, .pausee {color:#fff;} /* color of play & pause buttons */
+ 
+.pausee {display:none;}
+ 
+.sonata {
+margin-left:10px;
+color:#000; /* color of music note symbol */
+}
+ 
+.labeltext {
+margin-left:1px;
+font-family:courier new;
+font-size:9px;
+color:#fff; /* color of song title */
+}
+ 
+</style>
+<body>
+<!-------MUSIC PLAYER BY GLENTHEMES------->
+<div id="glenplayer02">
+<div class="music-controls" onclick="songstart();">
+<div class="playy">►</div>
+<div class="pausee">❚❚</div>
+</div>
+<div class="sonata"> </div>
+<div class="labeltext"><img src="https://64.media.tumblr.com/tumblr_lu2dd4ocjj1qfoi4t.gif"><img src="https://64.media.tumblr.com/tumblr_lu2dd4ocjj1qfoi4t.gif"><img src="https://64.media.tumblr.com/tumblr_lu2dd4ocjj1qfoi4t.gif"><img src="https://64.media.tumblr.com/tumblr_lu2dd4ocjj1qfoi4t.gif"> </div>
+</div>
+ 
+<audio id="tune" src="https://file.garden/adZZkyqZuhDwy1E5/The%20Concept%20of%20Love.mp3"audio"></audio>
+</body>
+ 
+<div class="labeltext"> </div>

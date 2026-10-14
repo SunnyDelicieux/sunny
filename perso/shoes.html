@@ -1,0 +1,80 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Sunny's Home</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" crossorigin="anonymous">
+</head>
+
+<body style="margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
+<script src="https://louisabraham.github.io/nekojs/neko.js" data-autostart></script>
+
+
+<div id="header-placeholder" style="width: 870px; margin-top: 125px;"></div>
+<script>
+  fetch('/header-template.html')
+    .then(response => response.text())
+    .then(data => {
+      const header = document.getElementById('header-placeholder');
+      header.innerHTML = data;
+      // Wire up dropdowns with direct style.display (no CSS classes needed)
+      header.querySelectorAll('.dropdown').forEach(function(dd) {
+        var menu = dd.querySelector('.dropdown-menu');
+        if (!menu) return;
+        dd.addEventListener('mouseenter', function() { menu.style.display = 'block'; });
+        dd.addEventListener('mouseleave', function() { menu.style.display = 'none'; });
+      });
+    });
+</script>
+
+
+  
+  
+  <div class="window" style="width: 870px; margin-top: 16px;">
+    <div class="title-bar">
+      <div class="title-bar-text">Effervenscence</div>
+      <div class="title-bar-controls"><button aria-label="Minimize"></button><button aria-label="Maximize"></button><button aria-label="Close"></button></div>
+    </div>
+    <div class="window-body" style="padding: 0;">
+    <img src="https://i.postimg.cc/JR4ZNcZq/EFFE.png" alt="effervescence" style="width: 100%; display: block;">
+    </div>
+  </div>
+
+ 
+  <div class="window" style="width: 870px; margin-top: 16px;">
+    <div class="title-bar">
+      <div class="title-bar-text">Melissande</div>
+      <div class="title-bar-controls"><button aria-label="Minimize"></button><button aria-label="Maximize"></button><button aria-label="Close"></button></div>
+    </div>
+    <div class="window-body" style="padding: 0;">
+  <img src="https://i.postimg.cc/6660SsFq/chossure.png" alt="melissande" style="width: 100%; display: block;">
+    </div>
+  </div>
+
+
+
+ 
+  <div class="window" style="width: 870px; margin-top: 16px;">
+    <div class="title-bar">
+      <div class="title-bar-text">Séraphine</div>
+      <div class="title-bar-controls"><button aria-label="Minimize"></button><button aria-label="Maximize"></button><button aria-label="Close"></button></div>
+    </div>
+    <div class="window-body" style="padding: 0;">
+  <img src="https://i.postimg.cc/JzDhTnRd/BUBBLE.png" alt="melissande" style="width: 100%; display: block;">
+    </div>
+  </div>
+
+  <div class="window" style="width: 870px; margin-top: 16px;">
+    <div class="title-bar">
+      <div class="title-bar-text">Gabrielle</div>
+      <div class="title-bar-controls"><button aria-label="Minimize"></button><button aria-label="Maximize"></button><button aria-label="Close"></button></div>
+    </div>
+    <div class="window-body" style="padding: 0;">
+  <img src="https://i.postimg.cc/yszF3M7P/elegant.png" alt="gabrielle" style="width: 100%; display: block;">
+    </div>
+  </div>
+
+ <br>
+  
+  </body>
+</html>

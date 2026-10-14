@@ -1,0 +1,210 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Sunny's Emotes</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+      /* Fix title bar icon alignment - same as index.html */
+      .title-bar-text {
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px; 
+      }
+      .title-bar-text img {
+        margin: 0 !important;
+        display: inline-block !important; 
+        width: 16px; 
+        height: 16px;
+      }
+    </style>
+</head>
+<body style="margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
+  <div id="header-placeholder" style="width: 870px; margin-top: 125px;"></div>
+  <script>
+    fetch('/header-template.html')
+      .then(response => response.text())
+      .then(data => {
+        const header = document.getElementById('header-placeholder');
+        header.innerHTML = data;
+        header.querySelectorAll('.dropdown').forEach(function(dd) {
+          var menu = dd.querySelector('.dropdown-menu');
+          if (!menu) return;
+          dd.addEventListener('mouseenter', function() { menu.style.display = 'block'; });
+          dd.addEventListener('mouseleave', function() { menu.style.display = 'none'; });
+        });
+      });
+  </script>
+<div class="global-container">
+  <div class="grid-container" style="display:flex; flex-direction:row; height:430px; width:870px; gap:16px;">
+    <div style="flex:0 0 260px; display:flex; flex-direction:column;">
+      <div class="post" style="height:100%;">
+        <div class="window" style="height:100%; display:flex; flex-direction:column;">
+          <div class="title-bar">
+            <div class="title-bar-text">
+              <img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="icon">Fall Of London
+            </div>
+            <div class="title-bar-controls">
+              <button aria-label="Minimize"></button>
+              <button aria-label="Maximize"></button>
+              <button aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="window-body text" style="flex:1;">
+            <p style="font-size:11px;"> 
+            <H2>Joueur | V5 | Terminé </H2>
+            <H4> Personnage : </H4> Catherine Montague (Ventrue); Ton nom est Catherine. Tu sembles être au début de la vingtaine et d'une beauté classique, avec une peau pâle, de longs cheveux blonds et une grâce naturelle. Tu sens que tu étais habituée à la richesse, mais que cela n’a jamais été ce que tu souhaitais vraiment. Tu te souviens de ta vie comme d’une cage, mais dont toi seul pouvait voir les barreaux. Mithras est un nom qui t'es indifférent. Il sonne comme celui d'un homme androcentré parmi tant d'autres.
+            
+            
+            
+            <img src="https://i.postimg.cc/m2Qbbc7r/sun.webp" alt="mithras" height="180" position="center" >
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="emote-scroll" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:16px; height:100%;">
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        
+      
+        <!-- Image 6 (Lightno) - Full Width (First) -->
+        <div class="window" style="grid-column: span 2;">
+          <div class="title-bar">
+            <div class="title-bar-text">
+              <img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="icon">Poster Campagne
+            </div>
+            <div class="title-bar-controls">
+              <button aria-label="Minimize"></button>
+              <button aria-label="Maximize"></button>
+              <button aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="window-body" style="padding: 0; display: flex;">
+            <img src="https://i.postimg.cc/6qkFkhMj/Opera-Instantane-2026-02-12-123527-postimg-cc.png" style="width: 100%; height: auto; display: block;">
+          </div>
+        </div>
+
+ <div class="window" style="grid-column: span 2;">
+          <div class="title-bar">
+            <div class="title-bar-text">
+              <img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="icon">Fly away
+            </div>
+            <div class="title-bar-controls">
+              <button aria-label="Minimize"></button>
+              <button aria-label="Maximize"></button>
+              <button aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="window-body" style="padding: 0; display: flex;">
+            <img src="https://i.postimg.cc/856nXTfq/image-2026-02-19-082210802.png" style="width: 100%; height: auto; display: block;">
+          </div>
+        </div>
+
+
+<div class="window" style="grid-column: span 2;">
+          <div class="title-bar">
+            <div class="title-bar-text">
+              <img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="icon">Sneaking
+            </div>
+            <div class="title-bar-controls">
+              <button aria-label="Minimize"></button>
+              <button aria-label="Maximize"></button>
+              <button aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="window-body" style="padding: 0; display: flex;">
+            <img src="https://i.postimg.cc/2yxGgyjY/image-2026-02-19-082334846.png" style="width: 100%; height: auto; display: block;">
+          </div>
+        </div>
+
+        <!-- Image 2 (Fall) - Full Width -->
+        <div class="window" style="grid-column: span 2;">
+          <div class="title-bar">
+            <div class="title-bar-text">
+              <img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="icon">Killing in the name of
+            </div>
+            <div class="title-bar-controls">
+              <button aria-label="Minimize"></button>
+              <button aria-label="Maximize"></button>
+              <button aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="window-body" style="padding: 0; display: flex;">
+            <img src="https://i.postimg.cc/xdXKMdFz/fall.webp" style="width: 100%; height: auto; display: block;">
+          </div>
+        </div>
+
+        <!-- Image 4 (Image) - Full Width -->
+        <div class="window" style="grid-column: span 2;">
+          <div class="title-bar">
+            <div class="title-bar-text">
+              <img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="icon">Portrait
+            </div>
+            <div class="title-bar-controls">
+              <button aria-label="Minimize"></button>
+              <button aria-label="Maximize"></button>
+              <button aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="window-body" style="padding: 0; display: flex;">
+            <img src="https://i.postimg.cc/BvjxHvwt/image.webp" style="width: 100%; height: auto; display: block;">
+          </div>
+        </div>
+
+        <!-- Image 3 (Guilt) - Full Width -->
+        <div class="window" style="grid-column: span 2;">
+          <div class="title-bar">
+            <div class="title-bar-text">
+              <img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="icon">The guilt is yours to carry
+            </div>
+            <div class="title-bar-controls">
+              <button aria-label="Minimize"></button>
+              <button aria-label="Maximize"></button>
+              <button aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="window-body" style="padding: 0; display: flex;">
+            <img src="https://i.postimg.cc/zfynKfPT/guilt.webp" style="width: 100%; height: auto; display: block;">
+          </div>
+        </div>
+
+        <!-- Image 1 (BD) - Half Width -->
+        <div class="window">
+          <div class="title-bar">
+            <div class="title-bar-text">
+              <img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="icon">Eclipse
+            </div>
+            <div class="title-bar-controls">
+              <button aria-label="Minimize"></button>
+              <button aria-label="Maximize"></button>
+              <button aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="window-body" style="padding: 0; display: flex;">
+            <img src="https://i.postimg.cc/43YzV3Ff/bd.webp" style="width: 100%; height: auto; display: block;">
+          </div>
+        </div>
+
+        <!-- Image 5 (IMG) - Half Width -->
+        <div class="window">
+          <div class="title-bar">
+            <div class="title-bar-text">
+              <img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="icon">Burning
+            </div>
+            <div class="title-bar-controls">
+              <button aria-label="Minimize"></button>
+              <button aria-label="Maximize"></button>
+              <button aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="window-body" style="padding: 0; display: flex;">
+            <img src="https://i.postimg.cc/VNJjnNHS/IMG-20260211-095210.webp" style="width: 100%; height: auto; display: block;">
+          </div>
+        </div>
+
+      </div>
+    
+    </div>
+  </div>
+</div>
+</body>
+</html>

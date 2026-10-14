@@ -1,0 +1,146 @@
+body, html {
+	padding: 0;
+	margin: 0;
+	height: 100%;
+	background-color: white;
+	position: relative;
+	font-size: 12px;
+	font-family: Calibri, sans-serif;
+}
+
+body {
+  margin: 0;
+  background-color: rgb(218, 155, 73);
+  background-image: url("img/animal-05.png");
+  background-repeat: repeat;
+}
+
+.page {
+	padding: 12px;
+	min-height: 0;
+	height: unset;
+	padding-bottom: 36px;
+}
+
+.page h1:first-child {
+	margin-top: 0;
+}
+
+img {
+	max-width: 100%;
+}
+
+a {
+	color: rgb(0, 0, 0);
+	text-decoration: underline;
+	font-size: large;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+.hero {
+	width: 400px;
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+}
+
+iframe {
+	border: 3px solid #4b250b;
+}
+
+.content {
+	height: 400px;
+	width: 500px;
+	position: absolute;
+	bottom: 280px;
+	left: 60px;
+	background-color: azure;
+}
+
+.menu a {
+	padding: 3px;
+	display: inline-block;
+}
+
+.menu {
+	width: 140px;
+	height: 100px;
+	position: absolute;
+	bottom: 162px;
+	left: 350px;
+}
+
+.blinkies {
+	background: rgb(221, 178, 121);
+	border: 3px solid #000;
+	width: 212px;
+	height: 100px;
+	position: absolute;
+	bottom: 52px;
+	left: 350px;
+	overflow: auto;
+}
+
+.title {
+	color: #382909;
+	font-size: 50px;
+	letter-spacing: -7px;
+	position: absolute;
+	bottom: 780px;
+	left: 59px;
+	font-weight: bold;
+}
+
+
+h1, h2, h3, h4 {
+	font-size: 12px;
+	text-transform: all;
+	letter-spacing: 0.5px;
+}
+
+h1 {
+	background: #382909;
+	border-top: 2px solid #f7f0f0;
+	border-bottom: 2px solid #ecdee7;
+	padding-left: 4px;
+}
+
+h2 {
+	border-left: 2px solid #382909; (0, 100%, 87%);
+	padding-left: 4px;
+	margin-top: 2rem;
+}
+
+.border {
+    padding: 2px;
+    border: 1px solid #e5bebe;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+th, td {
+    padding: 6px 12px;
+    vertical-align: top;
+}
+
+th {
+    background: yellow;
+    color: #9e2727;
+}
+
+.width-50 {
+    width: 50%;
+}
+
+* {
+	scrollbar-width: thin; 
+}
+
+::-webkit-scrollbar {
+	width: 10px;
+}

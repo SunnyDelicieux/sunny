@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TV Gallery</title>
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      background: transparent;
+    }
+    .tv-frame {
+      position: relative;
+      width: 335px;
+      height: 330px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tv-ads {
+      position: absolute;
+      width: 97%;
+      height: 76%;
+      left: 1.5%;
+      top: 5%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border-radius: 40px;
+      z-index: 1;
+      background: transparent;
+    }
+    .tv-ad-image {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 20px;
+      opacity: 0;
+      transition: none;
+    }
+    .tv-ad-image.active {
+      opacity: 1;
+      z-index: 2;
+    }
+    .tv-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      pointer-events: none;
+      object-fit: cover;
+      border-radius: 0;
+    }
+    .tv-static-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 15;
+      pointer-events: none;
+      object-fit: cover;
+      border-radius: 0;
+      mix-blend-mode: screen;
+      opacity: 0.95;
+      filter: contrast(2.2) brightness(1.2) grayscale(0.7);
+      animation: static-flicker 0.09s infinite alternate;
+    }
+    @keyframes static-flicker {
+      0% { opacity: 0.85; }
+      100% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div style="display: flex; align-items: flex-end; gap: 12px;">
+    <div class="tv-frame" id="tv-frame">
+      <div class="tv-channel tv-channel-animefm">
+        <div class="tv-ads">
+          <!-- Ad images injected by JS -->
+        </div>
+        <img src="TRISTE .png" class="tv-overlay" alt="TV Overlay">
+      </div>
+      <div class="tv-channel tv-channel-news" style="display:none; width:100%; height:100%; position:absolute; top:0; left:0;">
+        <div class="news-bg" style="position:absolute;width:97%;height:76%;left:1.5%;top:5%;background:url('https://i.pinimg.com/736x/d7/c5/24/d7c52420b70072d9adb313f8cf53f6ce.jpg') center/cover no-repeat;overflow:hidden;border-radius:40px;z-index:1;">
+        </div>
+        <img src="https://i.postimg.cc/XYhb0FY5/ezgif-72440de2eee4ffaa.gif" alt="Neon Fox" style="position:absolute;left:50%;top:10%;width:97%;height:72%;transform:translateX(-50%);object-fit:contain;border-radius:40px;z-index:2;">
+        <marquee id="swap-channel-marquee" class="preview-marquee" behavior="scroll" direction="left" style="position:absolute;left:1.5%;top:72%;width:97%;height:32px;background:rgba(255,255,255,0.88);color:#222;font-family:monospace;font-size:13px;line-height:32px;border-radius:0 0 40px 40px;z-index:3;">
+          Regardez bien ce qui se passe en Ukraine. Regardez bien le visage de Joe Biden, qui a deshonore l'Amerique ! Jamais John Fitzgerald Kennedy n'aurait laisse faire ca ! C'est-a-dire qu'il y a 42 millions d'Ukrainiens, 70 % sont des chretiens, et le pape reste au Vatican ? Au lieu d'aller a Kiev et de dire : "Tuez-moi ! Je represente le Christ ! Je represente le Christ !!"
+        </marquee>
+        <!-- Static overlay removed from news channel -->
+        <img src="TRISTE .png" class="tv-overlay" alt="TV Overlay">
+      </div>
+    </div>
+    <!-- Channel swap button removed; marquee is now the switcher -->
+  </div>
+  <script>
+    // Channel 1: anime.fm
+    const images = [
+      "https://i.postimg.cc/TwFcfjXC/perfumead.png",
+      "https://i.postimg.cc/7PQ3Mgst/monster.png",
+      "https://i.pinimg.com/originals/3d/3f/e1/3d3fe19df6bee9c3756c4d0c268e691d.gif",
+      "https://i.pinimg.com/originals/8d/3c/2c/8d3c2c88dd43cfaa77dc9c69ac5945ce.gif",
+      "https://i.pinimg.com/originals/95/db/47/95db47805f0173d089d6df9d8d26f7b3.gif",
+      "https://i.pinimg.com/originals/ed/c2/32/edc23292d1e27c23a2682ae3e1e4f427.gif",
+      "https://i.pinimg.com/originals/b9/03/43/b903438bf803124429de90a4e3a9ee58.gif",
+      "https://i.pinimg.com/originals/af/04/ba/af04ba3f3fc8e0449ad7075e362c5946.gif",
+      "https://i.pinimg.com/originals/8f/e1/d6/8fe1d6ed50df30ff05d38b2ed2d82cb6.gif",
+      "https://i.pinimg.com/originals/0e/ab/86/0eab86a30552d7621d55c6a0dd4c380e.gif",
+    ];
+    const adsContainer = document.querySelector('.tv-channel-animefm .tv-ads');
+    let current = 0;
+    let imgs = [];
+    images.forEach((src, i) => {
+      const img = document.createElement('img');
+      img.src = src;
+      img.className = 'tv-ad-image' + (i === 0 ? ' active' : '');
+      adsContainer.appendChild(img);
+      imgs.push(img);
+    });
+    function showImage(idx) {
+      imgs.forEach((img, i) => img.className = 'tv-ad-image' + (i === idx ? ' active' : ''));
+    }
+    setInterval(() => {
+      let next = (current + 1) % images.length;
+      showImage(next);
+      current = next;
+    }, 4000);
+
+    // Channel swap logic
+    const animefm = document.querySelector('.tv-channel-animefm');
+    const news = document.querySelector('.tv-channel-news');
+    const tvFrame = document.getElementById('tv-frame');
+    let channel = 0; // 0 = anime.fm, 1 = news
+    function swapChannel() {
+      channel = 1 - channel;
+      if (channel === 0) {
+        animefm.style.display = '';
+        news.style.display = 'none';
+      } else {
+        animefm.style.display = 'none';
+        news.style.display = '';
+      }
+    }
+    tvFrame.style.cursor = 'pointer';
+    tvFrame.title = 'Click to swap channel';
+    tvFrame.addEventListener('click', swapChannel);
+  </script>
+</body>
+</html>

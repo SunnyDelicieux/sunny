@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Page</title>
+    <link href="/style.css" rel="stylesheet" type="text/css" media="all">
+    <style>
+      body {
+        background-image: url('https://i.pinimg.com/1200x/17/d8/70/17d8701de561dc9dcfcadf3da8d1b44a.jpg');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-color: darkred;
+      }
+      div {
+        text-align: center;
+        line-height: 160%;
+        color: white;
+        width: 35%;
+        margin: auto;      
+        padding: 15px;
+        position: relative;
+        left: -25%;
+      }
+    </style>
+  </head>
+  <body>
+    <a href="chambre.html"> <IMG src="https://i.postimg.cc/D0x6ZkZx/Design-sans-titre-(12).png " style="width: 130px;" alt="Return"> Return</a>
+    <audio id="myAudio" src="https://file.garden/adZZkyqZuhDwy1E5/Lana%20Del%20Rey%20-%20Summertime%20Sadness%20(Official%20Music%20Video)%20-%20Lana%20Del%20Rey%20(128k).mp3" loop></audio>
+    <img 
+      src="https://i.postimg.cc/3RZD88qb/Design-sans-titre-(11).png" 
+      style="cursor: pointer; width: 150px; display: block; margin: 24px auto 8px auto;"
+      onclick="toggleAudio()"
+      alt="cute bunny"
+    >
+    <script>
+      function toggleAudio() {
+        var audio = document.getElementById('myAudio');
+        if (audio.paused) {
+          audio.play().catch(function(e) {
+            alert('Audio playback failed: ' + e.message);
+          });
+        } else {
+          audio.pause();
+        }
+      }
+    </script>
+    <div style="margin-top: 7%; text-shadow: 0px 2px 2px black;">
+      <p>I think i am a bad person.<br> <br>
+      and maybe i was always like that<br></p>
+      <p style="position: relative; left: 70%;">or maybe it started the day you told me i should kill myself<br><br>
+      I don't blame you, we both knew i didn't have the courage to.</p>
+    </div>
+  </body>
+</html>

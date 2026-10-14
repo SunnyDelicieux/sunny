@@ -1,0 +1,665 @@
+</body>
+<script>
+// Collapsible session headers for the journal de bord
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.collapsible-toggle').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      const header = btn.closest('.collapsible-session');
+      if (!header) return;
+      header.classList.toggle('session-collapsed');
+      // Find the next .session-content (or all following siblings until next .collapsible-session)
+      let el = header.nextElementSibling;
+      while (el && !el.classList.contains('collapsible-session')) {
+        if (el.classList.contains('session-content')) {
+          el.style.display = el.style.display === 'none' ? '' : 'none';
+        }
+        el = el.nextElementSibling;
+      }
+    });
+  });
+});
+</script>
+</html>
+<html lang="fr"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jabrainor - Journal de Bord</title>
+  <link href="https://fonts.cdnfonts.com/css/proggy-clean" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/noto-serif-gurmukhi" rel="stylesheet">
+  <link href="jabrainor.css" rel="stylesheet">
+  <style>
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="header-left" style="display:flex;align-items:center;gap:8px;">
+        <button class="header-toggle" title="Afficher/masquer l'intro" aria-label="Afficher ou masquer l'introduction">⮟</button>
+        <span class="logo">Jabrainor</span>
+      </div>
+      <div class="header-center">
+        <marquee behavior="scroll" direction="left" scrollamount="3">
+          <span class="header-text">QUASIMENT TOUS LES LUNDI DE 18H30 A 22H EN PUR KIFF</span>
+    </span>
+        </marquee>
+      </div>
+      <div class="header-right">
+        <button class="close-btn">x</button>
+        <div class="window-controls">
+          <div class="control-bar"></div><div class="control-bar"></div><div class="control-bar"></div>
+        </div>
+        <div class="diagonal-lines"></div>
+      </div>
+    </header>
+
+    <!-- Dynamic Jabrainor header include -->
+    <div id="jabrainor-header-include"></div>
+    <script>
+      fetch('jabrainor-header.html')
+        .then(response => response.text())
+        .then(html => { document.getElementById('jabrainor-header-include').innerHTML = html; });
+    </script>
+
+    <nav class="nav-tabs">
+      <a href="jabrainor2.html" class="nav-tab">— Les Aventuriers —</a>
+      <a href="jabrainor-journal.html" class="nav-tab active">— Journal de Bord —</a>
+      <a href="jabrainor-galerie.html" class="nav-tab">— Galerie —</a>
+      <a href="jabrainor-carte.html" class="nav-tab">— Carte des Relations —</a>
+    </nav>
+
+    <div class="journal-section journal-layout">
+      <aside class="journal-sidebar">
+        <div class="journal-toc-title">· Sessions ·</div>
+        <ul class="journal-toc-list">
+          <li><a class="journal-toc-link" href="#session-1">Acte 1 — S01</a></li>
+          <li><a class="journal-toc-link" href="#session-2">Acte 1 — S02</a></li>
+          <li><a class="journal-toc-link" href="#session-3">Acte 1 — S03</a></li>
+          <li><a class="journal-toc-link" href="#session-4">Acte 1 — S04</a></li>
+          <li><a class="journal-toc-link" href="#session-5">Acte 1 — S05</a></li>
+          <li><a class="journal-toc-link" href="#session-6">Acte 1 — S06</a></li>
+          <li><a class="journal-toc-link" href="#session-7">Acte 1 — S07</a></li>
+          <li><a class="journal-toc-link" href="#session-8">Acte 1 — S08</a></li>
+          <li><a class="journal-toc-link" href="#session-9">Acte 1 — S09</a></li>
+          <li><a class="journal-toc-link" href="#session-10">Acte 1 — S10</a></li>
+          <li><a class="journal-toc-link" href="#session-11">Acte 1 — S11</a></li>
+          <li><a class="journal-toc-link" href="#session-12">Acte 1 — S12</a></li>
+        </ul>
+      </aside>
+      <main class="journal-main">
+        <div class="section-title">— Journal de Bord · Notes de Sessions —</div>
+        <div class="journal-container">
+          <div class="journal-entry">
+          <div class="journal-title">La Taverne du Vieux Serpa</div>
+          <p class="journal-text">
+            <h3 id="session-1" class="collapsible-session"><button class="collapsible-toggle" aria-label="Afficher/masquer">⮟</button><span class="session-title">Acte 1 session 1 :</span></h3>
+<hr>
+<p><em>le mj manj subway</em></p>
+<hr>
+<p>c l'intro, le tpms gris ajd vent soufle epine stena, il fé pas bo, odeur seche sel sierpou, pourtant ya un truc ki sens boin dehors, c trop galère mais c l'intro de la tavern tmtc</p>
+<p></p>
+<hr>
+<p><strong>alix : eustache</strong></p>
+<p>deuis qlq mois ds la tavern, c un chevalier, il regarde comment les zotre percoive le monde; il aime souqué des monstre et veux devenir un héros ? UwU</p>
+<p><strong>maeva : isaq</strong></p>
+<p>qlq semaine il é la, guilleret, il est pe un brin insoucien, c un candien, il essaie d'ètre sympa et essaie de se faire bien voir, il veux decouvrir un panel d'motion et il intergit avec les zotr</p>
+<p><strong>théo : yelka</strong></p>
+<p>Une Zalyr à la peau claire/pale, plusieurs cornes sur la tête, voilà qui est inhabituel. Rien que cela vous ferait tourner le regard vers elle, mais sa beauté est également sans pareille. Elle est dans cette taverne depuis longtemps, trop longtemps peut-être.</p>
+<p><strong>auguste : Amlia</strong></p>
+<p>un guss fatigué, une azaram, en ket dé kristo divin du pan t con, elle a chercher et ca se passe pas top; elle galère, jeune a fait l'armée,pas hyper bavarde</p>
+<hr>
+<p></p>
+<p>les trois discute a une table,</p>
+<p>roga la boss de la taverne, naine elle est ex aventuriuere avec palmares et le personnel rigole pas trop</p>
+<p>la ou on est c la terre o mille pays ya des chef de prtout les gens s'entende pas de ouf meme si un petit peu de colab recemùent</p>
+<p></p>
+<p>la taverene avance 15 km par jours, suivit par un car a vannes, y'a a bouffer a la taverne et c un micro economie ki se deplace terr ehostile et aride o global, la taverne a du stock et est pas nomal, c un havre tavern, le vieux serpa au milieu de la ctaverne, c une tortue</p>
+<p></p>
+<p>horace cuisine nain, tete de fer a l'entrée, c un garde nain, marondissel bazrman nordik, theline humain, provocateur,</p>
+<p></p>
+<p>prochaine grosse destinatyion, alsalust du besert, on est dans vent tranchant,</p>
+<p></p>
+<p>femme disparu sur le pano de ket, on pars a sa recherche le lendemin, a dos de lezard geant stylé. le grand scolopandre ki a tt atrk c 8 ans plutot. le truc ki est sortie il etait 30k, tu deviens mega vieux apres bagar.</p>
+<p>on arriv a l'oasis, ya un sac solitair, dans le vent ya une musik chelou, des gens joue (mal)</p>
+<p></p>
+<p>monster ki font dla magie lutin du desert, diablotin du desertpeuple pas discret, peu hostile, la meuf est la, joue dla musik</p>
+<p></p>
+<p>on le fait bruler pdt que eustache deverse sa rage mdr</p>
+<p>elle dis les dieux du sel son en colère.</p>
+<p>on ramene la zoulette chez elle, ceux envouter sorte jamais d'habiy=tud, et vas au tiroir, recompense.</p>
+<p></p>
+<p>il dis que les dieu son en colèere, les dieux de la roue, divinité local,</p>
+<p></p>
+<p>le messageer, dieu pas content car la, on sais pas mais dieu colere a cause de lui</p>
+<p>le chaman duu bled en trans, tempeete longue selon les augure, son sourd exterieur, viens de loin resemble a corne bato, dieu tempete partout rou observe atour nous, shaman ouvre yeux, partez etranger avant tempete emporte ame egarer</p>
+<p></p>
+<p>un dieu ou gros truc dans la tempete,</p>
+<p></p>
+<h3 id="session-2" class="collapsible-session"><button class="collapsible-toggle" aria-label="Afficher/masquer">⮟</button><span class="session-title">Acte 1 session 2 :</span></h3>
+<hr>
+<p><em>le mj manj bogar bk</em></p>
+<p><em>tt le monde etre a l'heure</em></p>
+<hr>
+<p>on retroune dans la tavern, de la on as le kolier looted dans la premiere ket.</p>
+<p>eustache veux parler des dieux de la roue et se dirige vers lutar, un moine pas tré bo habitué de la tavern, il a une roue accrocher sur le dos, roue avec 14 rayon, mais les trait font des crochets</p>
+<p>la mers de sel ne fonctionne pas avec des dieux calme car cado</p>
+<p></p>
+<p>proveb sous l'embrase de <span style="font-family: Signika, sans-serif">Sembamaveth </span>les dieux son sourd</p>
+<p></p>
+<p>quand on pri mal on tombe sur les movais dieu, lui c'est un uveco, un tueur de foi, il sais quand les maitre de la roue agisse il peut le savoir, voici <strong>forié</strong>, dieu de la poussièere, il nous enour peuvent parler certain on chercher a diriger</p>
+<p></p>
+<p>il y as 15 dieux, le desert de sel <span style="font-family: Signika, sans-serif"><strong>Sembamaveth</strong> la mère, ensuite forié poussièere changement voyageur ame bonne et charitable askip, <strong>Odronoveth</strong> dieu des génie des traitres et des comploteur savoir interdit et tueur des savoir interdit cest un dieu pariat car on chercher a dominé vra, <strong>Vra</strong> le grands scolopandre messager de la désolaion, le dernier dieux movai <strong>Otoknokanok</strong> dieu des secrets, <strong>Ur</strong> la grande racine deese de la vie et fecondité, <strong>Pilfry</strong> dieu forge vigeur, <strong>Nurma </strong>destin et agraigné ses servant son les jukal, <strong>Deireon</strong> dieux abstrait des sphere et des cube et inconnue dieu tres venerer dans les coin reculer du desert medecin de ceux qui devenir fou, <strong>Abrathénon</strong> dieux mains de pierre stagnation on sait peu sur lui offrande dans deux mmille ans, <strong>An</strong> deese de la mort douce , <strong>Ahran</strong> briseur d'obelisk dieu des mercenaire il est accecible un chevalier sans tete dans le desert c lui, <strong>Harpichor </strong>deese surnomer pont du nord elle vient de ubraerias loin au nord ca fait longtemps quon las plus vue on sait r de lui mais bcp de trace car a coser bcp de perte —&gt; la grande pluie a cose d'elle askip si on vas a alsalust faut regarder la statue de la place de memoire, <strong>Bel</strong> dieux des betes et de la sauvagerie carnasier et canibale ossi dieu dé povr, <strong>Paimon</strong> conquete gloire mort douloureuse absent depuis fort longtemps deja, <strong>Roadianne</strong> dieu des faible calme et silence</span></p>
+<p>il rigole quand yel dit que n'importe qui pourrait etre dieu, les lutin du desert son les noroiorogomma, sonneur de cloche, les fondeur/createur de dieu,</p>
+<p></p>
+<p>ma'rchant la depuis des années viness</p>
+<p>trois info importante, dieu de la roue pas de nom, pas de nombre pas de but, sigil dieu de la roue = soleil</p>
+<p></p>
+<p>ya un groupe d'aventurier les justiciar, genre de guild d'aventurier qui veulent sauvé le monde</p>
+<p>le groupe de machin se serait fait fumée par des boug cultiste d'odronoveth</p>
+<p></p>
+<p>on arrive a alsalust, ciel gris ifepasbo des fumerole noir sortent de la ville , c une capitale 20k habitant, royaume nain, avec un roi pas fou la ville grandit le regus beryl, le roi est avarre et aimùe la thunes</p>
+<p></p>
+<p>on doit se debrouiller pour rentrerfaut convaincre un nain relou</p>
+<p></p>
+<p>par terre des gavier chelou pousse, et son tres inflamable, en brulant le gravier yelka se sens un peu betes.</p>
+<p></p>
+<p>ici ya une statue dans le temple, la statue est de deux matiere, pierre grise monotone et pieerre magique noir comme deux structure entre melee les une au autre, statue bgrise represente une femme mais le visage dupliquer, les yeux semble bouger les bras son distordu comme si la statues glitchait, un motif en nanique dessus, harpichor une autre statue entremeler a elle, un grand serpent enroule la statue et plante une lame dans la zoulette, la pierre noir c un ajouts en fait</p>
+<p></p>
+<p></p>
+<h3 id="session-3" class="collapsible-session"><button class="collapsible-toggle" aria-label="Afficher/masquer">⮟</button><span class="session-title">Acte 1 session 3 :</span></h3>
+<hr>
+<p><em>le mj manj bogar bk</em></p>
+<hr>
+<p>dans la ville matrixed ou yelka a perdu -5 d'intel</p>
+<p>Amlia trouve que y'a des residu magique chelou dans les cristo, cbizar, il y as une emanace de mana, c pas des gemmes de mana, genre plutot gemme cristaline resultant d'un sors</p>
+<p></p>
+<p>harpichor veut-elle tre oublier, un sors d'oublie pour suplenter le dieux ? d'ou la statue qui se fait gober par un autre statues</p>
+<p></p>
+<p>un serpent qui provoque l'oublie ? legende sur les creature qui mange souveni ou memoire harpichor inescriptile physiquement, pierre sur l'otel de ville se fait capturer est est punie pas l'oeil de verre, il a mal et ensuite se fait marixé, il as été illuminé, amlia voit quie ses yeux on été changer en crisstal il sé fé enchantier</p>
+<p></p>
+<p>emprise mental et contrainte magique. la foi a changer quelque fois ici dans l'histoire mais pas de truc claire sur la pratik, temple très sombre sauf au milieu grand brasier feu bleuté, pas immense mais la foi est porté sur la flamme le baitment a grazndi avec la religion, pretre en bleu turkoise et noar</p>
+<p></p>
+<p>y'a tout une symbolique otour des pierres // dieu de la ville al salust c'est vaoru dieux anonyme</p>
+<p></p>
+<p>trois rite de route bleu, c koi ? le roi c le chef de l'église et c'est vordred de salust</p>
+<p></p>
+<p>isaac dans sa mission spot que des gars suivent pas et passe par une trap a koté du batimen, trouve un travail de livraison avant 1h30 u mat</p>
+<p></p>
+<p>ya 10 contrebandier des pierre magik divinne arretai tout les mechant pourrais nous faire rencontrer le mek</p>
+<p></p>
+<p>contre prier sers a rien.</p>
+<p></p>
+<p>le plan c'est aider les cont're bandier mais pas trop et leq fumé ensuite pour gagner la conf de l'église, puis voila</p>
+<p></p>
+<p>on arrive dans les couloir, du dessous ca resemble hachement a des egouts, dans les egouts des pierres au murs et des gens vers le centre de la ville trafikote des trucs</p>
+<p></p>
+<p>ddans les tunnel ya un prete et trois zomm de mains arme o poing eustache fait un coup de p^ression et ca passe mdr on est maintenat des envoyer de l'archipretr</p>
+<p></p>
+<p>un espece de magnetisme retien la chutte dans le troue de velka</p>
+<p></p>
+<p>une voix se fait entendre en tombant, alors qui ose me deranger dans l'un d mees konduit</p>
+<p></p>
+<p>un pretre de mordred qui envoie ici, yelk dupé c'est un mytho le dieux me dis c'est du foutage de guelle tmtc, les pretre vol des cristo et en font des zarme, et il fon,t des zoutils t c grav</p>
+<p></p>
+<p>le gars il dit tue vordred et recupère ce ki a dans le temple ,pour les contre bandier allez a u endroit rpecis le soir meme</p>
+<p></p>
+<p>le groupe dit pe c odronoveth qui est ici</p>
+<p></p>
+<p>le pretre nous regarde avcec un regrad surpris quand on revient le voir, ca bluff dans tout les sens, yel deviens lisanalgahib, c'est un sacré bordel et le chef arrive on fait brulr un emega cristal tout le monde deviens con, un boug saute sur nous arme a la mains et essaie de taper yel, le roi est arrived, figure en armure, et le pretre sembler lui parler, fin de seance, pas de gain exp c'etait un bordel</p>
+<p></p>
+<h3 id="session-4" class="collapsible-session"><button class="collapsible-toggle" aria-label="Afficher/masquer">⮟</button><span class="session-title">Acte 1 session 4 :</span></h3>
+<hr>
+<p><em>le mj manj bogar bk</em></p>
+<hr>
+<p>la supercherie est revelé, le pretre plaqué au sol, c le bazar; eustache va au bluff, le prete a tuer le roi qui é retrouver tout sek dans son apartmeent la salouprie de kokin se fait demasked, un aura entours le prete un aura de miasme malsain un objé étranj un chapelet de coeur violet qui batte et il dis " g trouver au plus profond des ruines de la ville, l'artefact du premier dieux de la ville" yel tente de l'ecraser avec une chandelle du plafond</p>
+<p>le pretre fait kun avec lartefact sa peau change et son corps se dissoud et l'artefact le devor. un 5eme keur aparait sur le chapeulait.</p>
+<p>ca produisait des armes avec les pierres ct bizarre</p>
+<p>un peuple maudit pas aimer des dieux.</p>
+<p>on retourne la ou yavait le troue bizare, pour recup note inteligence et du coup on prend peirre qui c'est fait brain fuck avec nous</p>
+<p>une voix resonne autour de nous, ca faire eternité qu'il nous avait pas vue, alors que ct ya deux zeur, il demande a recup l'obejts et un eclair qui jaillit du sol qui frappe la pointe de la lance e un fraction de seconde apré, ya plus l'artefact, la lance é froide. lentité dit tré bien l'imposteur est plus, ben ui on la buté, il fo donner le praitre, on donne le praitr, un eclair de lucidité sur le praitr, il se rapel de son dieux, le praitr se fait warped</p>
+<p>la voix di mortel mereci pour les services pas de geste ostentatoire pas de reverence il n'aime que deux type de mortel, ceux efficace et ceux qui sont rusé nous kon baigne dans un ocean d'ignorance , il est pres a octroyer une partie</p>
+<p>le mek c odronoveth il donne pas d'intel il la prend, stock et sublime analyse, il donne des savoir en echange</p>
+<p></p>
+<p>le dieux est enferemer, il est efermer par espace temps et nature, il ets deg car peux pas voyager</p>
+<p>onas aporter des news maius faut pas esperer le faire encore</p>
+<p>haripchore la mouillé qui vient du nord etre malsain mauvais elle embitionnais sa collection, il as occis un partie de son etre dans la ville alsalust fut le derniers endroit ou harpichore n'est droit de se promene elle viens du nord des foret d'ubra</p>
+<p>cadavree rerlik present dazns les terres pietr et faible qui vit pas long, il faut pas oublier, on les zamuz</p>
+<p>le texte chifffrer parle d'une divinité d'avant insert texte</p>
+<p><span style="font-family: Signika, sans-serif">Haute dame du nord</span></p>
+<p><span style="font-family: Signika, sans-serif">Passant la frontière des morts</span></p>
+<p><span style="font-family: Signika, sans-serif">A l'est tu as semé le grain</span></p>
+<p><span style="font-family: Signika, sans-serif">A l'ouest, tu as scellé tes trésors</span></p>
+<p><span style="font-family: Signika, sans-serif">Pour la fin des dieux</span></p>
+<p><span style="font-family: Signika, sans-serif">Pour la fin des cieux</span></p>
+<p><span style="font-family: Signika, sans-serif">Pour la fin des cours</span></p>
+<p><span style="font-family: Signika, sans-serif">Pour la fin des fins</span></p>
+<p></p>
+<p>eustach essaie apres la fete essaie de voler une monture, il nous donne une grosse bete avec un marto pour nous transporter, faut taper au marto pour la faire avancer</p>
+<p>yel pars sur 3 j pour ratraper la taverne a dos de bison</p>
+<p>les autres rentres a iepds</p>
+<p>discussion avec les traqueur de dieux le retours, comment les tuer, il nous juge car on as eue un talk avec odronoveth,a al salust y'avait sa mu et mnt relle est a l'est il corromp le keur des nain il as apporter la technologies</p>
+<p>ya 24 bison autours de la taverne comme celui tropuver par yel (12) nous on le plus gros le plus lent le plus vieux rostof le bisons a eter pimp my rider</p>
+<p></p>
+<p>on est pas proche d'une ville mais luthar dit a eustache qu'il as besoin d'aide</p>
+<p></p>
+<h3 id="session-5" class="collapsible-session"><button class="collapsible-toggle" aria-label="Afficher/masquer">⮟</button><span class="session-title">Acte 1 session 5 :</span></h3>
+<hr>
+<p><em>le mj manj d samossa</em></p>
+<hr>
+<p>alors lutar qui as besoin d'aide quoi ki veux. y fo allez fumé des fantome oauip, et donc on va y allez imo.</p>
+<p>eustache avant la guerre est partie de chez lui malgré un sang bleu et un poste de cahsse de monstre, son capitaine et son amis le fils du seigneur il sont aprtie et apres il est partie car a lose son amis</p>
+<p>on par avec le bision et le lendemain matin y'a un ciel gris, et des truc dans le ciel tmtc</p>
+<p>le terrainn se valonne, c'est d boss et dé plato de roche. ya un ancien village abandonné le vilalge est dommed depuis longtemps plus d'os plus de cadavr plu de bete pas de predateur, c juste dead tmtc</p>
+<p></p>
+<p>on remarque un truc dans les maison dans les rue, vers le kul du village, des stele en pierre, des tombe de partout, couverte defois de plante seche, dé racine avec une lueur bleu c bizarre, les gens dead ici on eue un traitment post mortam, ici on parle d phantom du passé, il konai l'endroit, il a vécu ici. faut laisser les plante et laisser la racine s'etendre, du kou faut laver les tombe.</p>
+<p></p>
+<p>eustache s'interesse a l'endroit et quoiqui c passé, ya des endroit en etats relatif, y'a des zecriture sur les stele, dé nom, y'a une date pour toute les tombe, la meme, c pas une année c un vecteur de temps, la fin le monde c'est arreter quand c gens son dead, 67 ans environ selon eustach et ce qu'il connais du vieux</p>
+<p>realité assez triste, les lieux on été laisser intact, en tout cas pas pilié mais la tout a été pris, ca a fouillé. un truc reviens souvent, des racines avec un bleu profond on dirais le ciel carément. le vilage construit dans le creux d'un plato, les racine sont orienté come si elle viens du fond de la vallé.</p>
+<p>eustache et amlia tombe sur un nid en cherchant et lavant les truc, y trouve des spher elisse et un brin brillante, et y'en as a droite a gauche et lutar dit, detruisé la boule, c koi ? c dé zincarnation du mal selon le gars, des truc de déreon, c dé voleur, déreon dieux sphere et cube abstrait et inconnue pour rapel. y'avait d bous de bois dans la boules.</p>
+<p>isaac et yelka cherche la source du bois bleu, et au bout y'a un truc impressionant, la pierre du plato semble avoir subit un nain pact, comme si lee plato avait été poussé, a cette endroit la vege est dense, y'a dl'herbe te des racines assez grosse qui s'etende le klong du murs, comme un keur ou poumon y'a une ambre d'un bleu ceruléen. ca resemble a ce que les locaux appelle la grande racines, la elle est juvénile, ca peu devenir tres tres gros. ce quia fait l'impact c pas la plante, la plante a qlq dizaine d'année, c recent, un tempete aurait fait ca, le cratere et tout, un grosse tempete avec d zepin et dé fragment, le venta frapé fort il venait de l'est, suffisemnet fort pour faire tomper des morco de pierre, y'a une direction de gravat, ca a souflé de l'est vers l'ouest.</p>
+<p>souvenir de yel, truc qu'on a raconter quand jeune, on parle que, y'a des zaventurier tré faur (vieux) qui parlait des montagne a l'est, les montagfnes de l'est c dé montagne colérique, la montagne gronde et rugit langue de feu ardent s'abate sur la terre tempete tres violente qui s'abate sur terre, (volcanisme) mais c mega loin. yelka mets la mains sur la plante et a une vision (sur ur en gros) comme si la vue se centuplait, l'impression pdt l'espace d'une fraction de seconde de voir le continant tout entier, probable, que c isaac qui enleve la mains de yel, sur le bout du doigt de yel y'a du bleu calir qui se demarque et les yeux sont coloré d'un bleu chelou. yelka se sens vraiment bien, y'a danger dans le truc ca te happe et ca fait genre harmonie.</p>
+<p></p>
+<p>larme d'ambre céruléénne.</p>
+<p></p>
+<p>y'a un phénomene y'a des vegetation rare mais c bizare, c dé plante qui sont venue au monde y'a 60 piges</p>
+<p>y'a a savoir sur ce qui c passé a tol, deux choses se sont passé las bas, 1 tres peu d'info sur ce qui c'est passé, il semble que les erudit save pas trop on dit que des gens on fait des truc et on disparu, la memoire de la ville c'est detruite, et surtout theorie probale pour certain, si qqc a été détruit a tol, il est question que ce soit de l'enjeu d'un dieu</p>
+<p>ce qui se passea vra son des phenomene nat qui son incarné par la forme de dieu, qui as decider ca ?</p>
+<p>pour eustache, c les mots</p>
+<p>si tu detruit ur tu tue un dieu ou tu detruit une racine ?</p>
+<p></p>
+<p>lutar il est allez dans la taverne pour se vanger ? il se rapel pk il fé ca pk il dois avancer kom la tavern</p>
+<p></p>
+<p>i dit on as pas vu la vrai grande racine des branche geante et au sommet on cnfond les branche et le ciel comme si ca se toucahit tmtrc, il dit il detruira pas le truc car par rapport au zotre elle é baille</p>
+<p></p>
+<p>ct y'a 63 zan il rentrait d'une chasse et y'a un tempete qui a fraper, un vent de l'est, un vent qui ne peux exister, dans ces terres aucun vent ne souffle de l'est, et il a vu, les vent du deseret de sel faut pas sous estimé et au milieu de la tempete il a vue un truk, apres avoir confirmer sa foie ca lui as fait peur, il n'y avait rien dans la tempete, pas de dieu pas de colosse pas de mains ou de dragon juste du vent, un vent puissant incondisionnele de l'est. de tt les dieux qu'on croise il n'en as vue que deux de ses yeux, celui sous les pieds en ce moment, et les grand scolopandre, il n'as pas tuer de dieux et n'en as apercu que deux. il a fait les tombe et est partie et a trouver la taverne, a vrai dire en 63 ans il as passé plus de temps a vivoter comme un merco qu'as cahsser le dieux.</p>
+<p>eustache dit qu'il est depressif</p>
+<p>yelka dit qu'il est juste jnoun</p>
+<p>le lendemain on fini de faire quoi quon fait, on monte sur els truc et on se rend compte d'un ketru, luthar il est fatigué, il as des cernes et des rides pask'il é vieux, mais en montant sur la monture i manque un truc sur lui. Il laisse la roue derrière lui. la roue lui faisait mal au dos</p>
+<p>luthar nous donne un truc, pour nous dedomager (1po)</p>
+<p></p>
+<h3 id="session-6" class="collapsible-session"><button class="collapsible-toggle" aria-label="Afficher/masquer">⮟</button><span class="session-title">Acte 1 session 6 :</span></h3>
+<hr>
+<p><em>le mj manj d truc pour l'instant jsp</em></p>
+<hr>
+<p>eustach continue de carry le mental de lutar qui as un peux changer</p>
+<p>amlia tres respectueuse se raproche un peux des gens de la taverne</p>
+<p>isaac lie peu de vrai relation juste un bon pote fleurteur</p>
+<p>yel s'entraine a l'instrument et unlock enfin sa quatrieme competence de base.</p>
+<p></p>
+<p>On arrive dans des steps seche et le paysage change peut a peu, amlia decouvre que la haute dame du nord serait assez liée a une princesse / reine qqn avec un role social tres important, pour la suite du poeme moins d'info c'est plus bizarre</p>
+<p></p>
+<p>Amlia cherche bien des fragment de dieux et non pas un dieux en somme.</p>
+<p></p>
+<p>on va chercher des mechant brigand pour leur peter la tete ewai on va chercher seimour bradava les taupe de plomb un prime sur eux y'a un fortin semble t il il sont assez organiser et attak des caravanes la prime est poster par Alveri pas la prime la plus cher, milieux de game, a quiquonque raporte seimur bradava mort ou vif, se vera doté de la sommes de 80 po.</p>
+<p>prime donner par un avant poste marchand, un relais qui as établiue l'avis de recherche</p>
+<p>la bande pile fort mais semble ne pas tuer les marchant il ferais partie d'un reseau plus grand ici ce serait juste une annexe. 15 ou 20 individu il couvre tout son visage il est en loqu et as surement un probleme ? lepre ou de mauvais augure, c un nain ? non c un humain</p>
+<p>oin va en reperage et on se trouve dans un petit brouillard de poussière y'a eue du passage recent dans la direction oposé</p>
+<p>sur un pique on trouve un banière dechirer insigne officiel embleme brulé la banière dit on est pas bienvenue</p>
+<p></p>
+<p>on trouve la base des bandit, un talus et un entré dedans c une entré troglodyte</p>
+<p>la terre est meubles il semble y avoir une seul entré. le repaire est vide d'autre piece son presente et pas grand choses a l'interieur les bandit embarque tout en partant ?</p>
+<p></p>
+<p>on tombe sur des pot et des morceau d'ambre et pas mal d'écriture et d'études des pots on, trouve derrière un rideau un momie toute seche 1m95 peau noir genre graphite les yeux encore en place et il semble suivre on est pas dans un crypte c'est donc bizarre que y'est ca ici</p>
+<p>l'endroit est vraziment chelou, 15 / 16 personne et dans un pot pas bo on trouve du tissue et du sel et des bijou et grisgri chelou entreposé dans le pot</p>
+<p></p>
+<p>on tombe sur l'entré d'un ville enfoui et on trouve une voie ? mdr on marche 1 km sous le sol, le couloir est normal ou bout de ce km ilsepasse un truc</p>
+<p>un salle en pierre, assez grande, avec des decombre des vestige argileux difficile q auoi sers la sale, un relais / reserves deux changement dans le couloir, apres la reserves, les murs son de pierre taillé dans une pierre gris gray monotone et a un moment donné des motif sur le murs des figures vraisemblalement des trait humanoide qui ressemblez pe un brin a la momie, deux figure en profils et les figure montre une pierre sur le murs, un piette rouge carmin, sa se repete a intervale assez large pierre rouge carminun</p>
+<p>second motif, un cercle avec un point au centre des des petite fleche dans le contours envie de canner je voulais pas revoir ce symbole de con ni de pres ni de loin</p>
+<hr>
+<p style="text-align: center">o</p>
+<p style="text-align: center">s</p>
+<p style="text-align: center">k</p>
+<p style="text-align: center">o</p>
+<p style="text-align: center">u</p>
+<p style="text-align: center">r</p>
+<hr>
+<p>on fait un constat c'est de voix de passage / voyage en bon états mais surtout on sait pas ou ca mene et ca peux mener tres loin on supose au vue de l'endroit et des relais que c'est possiblement 1 bon jours de amrche.</p>
+<p>on tire un fleche de isaac enflamer par magie pour voir oukesa vala fleche dis sparait dans le couloir</p>
+<p>dash de yelka pour comprendre pk la fleche a wipe, et dash 15 ou 16 maitre on est dans un tunnel d'acceleration de la vitesse</p>
+<p></p>
+<p>un couloir direction royaumle de sel (sud est)</p>
+<p>un truc direction d</p>
+<p>un truc direction utar et plus (nord est)</p>
+<p></p>
+<p>on ressors et on nous attendais a la sortie on est encercler et en sous nombre, devant nous un gars viens en armures et il nous regarde. qui sont les temeraire pour venir chez eux alors qu'il sont en deplacement</p>
+<p>quanbd on parle des sous terrain il semble un peux plus convaincu et va faire des truc</p>
+<p></p>
+<p>il fait des attaques mentale quand on le touche comme si l'ame d'isaac rentrait en contact avec lui un armonie chelou et il é trop fortle point du gars devant et bam</p>
+<p></p>
+<p>le gars dit qu'il resemble a la momie oui et non et oui et non messire seimour fait l'honneur de travailer avec les erudit les grande voix furent construite par les ancetre de seimour.</p>
+<p></p>
+<p>c'est les grande route de goma, l'interet des route de se deplacer, goma pour le coup il pourrait nous en parler pdt des jours, de tres grande cité qui domptait la terres les fleur de la mers jusqu'au cieux, les voies profonde de la terres dompter, les betes cultiver et civiliser, des plantes jamais decouverte qui prosperait et leurs enemi qu'il conquierirent un a un le gars il as trente ans il viens d'une cité de golem grande cité ogodobobonolama au ùmoins 245</p>
+<p>les erudit cherchait ot choses il cherchait d'autre vestiges la momie c a peu pré la maime choz</p>
+<p></p>
+<p>eustache pense que c'est aran ? mais c bizarre</p>
+<p></p>
+<h3 id="session-7" class="collapsible-session"><button class="collapsible-toggle" aria-label="Afficher/masquer">⮟</button><span class="session-title">Acte 1 session 7 :</span></h3>
+<hr>
+<p><em>le mj manj un bogar</em></p>
+<hr>
+<p>le golem il est en train de se faire socialized</p>
+<p>c'est un décendant des peuples de Goma, mais non il n'est pas vraiment un déscendant car n'as que peux de rapport avec eux, lui c pas un golem, hors lui il est crée par magie mais ne recoit aps d'ordre et vie seulement</p>
+<p>ce sont des urnes de goma, il en fo deux et une descendance se forme avec le melange du sel et ambres de ogo goma</p>
+<p>vounou gonono II c'est le createur de tous ca, un grand mage des temps ancien qui a fait ca pour les auver de la calamité, la calamité c'est le grand gris, la momie s'apelle Lionnel</p>
+<p>le grand gris c'est un mal sous les sol qui viens du grand scolopandre, le grand gris touche et affecte tout, juste dans l'imobilisme on peux pas se faire jnoun plus, ca a commencer a la cité des pon —&gt; Uthar ? leur tradition était ecrite mais ils ont peu ecrit, il taillait la pierre, il s'écrive sur eux meme, les endroit ou y'a les cadavre et donc le lore c'est les grande poterie</p>
+<p>il fait partie d'un bataillion de la fraternité, former des liens avec les peuples de la surfaces</p>
+<p>il connais vite ef les grande racine mais ne connais pas les dieux ? il connais pas harpiechor, ni paimon</p>
+<p>il fait partie du cycle, commité international des chercheur levyseen yelka remarque un truc bizarre, le brouillard gris s'épaissit et stagne, et surtout outre le temps bizarre le sol, la poussière vibre en qlq sortes, y'a une frequence de terre</p>
+<p></p>
+<p>ya des truc qui explose dans les brouillard bizarre et on valide que ct pas normal seimour dit que sa chatouille. d bandit sorte du sol et essaie de nous menacé, les bandit se retourne contre nous et ils disent que lad ettes se noient dans le sel</p>
+<p></p>
+<p>y'a baguarre</p>
+<p></p>
+<p>dans le brouillard chelou un bète semble chopper un guss et le tue en l'air c sadge</p>
+<p>dans le nuages gris, yelka voix un truc entend un bourdonement comme une grosse mocuhes</p>
+<p></p>
+<p>y'a un predateur qui attaque dehors et qui bouffe de gens,</p>
+<p>eustache fait exploser la bestiole en tapant comme une brut dans l'abdomen</p>
+<p></p>
+<p>on fuit avec seimour il nous donne son masque et de l'herbe a pipes</p>
+<p></p>
+<p>le golem va a la taverne oskour mdrrrr</p>
+<p></p>
+<h3 id="session-8" class="collapsible-session"><button class="collapsible-toggle" aria-label="Afficher/masquer">⮟</button><span class="session-title">Acte 1 session 8 :</span></h3>
+<hr>
+<p><em>le mj manj un deficit calorik</em></p>
+<p><em>pas seance semaine pro car annivaisair du mj</em></p>
+<hr>
+<p>amlia s'interesse a l'acheo de la region surtout a cause de la civilisation de skinner (seimour)</p>
+<p>les route de goma sont connue mais les gens se sont d=ésinteresser, y'a pas de trésor a pillier et tout ce qu'il y avait a pillier a été pillier un adage se dit en vra qui dit creuse sous uthar et tu ne trouvera rien, dans les grande ruines dans les tréfond de vra on a jamais rien trouver ni secret ni trésor ni grande armes qui change le cours du monde, c'est des ruines sonper les aventuriers y sont allez on y trouve rien on trouve rien sauf assez porofond on trouve la mort</p>
+<p>impossible re recrer le processus pour accelerer y'a de la magie sous le sol mais pas de technologie</p>
+<p>theorie global pense que le grand scolopandre mange / anhile la magie</p>
+<p></p>
+<p>dans les cuisine ca pue un peu, mais le cuistot il fait des probleme le chef de cuisine c'est horace, sa derniere livraison de champipona été catastrofik, isaac dit c toxic horace dit que non, la fumé elle pue sa maman</p>
+<p>yelka goute les champignon et en fait il sont plutot bon</p>
+<p></p>
+<p>y'a un tigre dans les bains qui s'est enfuit.</p>
+<p>ya un tigre qui mastik avec le bide mega gros eustach l'assome</p>
+<p>dans le miroire on voit pas son reflet la sale semble différente le miroire c pas un miroire c un interstice</p>
+<p>le mec tigre s'apelle ronatan, c un tigre</p>
+<p>dans l'autre monde on sauve stin y'a des mechanisme chelkou et on est dans la taverne de rupert derrière le miroire et serpa dit qu'il est au fond ?</p>
+<p>salle des engin première a droite deuxieme a gauche marco panique</p>
+<p>yelka devien capitaine de la salle des machine et voit serpa qui volle dans le ciel</p>
+<p>on doit allez vers les ruines de goma</p>
+<p>pour la verité du secret odronoveth</p>
+<p>monde onirique veux la peau d'eustache</p>
+<p>un tigre maigre noir avec des stri orange</p>
+<p>on trip et on arrive dans les tunnel de goma et y'a des truc bizarre toutpar</p>
+<p>amlia aune sale sensation mentale une sensation de deja vous</p>
+<p>une voix nous dit la choses suivante</p>
+<p>bcp de voyageur son passer</p>
+<p>bcp on abandonner remis a plus tard, il faut creuser creuser plus abs plus bas ce qui a été enfouie ou ce qui est en haut redescendra, il faut chercher la voyageuse ou sinon</p>
+<p>on se retrouve vers des gnome avec des confeti partout</p>
+<p>eustache a sentie une combo souffre menthe</p>
+<p>on ouvre loudement les yeux</p>
+<p>au milieux de la salle centralle plein de gens avec des armes devant le vieux serpa une jeune candienne, elle regarde ct uerreur elle a lancer un sors sans faire exeupré ?</p>
+<p>ellie est nommé comme par isaac et deviens stocked upped dopped</p>
+<p>isolé avec la mauf et zustashe en mode garde</p>
+<p>air non chalant subtile</p>
+<p>vous avez deja eue l'impression d'etre qqn d'otre elle est pas manipulé, certain le sont il se souvienne de visage de nom de moment qu'il ne devrait pas connaitre et qui ne leur apartienne pas des moment de maintenant avant ou plus trad</p>
+<p>ya qlq temps un de ces contact est dead chkal il été précieux, on connais p-e son nom il se trouvait a uthar apres tout pourtant il avait croiser le proche d'eustache olgieled</p>
+<p>c la le probleme de la dame elle est venue de loin au nord elle a rencontré quelque personne d'interet las bas des marchant de brelok et des faussaire de rèves des aventurier sans ambition des heros qui veulent aps etre des heros</p>
+<p>elle n'est pas harpichor, elle voyage depuis un moment mais elle a l'air toute jeune, une calamité arrive, elle as une mission pour nous, la calamité arrive a graznd pas bcp de ses consoeur qlq un de ses confrère, elle sera pas ici pas pour nous on sera pas victime pas coupable mais elle as besoin de nous contre la calamité elle cherchait des gens et c pour ca qu'elle a fait son kenkidama, elle voulais des gens detacher des lois et des etrangers on va reuser des tresora l'ouest dans les profondeur des terres p-e des plantes legendaire des fragment d'un dieux ou jsp et on va trouver pas forcement ce qu'on cherche mais voila la requete, prenez note confier les ecrit et des lettre elle les envera loin vers ses amis pour qu'il se defende de la calamité</p>
+<p>pas de paiment ou une phrase chacun si ce n'est un raison qu'on choisir a la suite des phrase et elle va dire des truc a chacun</p>
+<hr>
+<p><strong>amlia :</strong> au fond de la montagne qui dors la voyageuse a laisser un message un avertisement et une punition, (la montagne de l'ouest) votre dieux n'est pas le bon , votre dieux n'est pas la mort, et voila ce qu'on fait a un dieux</p>
+<p><strong>isaac :</strong> autrefois la mers de sel etait peuplé de mille navires, et en des temps ancien, ceux qui on bruler l'innocente on crée une mers de cendres, qqn possède les première bouture qui sorte de ces cendres (innocentes si il devait donné un mot dans une langue fantasy Er, la mers est devenue cendres après tol)</p>
+<p><strong>eustache :</strong> vous chercher un bète et vous en trouverez une, au plus profond des terres et au plus haut des terres d'aileurs se trouve la b_te la seul qui merite d'etre cahsser la seul qui merite d'ètre chasser alors il faut la rencontrer et alors il pourra pretendre etre le chasseur</p>
+<p><strong>yelka :</strong> une corne, deux corne, quatre huit ou mille corne, on connais la bete yelka et on ne pourra la chasser elle sait ce que yelka est mais c'est a yelka de le faconné</p>
+<hr>
+<p>pour le reste malheuresement les corps sont pas assez mature, affuté nos muscle comme le plus vaillant des guerreir aguiser vos esprit et elle pourra p-e nous confier des ssavoir elle ou d'autre ne pas oubleir, nos mission converge en un point unique n'hésitez pas a m'ecire des lettre de temps en temps un taverne qui bouge c'est l'endroit idéal pour de belle rencontre</p>
+<p>elle touche le visage et il se sens emprisonner tout deviens blaznc et vide autours de lui comme si le monde était saper de sa substance de son volume, komm si y'avait plus rien autour de toi c pas charme ou enchantement devant eustache malgre sa potence malgre son savoir est emprisonned quoi qu'elle dise ou fasse elle as besoin de nous pour plus etre prisonière</p>
+<p></p>
+<p>auqnd yelka essaie de la rizzomax le rizing, son regard est prek aveugle y'a un dedains une rancoeur un degout, pas ciblé a qui je suis mais a ce aue je suis rien fait a elle mais pour une raison elle a un fort resentiment envers moi</p>
+<p>avec nous non mais contre nous</p>
+<p>le reveil est lourd askip on dormais encore</p>
+<p></p>
+<p>pourquoi elle serait notre enmi ? vazeufok ? taverne normal a une exeption qelkepars dans la taverne, une jeune candienne (elie) qui fait des truc dans la taverne elle ne se reconnairais pas si on luii expliquais de suite quoi qu'il s'est passer</p>
+<p></p>
+<h3 id="session-9" class="collapsible-session"><button class="collapsible-toggle" aria-label="Afficher/masquer">⮟</button><span class="session-title">Acte 1 session 9 :</span></h3>
+<hr>
+<p><em>le mj manj un bogar</em></p>
+<hr>
+<p>on va vers une ville dans la montagne qui s'apelle chareza/<span style="font-family: Signika, sans-serif">sharheza</span></p>
+<p>sur le chemin durant le time skip l'environement change, on s'éloigne du deseert de sel, y'a moins de terres et de poussières une herbe legere et seche, la vegetation a une couleur vert bleuté, l'air est moins sec, chaque jours on sens que c moins aride plus de gens plus de danger plus de faune dans ce coin</p>
+<p>un morceau de la grande racine, struyture boisé imense, on voit ca en arrivant, pick rocailleux avec un grande ville avec la grande racines la grande racines brille la nuit y'a bcp de monde bcp plus qu'as al salust, c une grande metrople 40/50k habitant ouest vra c'est l'une des plus grande ville / un genre de minas tirith de bois 0</p>
+<p>y'a une sacré cote pour grimper la haut, nous ca va hamdoulahj</p>
+<p>on est stopped par des guarde</p>
+<p>la taverne de la croix du nord serait un endroit sympas</p>
+<p>la ville est sous la juridiction du pik du cristal, y'a des revendication mais voila, les periode de guerre sont pas encore ouvertte il disent les civilisation sud et est c d barbarre</p>
+<p>que votre fils se tisse de la bonne manière</p>
+<p>y'a qqn qui cri loin dans la salle en fait au rdc c'est coworking et en dessous grand hall de pierre et c'est mieux tmtc, a la forme de l'endroit c dé vielle mine pour devenir un lieux de convivialité</p>
+<p>c hachment mieux</p>
+<p>la tavernièere est tres petite et tres grosse y'a la fete en bas c'est la hess</p>
+<p>mais y'a un fort mepris des classes fort mepris contre les coloré separation de caste forte dans la ville prblm avec le droit et la naissance y'a du sang bleu, artisan et mineur et speleologue ceux qui vont en bas on un peux la mort y'a des soucis dans les mines en ce moment</p>
+<p>faire gaffe a la vilaine pierre noir suif odeur de mort,n faut faire demi tours et pas y allez, le syndicat est expert en pierre, la gemme de soie</p>
+<p>il achete le tissue a l'ouest ca viens des jupal</p>
+<p>le barman sert une sirene de la montagne</p>
+<p>effet sirene des montagnes jusqu'au prochain repos etat euphorik, relance jets de chance et bonus +5 au stats, incapable de deceler le vrai du faux, credule ++ ultra jovial et alcool rend super mega bavarde,</p>
+<p></p>
+<p>on va vers la porte de machin truc au sud de la ville</p>
+<p>la grange est aménager pas colé au animaux mais pas tout a fait, on monte a l'étage y'a une dame avec un chapo et une robe dentelle couleur noir grisatre gotique ameva core mais moins froufrou elle porte un chapeau voile gave stylax comme si elle avoir peur soleil</p>
+<p>voix feminine et douce</p>
+<p>endroit confort limite luxe le prix est imbatable</p>
+<p>yelka est ko et n,e participera pas a la discussion avec Eram d'erwyl, elle viens de tol elle est partie car pas le choix et elle est en mode pensive et elle dit que ca devait arriver</p>
+<p>la meuf c une convergiste etude des absolu magique et etudes de phenomene de la creation des puit de magie (c son metier) theorie sur l'absolue magique ou modele d'apocalypse</p>
+<p></p>
+<p>humanité incapable de controlé tout le spectre de magie, chaque maitrise ne soit que des point dans un spectre plus large seul une poigné de mage en on compris toute sont ampleur et a l'aprehender</p>
+<p>quand elle parlait de grand magicien elle a evoquer aldrich elle coupe les bougie et va se coucher apres avoir dit qu'elle allait dans les montagnes le lendemain</p>
+<p></p>
+<p>nuit étrange on fait des reves chelou et tré similaire, dans une bark, o milieux d'une mer de nuage a perte de vue qui s'étend, la barque avance trankil puis tempete nous entours, mais jamais nous dedans nous on est ienb, lot de lumiaire nous protège, la barque vogue trankilou bilou, on dors, on regen tmtc,</p>
+<p></p>
+<p>y'a l'allience du soleil il continue de la respecter</p>
+<h3 id="session-10" class="collapsible-session"><button class="collapsible-toggle" aria-label="Afficher/masquer">⮟</button><span class="session-title">Acte 1 session 10 :</span></h3>
+<hr>
+<p><em>le mj manj un bogar</em></p>
+<hr>
+<p></p>
+<p>on va chercher lle chevalier noir pour faire des prepa grosso modoon va dans un colde montagne il fait pas froid y'a pas de neige en bas dla montagne il font une tourte au fleur comme plat tmtc</p>
+<p>on sors prote ouest vers le colle de la montagne transition est ouest de la ville est fort, les montagne on deux versant, humide et sec ouest versan sec mais parait plus luxuriant mousse arbe et herbe seche serte mais herbe comme mmeme</p>
+<p>y'a des gens ui passe par ici depuis des siécle</p>
+<p></p>
+<p>j'ai rater des truc jsuis allez preparer mon riz trace de braconnage brigandage ? grande baniezre sur poto de bois marquage des col pour reperer tout ca et d'autre baniere plus ote en fer argentin baniere blanc et rosé qui flote pas dans le sens du vent mais vers l'ouest</p>
+<p></p>
+<p>y'a un endroit cacher dans une carrière une petite exploitation miniaiure y'a des mineur mais sans stuff de mineur qui peuvent pas travaillier</p>
+<p>le contre maitre veux pas qu'on pete la tete a ce qui y'a sous le sol</p>
+<p>y'a eue un edi de la reine si on suspect la présence de vilaine pierre, le voleur de tresor qui veux trouver des truc mais il vend pas des tapis</p>
+<p>dans la caisse deux choses sorte du lot, des potions avec du tissue dessus, et dedans un liquide pale argent genre sirot d'orja, des conkoktion alchimique, y'a plusieurs flasque odeur de fer difficile de dire plus</p>
+<p>3 chemin 1 ordonée un tres raid, un plus recent on fond de la mine on fait un jet de perception</p>
+<p>en bas y'a des scolopandre chelou moche des insecte en boule la</p>
+<p>eustache fouille le sol et trouve un truc qui a atiré les cloporte ici des petit cube noirs</p>
+<p>on va dans couloir droite et y'a encore des outisl mais l'endroit a tété abandonnaid</p>
+<p>poto de pierre avec des pyramide dessus, c un endroit ou y'arait la piere schoumouned un grosse partie de la facade c de la terre en abs du chemin</p>
+<p></p>
+<p>on va tout droit dans le keur de la mine, y'a des couloir qui sente pas bon ? la pierre noir c un produit magique, une conséquence, la vilaine pierre serait le synonyme de la cendre apres un incendie cette matiere est surement connue et issue d'une transmutation la pierre est un peux corosive</p>
+<p>isaac bois l'une des potion c pas bon gout fereux, texture etrange, globalement consommer du metale</p>
+<p></p>
+<p>on arrive sur un trunnel tres droit tres anugleux tres toi meme tu connais, c bizarre pas de trace de passage mais c'est clairement pas comme le reste de la mine</p>
+<p>et un statu de poisson avec de la pairre ? et devant au milieux un recipiandaire avek de l'eau et la bouche de la carpe fait pas couler d'eau et sur les koté de long banc lrage y'a des petit conduit creuser dans les banc</p>
+<p></p>
+<p>vers la carpe c pas dé brasero ca a la forme mais dedans y'a des receptakle, comme une ampoule ou tu pouvoir versé liquide</p>
+<p></p>
+<p>mets el liquide ferreux de la potion dans les truc ca fait de la lumière et soudain y'a un bruit genre bam de la bouche de la carpe y space un truc elle dit "Ul Sata" au niveau des banc des fin liquide qui brille de couleur bleu vive</p>
+<p></p>
+<p>de la lumiere s'est alumé y'a des interstince et des truc de partout, ca fait aucun doute on ètre dans un labubu le chevalier noir ne serait pas dans ce labyrithe</p>
+<p></p>
+<p>eustache tombe sur un kadavr de nain, jeune mineur, ya des troue nivo tete buste noir et beant c degoulasse</p>
+<p></p>
+<p>eustache iul flippe devan le kadavr pas seul dans la caverne et le truc ki é la c dangereux</p>
+<p>on avance et il va spasse un truc, yelka voir chose et dire devant poroblaime, une figure avek 4 pqtes aui mqrche genre qreigné dans une armure noirate bossé et abimation la figure a le visage pale et blanchatre et des poche noir sous els zyeux des cheveux noir et grand et un calvass de seigneur, une armure noir et dans sa mains droite,il tiendre une lame spiralé, dans la bouche il mache cloporte et il le monge il avoir un visage humain le monstre nous voir et se relevare</p>
+<p></p>
+<p>la chose repond a l'interjection du groupe et dit qu'il est affamé et veux manger</p>
+<p>il fait un coup qui parait tout mou</p>
+<p>il os eustache, et a une épée qui fait tres mal</p>
+<p></p>
+<h3 id="session-11" class="collapsible-session"><button class="collapsible-toggle" aria-label="Afficher/masquer">⮟</button><span class="session-title">Acte 1 session 11 :</span></h3>
+<hr>
+<p><em>le mj manj un bogar</em></p>
+<hr>
+<p>c la baguarre</p>
+<p>yelka va faire baguarre pour sauver eustache</p>
+<p>il chante une elegie en l'honneur de paimon, dieux de la guerre et des mort violente, c la guerrre</p>
+<p>on perd un instant la perception des couleurs et deux trois seconde plus tard, y'a un son ecrasant dans la mine —&gt; grand gris ?</p>
+<p>le chef des chasseur de trésor il taunt mais il taunt plus en voyant la marque</p>
+<p></p>
+<p>maudit par l'ocultisme du kul, malédiktion ki tue, la mgicienne prend le canari elle fait de l'acupuncture sur eustache, la tache retrcie et le canarie deviens tout noar il se fait jnoun a la place du jnouner le canarie meurs de maniere chelou comme ecraser sur lui meme et disparait</p>
+<p>amlia sais antijnoun , incantation demonique magie noir henlalalallalala</p>
+<p>la mlalediction touche le vitaal</p>
+<p>yelka va faire de la musique de rue mais gagne peux de musique les gens n'aime pas cette musique aime pas le theme</p>
+<p>mles gens ici son pas pro aventure mais plutot casanier, comportement deplacer contre le troubadour on vise des info sur paimon uwu</p>
+<p></p>
+<p>la reine neine pour le report est la super bien sapped</p>
+<p>quand on parle de paimon y'a des rire étouffé dans la salle</p>
+<p></p>
+<p>la raine s'apelle mirienne 4 de chareza</p>
+<p></p>
+<p><span style="font-family: Signika, sans-serif">A Shazar Vom Nu Ranur l'expression dit il peuvent tous mourir, ca veux dire et a la fin ils finiront gris</span></p>
+<p><span style="font-family: Signika, sans-serif">dit par un nain dans l'endroit apres que eustache est fait une take revolutionnaire</span></p>
+<p></p>
+<p>le labyrinthe c'est le labyrinthe de goma</p>
+<p></p>
+<p>soldat de paimon ? c'est pas un défenseur des ruines c'est un envahisseur la pierre noir selon eustache serait une maniere d'ataquer les truc des cyborg de zogogoma</p>
+<p></p>
+<p></p>
+<h3 id="session-12" class="collapsible-session"><button class="collapsible-toggle" aria-label="Afficher/masquer">⮟</button><span class="session-title">Acte 1 session 12 :</span></h3>
+<hr>
+<p><em>le mj manj un bogar</em></p>
+<hr></div>
+<p></p>
+<p></p>
+          </p>
+        </div>
+
+        </div>
+      </main>
+    </div>
+
+  
+
+
+    <div class="bottom-section">
+      <div class="panel2 barcode-panel">
+        <div class="barcode">
+          <div class="barcode-line"></div><div class="barcode-line"></div><div class="barcode-line thick"></div><div class="barcode-line"></div><div class="barcode-line thick"></div><div class="barcode-line"></div><div class="barcode-line"></div><div class="barcode-line thick"></div><div class="barcode-line"></div><div class="barcode-line"></div>
+        </div>
+        <p class="small-text">The Road goes ever on and on, <br>
+
+Down from the door where it began.<br>
+
+Now far ahead the Road has gone, <br>
+
+And I must follow, if I can, <br>
+</p>
+
+
+      </div>
+      <div class="panel2 serial-right">
+        <h3 class="serial-title" style="color:#d4a843;letter-spacing:3px;">la taverne du vieux serpa</h3>
+        <div class="concentric-circles"><div class="circle"></div><div class="circle"></div><div class="circle"></div><div class="circle"></div><div class="circle"></div></div>
+      </div>
+
+      <div class="panel2 lain-panel">
+        <div class="lain-logo"><div class="logo-lines"><div class="line"></div><div class="line"></div><div class="line"></div></div></div>
+        <div class="star-pattern"><div class="star"></div><div class="dots"><span>·</span><span>·</span><span>·</span><span>·</span></div><div class="star"></div></div>
+      <p class="small-text">
+Pursuing it with eager feet, <br>
+Until it joins some larger way  <BR>
+Where many paths and errands meet.
+And whither then? I cannot say. </p>
+      </div>
+    </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const quoteText = document.querySelector('.quote-text');
+      if (quoteText) {
+        setInterval(() => {
+          if (Math.random() < 0.08) {
+            quoteText.style.textShadow = '2px 0 #d4a843, -2px 0 #6aae84';
+            setTimeout(() => { quoteText.style.textShadow = 'none'; }, 100);
+          }
+        }, 2000);
+      }
+      const cube = document.querySelector('.wireframe-cube');
+      if (cube) {
+        let r = 0;
+        setInterval(() => { r+=0.5; cube.style.transform='rotateX('+(15+Math.sin(r*0.01)*5)+'deg) rotateY('+(15+r*0.5)+'deg)'; }, 50);
+      }
+      document.querySelectorAll('.circle').forEach((c,i) => {
+        setInterval(() => { c.style.borderColor='rgba(212,168,67,'+(0.35+Math.sin(Date.now()*0.001+i*0.6)*0.3)+')'; }, 50);
+      });
+      const scanLine = document.createElement('div');
+      scanLine.style.cssText='position:fixed;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,rgba(212,168,67,0.08),transparent);pointer-events:none;z-index:1000;animation:scan 4s linear infinite;';
+      document.body.appendChild(scanLine);
+      const closeBtn = document.querySelector('.close-btn');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          document.body.style.transition='opacity 0.4s';
+          document.body.style.opacity='0';
+          setTimeout(()=>{document.body.style.opacity='1';},500);
+        });
+      }
+      // Dynamically wrap content between each h3 in a .session-content div
+      const journalContainer = document.querySelector('.journal-container');
+      if (journalContainer) {
+        const sessionHeaders = Array.from(journalContainer.querySelectorAll('h3.collapsible-session'));
+        sessionHeaders.forEach((h3, idx) => {
+          let next = h3.nextSibling;
+          const wrapper = document.createElement('div');
+          wrapper.className = 'session-content';
+          // Move all nodes until the next h3.collapsible-session or end
+          while (next && !(next.nodeType === 1 && next.matches && next.matches('h3.collapsible-session'))) {
+            const toMove = next;
+            next = next.nextSibling;
+            wrapper.appendChild(toMove);
+          }
+          h3.parentNode.insertBefore(wrapper, next);
+        });
+      }
+
+      // Collapsible sessions logic
+      document.querySelectorAll('.collapsible-session').forEach(function(h3) {
+        const btn = h3.querySelector('.collapsible-toggle');
+        let collapsed = false;
+        if (btn) {
+          btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            collapsed = !collapsed;
+            h3.classList.toggle('session-collapsed', collapsed);
+            btn.innerHTML = collapsed ? '⮞' : '⮟';
+            const content = h3.nextElementSibling;
+            if (content && content.classList.contains('session-content')) {
+              if (collapsed) {
+                content.style.maxHeight = '0';
+                content.style.opacity = '0';
+              } else {
+                content.style.maxHeight = content.scrollHeight + 'px';
+                content.style.opacity = '1';
+              }
+            }
+          });
+          // Start expanded
+          const content = h3.nextElementSibling;
+          if (content && content.classList.contains('session-content')) {
+            content.style.maxHeight = content.scrollHeight + 'px';
+            content.style.opacity = '1';
+          }
+        }
+      });
+      // TOC active link tracking
+      const tocLinks = document.querySelectorAll('.journal-toc-link');
+      const sessionHeadings = document.querySelectorAll('h3[id^="session-"]');
+      if (sessionHeadings.length && tocLinks.length) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              tocLinks.forEach(l => l.classList.remove('toc-active'));
+              const active = document.querySelector('.journal-toc-link[href="#' + entry.target.id + '"]');
+              if (active) active.classList.add('toc-active');
+            }
+          });
+        }, {rootMargin: '-10% 0px -80% 0px'});
+        sessionHeadings.forEach(h => observer.observe(h));
+      }
+    });
+  </script>
+</body></html>

@@ -1,0 +1,200 @@
+<html lang="fr"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jabrainor - Les Aventuriers</title>
+  <link href="https://fonts.cdnfonts.com/css/proggy-clean" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/noto-serif-gurmukhi" rel="stylesheet">
+  <link rel="stylesheet" href="jabrainor.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="header-left" style="display:flex;align-items:center;gap:8px;">
+        <button class="header-toggle" title="Afficher/masquer l'intro" aria-label="Afficher ou masquer l'introduction">⮟</button>
+        <span class="logo">Jabrainor</span>
+      </div>
+      <div class="header-center">
+        <marquee behavior="scroll" direction="left" scrollamount="3">
+          <span class="header-text">QUASIMENT TOUS LES LUNDI DE 18H30 A 22H EN PUR KIFF</span>
+    </span>
+        </marquee>
+      </div>
+      <div class="header-right">
+        <button class="close-btn">x</button>
+        <div class="window-controls">
+          <div class="control-bar"></div><div class="control-bar"></div><div class="control-bar"></div>
+        </div>
+        <div class="diagonal-lines"></div>
+      </div>
+    </header>
+
+
+    <!-- Dynamic Jabrainor header include -->
+    <div id="jabrainor-header-include"></div>
+    <script>
+      fetch('jabrainor-header.html')
+        .then(response => response.text())
+        .then(html => { document.getElementById('jabrainor-header-include').innerHTML = html; });
+    </script>
+
+    <nav class="nav-tabs">
+      <a href="jabrainor2.html" class="nav-tab active">— Les Aventuriers —</a>
+      <a href="jabrainor-journal.html" class="nav-tab">— Journal de Bord —</a>
+      <a href="jabrainor-galerie.html" class="nav-tab">— Galerie —</a>
+      <a href="jabrainor-carte.html" class="nav-tab">— Carte des Relations —</a>
+    </nav>
+
+    <div class="characters-section">
+      <div class="serial-panel char-isaq">
+        <div class="serial-image"><img src="https://i.postimg.cc/HsKbFT8S/bodyisaq.png" alt="Isaq"></div>
+        <div class="serial-content">
+          <div class="serial-title-row"><img class="char-icon" src="https://i.postimg.cc/dVRQK9S2/bleh.png" alt="icône isaq"><h3 class="serial-title">Isaq</h3></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:78%;"></div></div>
+          <div class="serial-info">
+            <p class="context-description">Un Candien qui à vécu 30 années en tant que médecin de village avant de prendre la route. L'expérience lui a donné un semblant d'intelligence, mais pas de sagesse. Il est incapable de percevoir les intentions cachées des gens qu'il rencontre. Il considère que tout mal a sa racine, que toute maladie a sa cause et cherche d'abord à comprendre avant d'agir.</p>
+            <div class="char-tags"><span class="char-tag">Botaniste</span><span class="char-tag">Candien</span><span class="char-tag">Séducteur</span><span class="char-tag">Esprit Fort</span></div>
+            <div class="char-quote">« Toute maladie a sa cause. Toute âme, sa raison. »</div>
+                        <BR><img src="https://i.postimg.cc/Twgk3QBt/achievement-(3).png" style="width:200px;">
+          </div>
+        </div>
+      </div>
+
+      <div class="serial-panel char-yelka">
+        <div class="serial-image"><img src="https://i.postimg.cc/WbK0xsq5/bodyyelka.png" alt="Yelka"></div>
+        <div class="serial-content">
+          <div class="serial-title-row"><img class="char-icon" src="https://i.postimg.cc/SNMNg4LS/Illustration40.png" alt="icône yelka"><h3 class="serial-title">Yelka</h3></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:55%;"></div></div>
+          <div class="serial-info">
+            <p class="context-description">
+Retrouvé bébé sur le pas de la porte de la taverne, Yelka y a été adopté par les aventuriers de passages, et en à fait sa maison. Sur les routes depuis toujours, jamais stable, elle cherche à retrouver ses parents, ou à défaut, un nouveau camarade de beuverie. Ce ne serait pas une mauvaise expérience, en compagnie de la belle musicenne.
+            </p>
+            <div class="char-tags"><span class="char-tag">Musicienne</span><span class="char-tag">zalir</span><span class="char-tag">Belle gueule</span><span class="char-tag">Atypique</span></div>
+            <div class="char-quote">« S'il pleut, s'il fait beau, si tu gagnes ou si tu perds, tu bois. »</div>
+            <BR><img src="https://i.postimg.cc/JnZTzKSg/achievement-(1).png" style="width:200px;">
+          </div>
+        </div>
+      </div>
+
+      <div class="serial-panel char-eustache">
+        <div class="serial-image"><img src="https://i.postimg.cc/65SCFB4Y/bodyeustache.png" alt="Eustache"></div>
+        <div class="serial-content">
+          <div class="serial-title-row"><img class="char-icon" src="https://i.postimg.cc/4xv4T1FV/heeeey.png" alt="icône eustache"><h3 class="serial-title">Eustache</h3></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:88%;"></div></div>
+          <div class="serial-info">
+            <p class="context-description">Il y a deux choses qui font qu'un chevalier en est un, son armure, et son cheval. Ayant du manger le siens pour survivre, Eustache se raccroche à ce qu'il fait de mieux, avancer avec honneur. Il y a des monstres partout, alors peu importe ou il va, il aura des choses à faire, qu'il voyage à pied ou non. </p>
+            <div class="char-tags"><span class="char-tag">Chasseur de Monstre</span><span class="char-tag">Humain</span><span class="char-tag">belle gueule</span><span class="char-tag">atypique</span></div>
+            <div class="char-quote">« . . . »</div><br>
+            <img src="https://i.postimg.cc/j5P8SvBF/achievement.png" style="width:200px;">
+          </div>
+        </div>
+      </div>
+
+      <div class="serial-panel char-amlia">
+        <div class="serial-image"><img src="https://i.postimg.cc/L6hzyJ5w/bodyamlia.png" alt="Amlia"></div>
+        <div class="serial-content">
+          <div class="serial-title-row"><img class="char-icon" src="https://i.postimg.cc/XY6NhPxX/actually.png" alt="icône amlia"><h3 class="serial-title">Amllia</h3></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:42%;"></div></div>
+          <div class="serial-info">
+            <p class="context-description">Avec les nouveaux ages, beaucoup des membres de sa race oublient leur but, ce n'est pas le cas d'Amllia. Ayant étudié la magie, elle est en quete d'informations sur les fragments de son dieu; et dans une terre ou les divinités pullulent, ne rien apprendre sur le sien est une ironie sans nom.</p>
+            <div class="char-tags"><span class="char-tag">Erudition</span><span class="char-tag">Azaram</span><span class="char-tag">BELLE GUEULE</span><span class="char-tag">THEORIE MAGIQUE</span></div>
+            <div class="char-quote">« . . . »</div>
+            <BR><img src="https://i.postimg.cc/1twW3Mbd/achievement-(2).png" style="width:200px;">
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="bottom-section">
+      <div class="panel2 barcode-panel">
+        <div class="barcode">
+          <div class="barcode-line"></div><div class="barcode-line"></div><div class="barcode-line thick"></div><div class="barcode-line"></div><div class="barcode-line thick"></div><div class="barcode-line"></div><div class="barcode-line"></div><div class="barcode-line thick"></div><div class="barcode-line"></div><div class="barcode-line"></div>
+        </div>
+        <p class="small-text">The Road goes ever on and on, <br>
+
+Down from the door where it began.<br>
+
+Now far ahead the Road has gone, <br>
+
+And I must follow, if I can, <br>
+</p>
+
+
+      </div>
+      <div class="panel2 serial-right">
+        <h3 class="serial-title" style="color:#d4a843;letter-spacing:3px;">la taverne du vieux serpa</h3>
+        <div class="concentric-circles"><div class="circle"></div><div class="circle"></div><div class="circle"></div><div class="circle"></div><div class="circle"></div></div>
+      </div>
+
+      <div class="panel2 lain-panel">
+        <div class="lain-logo"><div class="logo-lines"><div class="line"></div><div class="line"></div><div class="line"></div></div></div>
+        <div class="star-pattern"><div class="star"></div><div class="dots"><span>·</span><span>·</span><span>·</span><span>·</span></div><div class="star"></div></div>
+      <p class="small-text">
+Pursuing it with eager feet, <br>
+Until it joins some larger way  <BR>
+Where many paths and errands meet.
+And whither then? I cannot say. </p>
+      </div>
+    </div>
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const quoteText = document.querySelector('.quote-text');
+      if (quoteText) {
+        setInterval(() => {
+          if (Math.random() < 0.08) {
+            quoteText.style.textShadow = '2px 0 #d4a843, -2px 0 #6aae84';
+            setTimeout(() => { quoteText.style.textShadow = 'none'; }, 100);
+          }
+        }, 2000);
+      }
+      document.querySelectorAll('.progress-fill').forEach(fill => {
+        const base = parseFloat(fill.style.width) || 70;
+        let dir = 1, cur = base;
+        setInterval(() => { cur += dir*0.2; if(cur>base+4)dir=-1; if(cur<base-4)dir=1; fill.style.width=cur+'%'; }, 200);
+      });
+      const cube = document.querySelector('.wireframe-cube');
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const quoteText = document.querySelector('.quote-text');
+          if (quoteText) {
+            setInterval(() => {
+              if (Math.random() < 0.08) {
+                quoteText.style.textShadow = '2px 0 #d4a843, -2px 0 #6aae84';
+                setTimeout(() => { quoteText.style.textShadow = 'none'; }, 100);
+              }
+            }, 2000);
+          }
+          const cube = document.querySelector('.wireframe-cube');
+          if (cube) {
+            let r = 0;
+            setInterval(() => { r+=0.5; cube.style.transform='rotateX('+(15+Math.sin(r*0.01)*5)+'deg) rotateY('+(15+r*0.5)+'deg)'; }, 50);
+          }
+          document.querySelectorAll('.circle').forEach((c,i) => {
+            setInterval(() => { c.style.borderColor='rgba(212,168,67,'+(0.35+Math.sin(Date.now()*0.001+i*0.6)*0.3)+')'; }, 50);
+          });
+          const scanLine = document.createElement('div');
+          scanLine.style.cssText='position:fixed;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,rgba(212,168,67,0.08),transparent);pointer-events:none;z-index:1000;animation:scan 4s linear infinite;';
+          document.body.appendChild(scanLine);
+          const closeBtn = document.querySelector('.close-btn');
+          if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+              document.body.style.transition='opacity 0.4s';
+              document.body.style.opacity='0';
+              setTimeout(()=>{document.body.style.opacity='1';},500);
+            });
+          }
+          // Collapsible header logic
+          const container = document.querySelector('.container');
+          const toggleBtn = document.querySelector('.header-toggle');
+          let collapsed = false;
+          if (toggleBtn && container) {
+            toggleBtn.addEventListener('click', () => {
+              collapsed = !collapsed;
+              container.classList.toggle('header-collapsed', collapsed);
+              toggleBtn.innerHTML = collapsed ? '⮞' : '⮟';
+            });
+          }
+        });
+      </script>

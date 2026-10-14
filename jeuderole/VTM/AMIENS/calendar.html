@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendrier</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 2px;
+      font-family: Tahoma, Arial, sans-serif;
+      background: #000;
+      color: #f1d7d7;
+      overflow-x: hidden;
+    }
+
+    .calendar {
+      width: 100%;
+      margin: 0 auto;
+      border: 1px solid #5a1010;
+      background: #0d0000;
+      padding: 3px;
+      overflow-x: hidden;
+    }
+
+    .topbar {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    button {
+      border: 1px solid #6d1a1a;
+      background: #210505;
+      color: #ffd8d8;
+      padding: 2px 6px;
+      font-size: 10px;
+      cursor: pointer;
+    }
+
+    .title {
+      margin-left: auto;
+      font-weight: bold;
+      font-size: 10px;
+      color: #ffb8b8;
+      text-align: right;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      background: #120202;
+    }
+
+    th, td {
+      border: 1px solid #451010;
+      text-align: left;
+      vertical-align: top;
+      padding: 2px;
+    }
+
+    th {
+      font-size: 9px;
+      background: #210707;
+      color: #ffbebe;
+    }
+
+    td {
+      height: 36px;
+      font-size: 9px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    td:hover {
+      background: #1a0505;
+    }
+
+    .has-event {
+      background: #241010;
+    }
+
+    .day {
+      font-weight: bold;
+      color: #ffe1e1;
+    }
+
+    .dot {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #d81919;
+    }
+
+    .details {
+      margin-top: 5px;
+      border: 1px solid #4b1414;
+      background: #140303;
+      padding: 6px;
+      min-height: 58px;
+      font-size: 9px;
+      overflow-wrap: anywhere;
+    }
+
+    .event {
+      margin-bottom: 6px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #3b1111;
+    }
+
+    .event:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .event-title {
+      color: #ffd9d9;
+      font-weight: bold;
+      margin-bottom: 2px;
+    }
+
+    .muted {
+      color: #c88f8f;
+    }
+  </style>
+</head>
+<body>
+  <main class="calendar">
+    <div class="topbar">
+      <button id="prev" type="button">Avant</button>
+      <button id="next" type="button">Apres</button>
+      <div id="title" class="title">Calendrier</div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Lun</th>
+          <th>Mar</th>
+          <th>Mer</th>
+          <th>Jeu</th>
+          <th>Ven</th>
+          <th>Sam</th>
+          <th>Dim</th>
+        </tr>
+      </thead>
+      <tbody id="grid"></tbody>
+    </table>
+
+    <section id="details" class="details">
+      <div class="muted">Cliquez sur un jour pour voir les evenements.</div>
+    </section>
+  </main>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: 'AIzaSyDOfviv-UtJHHuF2pYD8ukhZjFqcBc2ZBc',
+      authDomain: 'amiensbynight-7db78.firebaseapp.com',
+      databaseURL: 'https://amiensbynight-7db78-default-rtdb.europe-west1.firebasedatabase.app',
+      projectId: 'amiensbynight-7db78',
+      storageBucket: 'amiensbynight-7db78.firebasestorage.app',
+      messagingSenderId: '23217146096',
+      appId: '1:23217146096:web:8d9445c739ef7c6fa95a35',
+      measurementId: 'G-KB6B1E5ZSZ'
+    };
+
+    const monthNames = ['Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Decembre'];
+    const eventsData = {};
+
+    const grid = document.getElementById('grid');
+    const title = document.getElementById('title');
+    const details = document.getElementById('details');
+
+    let currentYear = 2004;
+    let currentMonth = 1;
+
+    function keyDate(year, month, day) {
+      return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    }
+
+    function render() {
+      grid.innerHTML = '';
+      title.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+
+      const first = new Date(currentYear, currentMonth, 1);
+      const last = new Date(currentYear, currentMonth + 1, 0);
+      const start = (first.getDay() + 6) % 7;
+      const total = last.getDate();
+
+      let day = 1;
+      for (let r = 0; r < 6; r++) {
+        const tr = document.createElement('tr');
+        for (let c = 0; c < 7; c++) {
+          const td = document.createElement('td');
+          if ((r === 0 && c < start) || day > total) {
+            td.textContent = '';
+          } else {
+            const dateStr = keyDate(currentYear, currentMonth, day);
+            td.innerHTML = `<span class="day">${day}</span>`;
+            const events = Array.isArray(eventsData[dateStr]) ? eventsData[dateStr] : [];
+            if (events.length > 0) {
+              td.classList.add('has-event');
+              const dot = document.createElement('span');
+              dot.className = 'dot';
+              td.appendChild(dot);
+            }
+            td.addEventListener('click', () => showDay(dateStr));
+            day++;
+          }
+          tr.appendChild(td);
+        }
+        grid.appendChild(tr);
+        if (day > total) break;
+      }
+    }
+
+    function showDay(dateStr) {
+      const dateLabel = `${dateStr.slice(8, 10)}/${dateStr.slice(5, 7)}/${dateStr.slice(0, 4)}`;
+      const events = Array.isArray(eventsData[dateStr]) ? eventsData[dateStr] : [];
+
+      if (events.length === 0) {
+        details.innerHTML = `<div><strong>${dateLabel}</strong></div><div class="muted">Aucun evenement.</div>`;
+        return;
+      }
+
+      let html = `<div><strong>${dateLabel}</strong></div>`;
+      events.forEach((event) => {
+        html += `
+          <div class="event">
+            <div class="event-title">${event.title || 'Sans titre'}</div>
+            <div><span class="muted">Org:</span> ${event.organiser || 'Inconnu'}</div>
+            <div>${event.desc || 'Aucune description.'}</div>
+            <div><span class="muted">PNJ:</span> ${event.npcs || 'Aucun'}</div>
+          </div>
+        `;
+      });
+      details.innerHTML = html;
+    }
+
+    function shift(delta) {
+      currentMonth += delta;
+      if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+      } else if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      }
+      render();
+    }
+
+    document.getElementById('prev').addEventListener('click', () => shift(-1));
+    document.getElementById('next').addEventListener('click', () => shift(1));
+
+    render();
+
+    async function startFirebaseSync() {
+      try {
+        const appMod = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+        const dbMod = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+
+        const app = appMod.initializeApp(firebaseConfig);
+        const database = dbMod.getDatabase(app);
+
+        dbMod.onValue(dbMod.ref(database, 'calendar/events'), (snapshot) => {
+          const data = snapshot.val() || {};
+          Object.keys(eventsData).forEach((k) => delete eventsData[k]);
+          Object.assign(eventsData, data);
+          render();
+        });
+      } catch (error) {
+        console.warn('Calendar Firebase sync unavailable:', error);
+      }
+    }
+
+    startFirebaseSync();
+  </script>
+</body>
+</html>

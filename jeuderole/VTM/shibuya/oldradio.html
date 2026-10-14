@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<title>Walkman Goules Marseille 2007 - Synchro Firebase sur Wix</title>
+<style>
+  body {
+    margin: 0;
+    background: transparent;
+    color: #eee;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    user-select: none;
+  }
+
+  #app {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    position: relative;
+    width: 880px;
+  }
+
+  #cd-holder {
+    position: relative;
+    width: 250px;
+    height: 400px;
+    user-select: none;
+  }
+
+  .cd-img {
+	position: absolute;
+    width: 120px;
+    height: 120px;
+    border-radius: 45%;
+    border: none;
+    cursor: grab;
+    user-select: none;
+    position: absolute;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 0 8px #0006;
+    z-index: 1;
+  }
+
+  .cd-img.locked {
+    opacity: 0.3;
+    filter: grayscale(100%);
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .cd-img.hidden {
+    display: none !important;
+  }
+
+  .cd-img:hover {
+    transform: scale(1.05) rotate(3deg);
+    box-shadow: 0 0 12px #fff5;
+  }
+
+  #walkman-container {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    z-index: 20;
+    animation: floaty 3s ease-in-out infinite;
+  }
+
+  @keyframes floaty {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  #walkman {
+    width: 400px;
+    height: 400px;
+    background-image: url('https://static.wixstatic.com/media/7cbe3b_f2f97611071b4dd4bb263abc6b23df3d~mv2.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: -10;
+    box-shadow: none;
+    cursor: pointer;
+    position: relative;
+    z-index: 50;
+  }
+
+  #glow-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    box-shadow:
+      0 0 8px 4px rgba(173, 216, 230, 0.8),
+      0 0 16px 8px rgba(173, 216, 230, 0.5);
+    animation: pulseGlowBlue 2s ease forwards;
+    z-index: 25;
+  }
+
+  @keyframes pulseGlowBlue {
+    0% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(0.9);
+      box-shadow:
+        0 0 8px 4px rgba(173, 216, 230, 0.8),
+        0 0 16px 8px rgba(173, 216, 230, 0.5);
+    }
+    50% {
+      opacity: 0.5;
+      transform: translate(-50%, -50%) scale(1.05);
+      box-shadow:
+        0 0 12px 6px rgba(173, 216, 230, 0.6),
+        0 0 24px 12px rgba(173, 216, 230, 0.4);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(1.2);
+      box-shadow:
+        0 0 16px 8px rgba(173, 216, 230, 0),
+        0 0 32px 16px rgba(173, 216, 230, 0);
+    }
+  }
+
+  @keyframes shake {
+    0% { transform: translate(0, 0); }
+    20% { transform: translate(-5px, 0); }
+    40% { transform: translate(5px, 0); }
+    60% { transform: translate(-5px, 0); }
+    80% { transform: translate(5px, 0); }
+    100% { transform: translate(0, 0); }
+  }
+
+  .shake {
+    animation: shake 0.6s ease;
+  }
+
+  #current-track {
+    margin-top: 1px;
+    font-weight: 700;
+    min-height: 1.2em;
+    text-align: center;
+    user-select: none;
+    animation: pulseText 2.5s ease-in-out infinite;
+  }
+
+  @keyframes pulseText {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+
+  #controls {
+    margin-top: 20px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  button {
+    padding: 8px 14px;
+    background: #666;
+    border: none;
+    border-radius: 8px;
+    color: #eee;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+
+  button:hover {
+    background: #999;
+    transform: scale(1.05);
+  }
+
+  button:active {
+    transform: scale(0.95);
+  }
+
+  #cd-big {
+    position: absolute;
+    top: 20%;
+    left: calc(0px - 200px * 0.45);
+    width: 200px;
+    height: 200px;
+    transform: translate(0, -50%);
+    transition: transform 0.5s ease;
+    user-select: none;
+    z-index: 10;
+  }
+
+  #cd-big.playing {
+    animation: spin 3s linear infinite;
+  }
+
+  @keyframes spin {
+    from { transform: translate(0, -50%) rotate(0deg); }
+    to { transform: translate(0, -50%) rotate(360deg); }
+  }
+
+
+  #volume-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+    color: #ccc;
+  }
+  #volume-control input[type="range"] {
+    width: 150px;
+  }
+</style>
+</head>
+<body>
+  <div id="app">
+    <div id="walkman-container">
+      <div id="walkman" title="Dépose un CD ici pour jouer">
+        <div id="glow-overlay" style="display:none;"></div>
+      </div>
+      <div id="current-track">Aucun CD inséré</div>
+      <div id="controls">
+        <button id="prev" title="Piste précédente">⏮️</button>
+        <button id="pause" title="Pause / Reprendre">⏸️</button>
+        <button id="next" title="Piste suivante">⏭️</button>
+      </div>
+      <div id="volume-control">
+        🔉 <input type="range" min="0" max="1" step="0.01" id="volume" /> 🔊
+      </div>
+      <img id="cd-big" alt="CD en cours" style="display:none" />
+    </div>
+    <div id="cd-holder" title="Glisse un CD sur le walkman pour écouter">
+      <img src="https://static.wixstatic.com/media/7cbe3b_1a1593d47012422ba3d56e46d17bc792~mv2.png" class="cd-img" draggable="true" data-cd="00" alt="00' Marseille" title="00' Marseille">
+      <img src="https://static.wixstatic.com/media/7cbe3b_0c25c7c7864943519535ad22e3bc2eb8~mv2.png" class="cd-img" draggable="true" data-cd="psy4" alt="Psy4 de la Rime – Les Cités d’Or" title="Psy4 de la Rime – Les Cités d’Or">
+      <img src="https://static.wixstatic.com/media/7cbe3b_8273d8f00bce4b9abdf1c3d1c0a02dce~mv2.png" class="cd-img locked" draggable="false" data-cd="DJ" alt="DJ MoonTrance" title="DJ MoonTrance">
+      <img src="https://static.wixstatic.com/media/7cbe3b_12939478417a4822a41c6bf6f4522c3f~mv2.png" class="cd-img" draggable="true" data-cd="rat" alt="Le Rat Luciano" title="Le Rat Luciano">
+      <img src="https://static.wixstatic.com/media/7cbe3b_37bc3878628d4b10b03491c4c18bacd4~mv2.png" class="cd-img locked" draggable="false" data-cd="Industrial" alt="Industrial Undeground" title="Industrial Underground">
+      <img src="https://static.wixstatic.com/media/7cbe3b_ef62fa5f799d4c209caf784768d1584c~mv2.png" class="cd-img" draggable="true" data-cd="instru" alt="instrumental" title="Instrumental beat">
+
+    </div>
+  </div>
+
+  <audio id="audio" style="display:none;"></audio>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAxLIG0vQUWo2zlVYJdF99OnN1wdscIKSM",
+      authDomain: "telgoules.firebaseapp.com",
+      databaseURL: "https://telgoules-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "telgoules",
+      storageBucket: "telgoules.firebasestorage.app",
+      messagingSenderId: "109988992794",
+      appId: "1:109988992794:web:4934e3e3169a3bb8e1fea3"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const cds = {
+      "00": [
+        { title: "IAM", url: "https://static.wixstatic.com/mp3/7cbe3b_9211cb4dfd7d4aaaaab80955d1d7c760.mp3" },
+        { title: "Marseille la nuit", url: "https://static.wixstatic.com/mp3/7cbe3b_41545739f953431f8e29d6256ad009ae.mp3" },
+        { title: "Petit frère", url: "https://static.wixstatic.com/mp3/7cbe3b_da2652de618a405f923b87a8568741f7.mp3" },
+        { title: "Je suis peut-être...", url: "https://static.wixstatic.com/mp3/7cbe3b_7f6c337ee0434499a96f97dc1e6adbc4.mp3" },
+        { title: "Demain c'est loin", url: "https://static.wixstatic.com/mp3/7cbe3b_28c49bfe879147ad90b2d39a394d76b3.mp3" },
+        { title: "Née sous la même étoile", url: "https://static.wixstatic.com/mp3/7cbe3b_128ccf464af4497fa81db9f3996abedb.mp3" },
+        { title: "Métèque et mat", url: "https://static.wixstatic.com/mp3/7cbe3b_4ca09fc493984d5691cbe901d91edb70.mp3" },
+        { title: "Je danse le Mia", url: "https://static.wixstatic.com/mp3/7cbe3b_94b0069484324f6dbb39eba2efa1bb70.mp3" }
+      ],
+      "rat": [
+        { title: "Sacré", url: "https://static.wixstatic.com/mp3/7cbe3b_737d3d9dd1de418ab677cc09244bf38c.mp3" },
+        { title: "Si j'ai du fric", url: "https://static.wixstatic.com/mp3/7cbe3b_de619d1736204f8cb062874837cfbacd.mp3" },
+        { title: "Tout et rien", url: "https://static.wixstatic.com/mp3/7cbe3b_2f74397e26164aa49855be1a49d11d69.mp3" },
+        { title: "A bas les illusions", url: "https://static.wixstatic.com/mp3/7cbe3b_3bec4f98bc28495e9cedd8a466ae4685.mp3" },
+        { title: "Z", url: "https://static.wixstatic.com/mp3/7cbe3b_a8f41e9458b1416fa18f08a6ae597bc7.mp3" }
+      ],
+      "Industrial": [
+        { title: "Waters of Nazareth", url: "https://static.wixstatic.com/mp3/7cbe3b_22ce12399a1e42c38dbc106b1e1adee0.mp3" },
+     { title: "She wants Revenge", url: "https://static.wixstatic.com/mp3/7cbe3b_27bdb603f9144946874e8a97c4b0cb68.mp3" },
+     { title: "Sonne", url: "https://static.wixstatic.com/mp3/7cbe3b_a68d1f4492394c2d881bef75375baa23.mp3" },
+     { title: "Given Up", url: "https://static.wixstatic.com/mp3/7cbe3b_0bbde46bdf544045aac1410bfc11bb31.mp3" },
+     { title: "Shut me Up", url: "https://static.wixstatic.com/mp3/7cbe3b_d69147add05c4c838fc651daa3b5d30d.mp3" }
+      ],
+      "psy4": [
+        { title: "Cités d'or", url: "https://static.wixstatic.com/mp3/7cbe3b_ce61697d37ac4184b6c70b56b4444d9b.mp3" },
+        { title: "Rebelotte", url: "https://static.wixstatic.com/mp3/7cbe3b_104b27f54dbf42f69070d7070c6e4fdb.mp3" },     
+        { title: "Jeunesse France", url: "https://static.wixstatic.com/mp3/7cbe3b_f30dffb2aed14f26a204f7b6f3cfc4bd.mp3" },
+        { title: "A l'ancienne", url: "https://static.wixstatic.com/mp3/7cbe3b_85697621e6124b16b7c2247f9cefb4bd.mp3" },     
+        { title: "On sait mais on fait", url: "https://static.wixstatic.com/mp3/7cbe3b_99f2fff541e24c35929540e779ccfebb.mp3" },
+        { title: "Inaya", url: "https://static.wixstatic.com/mp3/7cbe3b_11efd2934c89427790de3fa85419e551.mp3" },    
+        { title: "Un choix", url: "https://static.wixstatic.com/mp3/7cbe3b_b09547b236f842bb931a6947dcedca80.mp3" },
+        { title: "Venez pas chez nous", url: "https://static.wixstatic.com/mp3/7cbe3b_f18b338fcf90434b907e8bcd89d65e5c.mp3" }
+      ],
+      "junk": [
+        { title: "Dark Mood 1", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" },
+        { title: "Dark Mood 2", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3" }
+      ],
+      "DJ": [
+        { title: "Living on the Video", url: "https://static.wixstatic.com/mp3/7cbe3b_ffee3b5808154b18b2b7235a74bf8b81.mp3" },
+        { title: "The sound of St Francisco", url: "https://static.wixstatic.com/mp3/7cbe3b_fb0962704e084339878773e5531a844e.mp3" },
+        { title: "California dreaming", url: "https://static.wixstatic.com/mp3/7cbe3b_e86d3c36d77940ea9e91ac027cecd003.mp3" },
+        { title: "Call on me", url: "https://static.wixstatic.com/mp3/7cbe3b_b603b3566dea4abf87a20bf1dcf3798b.mp3" },
+        { title: "World Hold On", url: "https://static.wixstatic.com/mp3/7cbe3b_dbf69d87318a489582f4219b6c6647d2.mp3" },
+        { title: "Love don't let me go", url: "https://static.wixstatic.com/mp3/7cbe3b_7e9bffd26c5c41f48049e2c7c4c5e461.mp3" }
+      ],
+            "Industrial": [
+        { title: "Waters of Nazareth", url: "https://static.wixstatic.com/mp3/7cbe3b_22ce12399a1e42c38dbc106b1e1adee0.mp3" },
+        { title: "She wants Revenge", url: "https://static.wixstatic.com/mp3/7cbe3b_27bdb603f9144946874e8a97c4b0cb68.mp3" },
+        { title: "Sonne", url: "https://static.wixstatic.com/mp3/7cbe3b_a68d1f4492394c2d881bef75375baa23.mp3" },
+        { title: "Given Up", url: "https://static.wixstatic.com/mp3/7cbe3b_0bbde46bdf544045aac1410bfc11bb31.mp3" },
+        { title: "Shut me Up", url: "https://static.wixstatic.com/mp3/7cbe3b_d69147add05c4c838fc651daa3b5d30d.mp3" }
+      ],
+            "instru": [
+        { title: "Instru 1", url: "https://static.wixstatic.com/mp3/7cbe3b_c8807d49109e4b4798b348c08e605a0f.mp3" },
+        { title: "Instru 2", url: "https://static.wixstatic.com/mp3/7cbe3b_61421de7c8c14be893037b1d33333247.mp3" },
+        { title: "Instru 3", url: "https://static.wixstatic.com/mp3/7cbe3b_c4eb136028df4e5cb8eedf6dcf7290da.mp3" },
+        { title: "Instru 5", url: "https://static.wixstatic.com/mp3/7cbe3b_9766d557ad8b4361847a5f2722241ce8.mp3" },
+        { title: "Instru 6", url: "https://static.wixstatic.com/mp3/7cbe3b_c8807d49109e4b4798b348c08e605a0f.mp3" },
+      ],
+    }
+
+    let currentPlaylist = [];
+    let currentIndex = 0;
+    let currentCdName = null;
+    let ignoreFirestoreUpdates = false;
+    let dragSuccessful = false;
+
+const audio = document.getElementById("audio");
+const volumeSlider = document.getElementById("volume");
+volumeSlider.addEventListener("input", () => {
+  audio.volume = parseFloat(volumeSlider.value);
+});
+audio.volume = parseFloat(volumeSlider.value); // Valeur initiale
+    const walkman = document.getElementById("walkman");
+    const currentTrackDisplay = document.getElementById("current-track");
+    const cdBig = document.getElementById("cd-big");
+    const glowOverlay = document.getElementById("glow-overlay");
+    
+function positionCDsInPile() {
+  const cdsElements = document.querySelectorAll('#cd-holder .cd-img:not(.hidden)');
+  const centerX = 100;  // point d'origine X
+  const centerY = 170;  // point d'origine Y
+  const maxXSpread = 320; // écart horizontal maximal
+  const maxYSpread = 340; // écart vertical maximal
+  const maxRotate = 30;   // rotation maximale
+
+  cdsElements.forEach((el, i) => {
+    const offsetX = (Math.random() - 0.5) * maxXSpread;
+    const offsetY = (Math.random() - 0.5) * maxYSpread;
+    const rotate = (Math.random() - 0.5) * 2 * maxRotate;
+
+    el.style.left = `${centerX + offsetX}px`;
+    el.style.top = `${centerY + offsetY}px`;
+    el.style.transform = `rotate(${rotate.toFixed(1)}deg)`;
+    el.style.zIndex = i + 1;
+  });
+}
+
+function positionCDsInPile() {
+  const cdsElements = document.querySelectorAll('#cd-holder .cd-img:not(.hidden)');
+  const centerX = 100;  // position de départ à ajuster selon ton layout
+  const centerY = 170;
+  const maxXSpread = 320;
+  const maxYSpread = 340;
+  const maxRotate = 30;
+
+  cdsElements.forEach((el, i) => {
+    const offsetX = (Math.random() - 0.5) * maxXSpread;
+    const offsetY = (Math.random() - 0.5) * maxYSpread;
+    const rotate = (Math.random() - 0.5) * 2 * maxRotate;
+
+    el.style.left = `${centerX + offsetX}px`;
+    el.style.top = `${centerY + offsetY}px`;
+    el.style.transform = `rotate(${rotate.toFixed(1)}deg)`;
+    el.style.zIndex = i + 1;
+  });
+}
+
+
+    function updateTrackDisplay(cdName, trackTitle) {
+      currentTrackDisplay.textContent = `🎵 [${cdName.toUpperCase()}] ${trackTitle}`;
+    }
+
+    function updateCDSpinState() {
+      if (audio.paused) {
+        cdBig.classList.remove('playing');
+      } else {
+        cdBig.classList.add('playing');
+      }
+    }
+
+    function hideCDInPile(cdName) {
+      const cdImg = document.querySelector(`.cd-img[data-cd="${cdName}"]`);
+      if (cdImg) cdImg.classList.add('hidden');
+    }
+
+    function showCDInPile(cdName) {
+      const cdImg = document.querySelector(`.cd-img[data-cd="${cdName}"]`);
+      if (cdImg) cdImg.classList.remove('hidden');
+    }
+
+    function setBigCD(cdName) {
+      if (!cdName) {
+        cdBig.style.display = 'none';
+        cdBig.src = '';
+        return;
+      }
+      const cdImg = document.querySelector(`.cd-img[data-cd="${cdName}"]`);
+      if (!cdImg) {
+        cdBig.style.display = 'none';
+        cdBig.src = '';
+        return;
+      }
+      cdBig.src = cdImg.src;
+      cdBig.alt = cdImg.alt;
+      cdBig.title = cdImg.title;
+      cdBig.style.display = 'block';
+      updateCDSpinState();
+    }
+
+    function playTrack(index) {
+      if (!currentPlaylist.length) return;
+      currentIndex = index;
+      audio.src = currentPlaylist[currentIndex].url;
+      audio.play();
+      updateTrackDisplay(currentCdName, currentPlaylist[currentIndex].title);
+      updateCDSpinState();
+    }
+
+    function updateStateInFirestore() {
+      if (!currentCdName) return;
+      ignoreFirestoreUpdates = true;
+      db.collection("sharedPlayer").doc("state").set({
+        currentCd: currentCdName,
+        currentIndex: currentIndex,
+        isPlaying: !audio.paused,
+        timestamp: Date.now()
+      }).then(() => {
+        setTimeout(() => { ignoreFirestoreUpdates = false; }, 500);
+      });
+    }
+
+    const playerDoc = db.collection("sharedPlayer").doc("state");
+    playerDoc.onSnapshot(doc => {
+      if (ignoreFirestoreUpdates) return;
+      if (!doc.exists) return;
+
+      const data = doc.data();
+      if (!data.currentCd) return;
+
+      if (currentCdName !== data.currentCd) {
+        if (currentCdName) showCDInPile(currentCdName);
+        currentCdName = data.currentCd;
+        hideCDInPile(currentCdName);
+        currentPlaylist = cds[currentCdName];
+      }
+
+      currentIndex = data.currentIndex;
+      audio.src = currentPlaylist[currentIndex].url;
+
+      if (data.isPlaying) audio.play();
+      else audio.pause();
+
+      updateTrackDisplay(currentCdName, currentPlaylist[currentIndex].title);
+      setBigCD(currentCdName);
+      updateCDSpinState();
+    });
+
+    document.getElementById("next").onclick = () => {
+      if (!currentPlaylist.length) return;
+      currentIndex = (currentIndex + 1) % currentPlaylist.length;
+      playTrack(currentIndex);
+      updateStateInFirestore();
+    };
+
+    document.getElementById("prev").onclick = () => {
+      if (!currentPlaylist.length) return;
+      currentIndex = (currentIndex - 1 + currentPlaylist.length) % currentPlaylist.length;
+      playTrack(currentIndex);
+      updateStateInFirestore();
+    };
+
+    document.getElementById("pause").onclick = () => {
+      if (audio.paused) audio.play();
+      else audio.pause();
+      updateStateInFirestore();
+      updateCDSpinState();
+    };
+
+    walkman.ondragover = e => e.preventDefault();
+
+    walkman.ondrop = e => {
+      e.preventDefault();
+      dragSuccessful = true;
+      const cdName = e.dataTransfer.getData("text/plain");
+      if (!cdName || !cds[cdName]) {
+        alert("CD inconnu ou non disponible.");
+        return;
+      }
+      if (currentCdName) showCDInPile(currentCdName);
+      currentCdName = cdName;
+      hideCDInPile(currentCdName);
+      currentPlaylist = cds[currentCdName];
+      currentIndex = 0;
+
+      // Animation glow et shake
+      glowOverlay.style.display = "block";
+      glowOverlay.style.animation = "pulseGlowBlue 2s ease forwards";
+      walkman.classList.add("shake");
+
+      // Enlever le shake et le glow après animation
+      setTimeout(() => {
+        walkman.classList.remove("shake");
+        glowOverlay.style.display = "none";
+      }, 2000);
+
+      playTrack(currentIndex);
+      updateStateInFirestore();
+      setBigCD(currentCdName);
+    };
+
+    document.querySelectorAll(".cd-img").forEach(cd => {
+      cd.ondragstart = e => {
+        if (cd.classList.contains("locked")) {
+          e.preventDefault();
+          return;
+        }
+        dragSuccessful = false;
+        e.dataTransfer.setData("text/plain", cd.dataset.cd);
+      };
+      cd.ondragend = e => {
+        if (!dragSuccessful) {
+          showCDInPile(e.target.dataset.cd);
+        }
+      };
+    });
+
+    window.onload = () => {
+      positionCDsInPile();
+    };
+	window.onload = () => { 
+	  positionCDsInPile();
+	};
+  </script>
+</body>
+</html>

@@ -1,0 +1,2178 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Skyblog style avec Firebase - V2</title>
+
+<style>
+/* ============== THÈME INCENDIE GÉNÉRAL ============== */
+
+/* Reset et base */
+body {
+  margin: 0; padding: 0;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  color: #222;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100vh;
+}
+#app {
+  width: 100%;
+  max-width: 1000px;
+  height: 650px;
+  background: #fff;
+  border: 3px solid #FF9D5C;
+  box-shadow: 0 0 15px #FF6B0099;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Bandeau supérieur */
+#topBar {
+  position: sticky;
+  top: 0;
+  background: linear-gradient(90deg, #FF9D5C, #FF6B00);
+  color: white;
+  font-weight: bold;
+  padding: 10px 15px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  align-items: center;
+  user-select: none;
+  z-index: 20;
+}
+#topBar button {
+  background: #D64B00;
+  border: none;
+  color: white;
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 8px #FF6B00;
+}
+#topBar button:hover {
+  background: #A33700;
+  box-shadow: 0 0 12px #FF9D5C;
+}
+
+/* Écran login */
+#loginScreen {
+  flex: 1;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #FFF3E5;
+}
+#loginScreen h2 {
+  font-size: 2.2rem;
+  margin-bottom: 30px;
+  color: #8B2C00;
+}
+#loginScreen input, #loginScreen select {
+  font-size: 1.2rem;
+  padding: 8px 10px;
+  margin: 10px 0;
+  border-radius: 6px;
+  border: 2px solid #FF9D5C;
+  width: 220px;
+  outline: none;
+}
+#loginScreen button {
+  margin-top: 20px;
+  background: #FF6B00;
+  color: white;
+  font-weight: bold;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 0 8px #D64B00;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+#loginScreen button:hover {
+  background: #CC4E00;
+  box-shadow: 0 0 12px #FF9D5C;
+}
+
+/* Feed principal */
+#mainFeed {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 15px 25px 80px 25px;
+  overflow-y: auto;
+  background: #FFF3E5;
+}
+#mainFeed::-webkit-scrollbar {
+  width: 10px;
+}
+#mainFeed::-webkit-scrollbar-thumb {
+  background-color: #FF6B00;
+  border-radius: 5px;
+}
+
+/* Zone d’écriture de post */
+#newPostForm {
+  margin-bottom: 20px;
+  background: #FFD9B3;
+  padding: 12px 15px;
+  border-radius: 10px;
+  box-shadow: inset 0 0 8px #FF9D5CAA;
+}
+#newPostForm textarea {
+  width: 100%;
+  height: 70px;
+  resize: none;
+  font-size: 1rem;
+  padding: 8px;
+  border-radius: 6px;
+  border: 2px solid #FF9D5C;
+  outline: none;
+  background: white;
+  color: #222;
+}
+#newPostForm label {
+  font-weight: bold;
+  font-size: 0.9rem;
+  user-select: none;
+  color: #8B2C00;
+}
+#newPostForm .checkbox-label {
+  margin-left: 10px;
+  font-weight: normal;
+  color: #8B2C00;
+}
+#newPostForm input[type="url"] {
+  margin-top: 8px;
+  width: 100%;
+  font-size: 0.9rem;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 2px solid #FF9D5C;
+  outline: none;
+  color: #222;
+}
+#newPostForm button {
+  margin-top: 10px;
+  background: #FF6B00;
+  color: white;
+  font-weight: bold;
+  border: none;
+  padding: 8px 18px;
+  font-size: 1rem;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px #D64B00;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+#newPostForm button:hover {
+  background: #CC4E00;
+  box-shadow: 0 0 12px #FF9D5C;
+}
+
+/* Posts individuels */
+.post {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 0 6px #FF9D5CAA;
+  margin-bottom: 18px;
+  padding: 12px 15px;
+  position: relative;
+  word-break: break-word;
+}
+.post-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.post-profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #FF6B00;
+  margin-right: 12px;
+  object-fit: cover;
+}
+.post-author {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #A33700;
+  user-select: none;
+}
+.post-date {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: #CC6A2F;
+  font-style: italic;
+  user-select: none;
+}
+.post-content {
+  font-size: 1rem;
+  white-space: pre-wrap;
+  margin-bottom: 12px;
+  color: #222;
+  text-shadow: none; /* Glow retiré pour lisibilité */
+}
+.post-anonymous-tag {
+  background: #FFB366;
+  color: #5C1F00;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-left: 10px;
+  user-select: none;
+}
+.post-image {
+  max-width: 500px;
+  border-radius: 12px;
+  margin-top: 8px;
+  box-shadow: 0 0 10px #FF6B0099;
+  display: block;
+}
+
+/* Commentaires */
+.comments-section {
+  border-top: 1px solid #FF9D5C;
+  padding-top: 8px;
+  margin-top: 10px;
+}
+.comment {
+  background: #FFE0CC;
+  border-radius: 10px;
+  margin-bottom: 6px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  color: #993300;
+  display: flex;
+  align-items: center;
+  word-break: break-word;
+}
+.comment .comment-profile-pic {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid #D64B00;
+  margin-right: 8px;
+  object-fit: cover;
+}
+.comment .comment-author {
+  font-weight: 600;
+  margin-right: 6px;
+  color: #8B2C00;
+}
+.comment .comment-date {
+  font-size: 0.7rem;
+  font-style: italic;
+  color: #CC6A2F;
+  margin-left: auto;
+}
+.comment .comment-text {
+  flex-grow: 1;
+}
+
+/* Formulaire d'ajout de commentaire */
+.add-comment-form {
+  display: flex;
+  margin-top: 6px;
+}
+.add-comment-form input[type=text] {
+  flex-grow: 1;
+  border-radius: 8px;
+  border: 1.5px solid #FF9D5C;
+  padding: 6px 8px;
+  font-size: 0.9rem;
+  outline: none;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+.add-comment-form button {
+  background: #FF6B00;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  margin-left: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 6px #D64B00;
+}
+.add-comment-form button:hover {
+  background: #CC4E00;
+  box-shadow: 0 0 8px #FF9D5C;
+}
+
+/* Chatbox (toggle / interface) */
+#chatboxToggle {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(90deg, #FF6B00 0%, #FF9D5C 100%);
+  border-top: 3px solid #D64B00;
+  cursor: pointer;
+  font-weight: bold;
+  color: #5C1F00;
+  text-align: center;
+  padding: 10px 0;
+  user-select: none;
+  z-index: 10;
+  box-shadow: 0 0 8px #FF9D5C;
+}
+#chatboxToggle:hover {
+  background: linear-gradient(90deg, #CC4E00 0%, #FF6B00 100%);
+}
+
+/* Chatbox */
+#chatbox {
+  position: absolute;
+  bottom: 40px;
+  left: 0;
+  width: 100%;
+  max-height: 300px;
+  background: #FFE0CC;
+  border-top: 3px solid #D64B00;
+  box-shadow: 0 -3px 8px #D64B0099;
+  overflow-y: auto;
+  display: none;
+  flex-direction: column;
+  font-size: 0.9rem;
+}
+#chatbox-header {
+  background: #FF6B00;
+  color: white;
+  font-weight: bold;
+  padding: 8px 15px;
+}
+#chatMessages {
+  flex-grow: 1;
+  padding: 10px 15px;
+  overflow-y: auto;
+  max-height: 230px;
+}
+
+/* Messages chat */
+.chat-message {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: flex-start;
+  word-break: break-word;
+}
+.chat-profile-pic {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #D64B00;
+  margin-right: 10px;
+  object-fit: cover;
+}
+.chat-content {
+  background: #FF9D5C;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 12px;
+  max-width: 70%;
+  white-space: pre-wrap;
+}
+
+/* Auteur des messages */
+.chat-author {
+  font-weight: bold;
+  font-size: 0.85rem;
+  margin-bottom: 2px;
+}
+
+/* Formulaire chat */
+#chatInputForm {
+  display: flex;
+  align-items: center;
+  border-top: 1px solid #D64B00;
+  padding: 6px 10px;
+}
+#chatInputForm input[type=text] {
+  flex-grow: 1;
+  border-radius: 12px;
+  border: 2px solid #FF9D5C;
+  padding: 6px 12px;
+  font-size: 1rem;
+  outline: none;
+}
+#chatInputForm button {
+  background: #FF6B00;
+  color: white;
+  font-weight: bold;
+  border: none;
+  padding: 8px 18px;
+  margin-left: 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px #D64B00;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+#chatInputForm button:hover {
+  background: #CC4E00;
+  box-shadow: 0 0 12px #FF9D5C;
+}
+
+
+  /* 🎉 EMOJI SUPPORT */
+
+
+  /* 🎉 EMOJI SUPPORT */
+  #chatInputForm {
+    position: relative; /* IMPORTANT pour positionner le picker */
+    display: flex;
+    align-items: center;
+    border-top: 1px solid #7999E3;
+    padding: 6px 10px;
+  }
+
+  #emojiBtn {
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;  /* plus petit */
+    margin-left: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    position: relative;
+    z-index: 60;
+  }
+  #emojiBtn:hover {
+    transform: scale(1.2);
+  }
+
+  #emojiPicker {
+    display: none;
+    position: absolute;
+    bottom: 40px; /* au-dessus du bouton */
+    left: 70%;   /* juste à droite du bouton */
+    background: #fff;
+    border: 2px solid #7999E3;
+    border-radius: 10px;
+    padding: 6px 8px;
+    box-shadow: 0 4px 10px #00000022;
+    z-index: 70;
+    max-width: 180px;
+    flex-wrap: wrap;
+    gap: 4px;
+    width: max-content;
+    white-space: nowrap;
+  }
+
+  #emojiPicker .emoji {
+    font-size: 1.4rem;
+    padding: 4px;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+  }
+
+  #emojiPicker .emoji:hover {
+    transform: scale(1.3);
+  }
+
+  .delete-post-btn {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: red;
+    cursor: pointer;
+    font-size: 1em;
+  }
+
+
+  /* =============== THÈMES =============== */
+
+  /* === PLAGE === */
+  body.theme-plage {
+    background-image: url('https://i.ytimg.com/vi/_xeVxXXhC4Q/hq720.jpg?sqp=-oaymwE7CK4FEIIDSFryq4qpAy0IARUAAAAAGAElAADIQj0AgKJD8AEB-AH-CYAC0AWKAgwIABABGCsgUCh_MA8=&rs=AOn4CLDZ3rMFZBYsOyfzsiPGqSlquY_rMQ');
+    background-repeat: repeat;
+    background-color: #f2d17c;
+  }
+  body.theme-plage #app {
+    border-color: #e9c458;
+    box-shadow: 0 0 20px #e9c458bb;
+    background: #fffde9;
+  }
+  body.theme-plage #topBar {
+    background: linear-gradient(90deg, #f4d67d, #f7c742);
+    color: #6a4f0a;
+  }
+  body.theme-plage #topBar button {
+    background: #d4b22e;
+    color: #4b3a0d;
+  }
+  body.theme-plage #topBar button:hover {
+    background: #a0851a;
+  }
+  body.theme-plage #mainFeed {
+    background: #fffde9;
+  }
+  body.theme-plage #newPostForm {
+    background: #fffbda;
+    box-shadow: inset 0 0 10px #e0c42aaa;
+  }
+  body.theme-plage .post {
+    background: #fff9d6;
+    box-shadow: 0 0 10px #f0d93caa;
+    color: #5a4200;
+  }
+  body.theme-plage .post-header {
+    color: #735b00;
+  }
+  body.theme-plage .post-author {
+    color: #725f00;
+  }
+  body.theme-plage .post-date {
+    color: #a69000;
+  }
+  body.theme-plage .post-anonymous-tag {
+    background: #f3e058;
+    color: #5c4a00;
+  }
+  body.theme-plage .comments-section {
+    border-top-color: #e8d34b;
+  }
+  body.theme-plage .comment {
+    background: #fff8b5;
+    color: #5f4c00;
+  }
+  body.theme-plage .comment .comment-author {
+    color: #6e5a00;
+  }
+  body.theme-plage .comment .comment-date {
+    color: #a6970e;
+  }
+  body.theme-plage .add-comment-form input[type=text] {
+    border-color: #d4b22e;
+    color: #5c4a00;
+  }
+  body.theme-plage .add-comment-form button {
+    background: #d4b22e;
+  }
+  body.theme-plage .add-comment-form button:hover {
+    background: #a0851a;
+  }
+  body.theme-plage #chatboxToggle {
+    background: linear-gradient(90deg, #f7ce37 0%, #f5ca0b 100%);
+    border-top-color: #c9a70b;
+    color: #4a3c0a;
+  }
+  body.theme-plage #chatboxToggle:hover {
+    background: linear-gradient(90deg, #c9a70b 0%, #f5ca0b 100%);
+  }
+  body.theme-plage #chatbox {
+    background: #fff9d6;
+    border-top-color: #c9a70b;
+    box-shadow: 0 -3px 10px #d2bc16aa;
+    color: #5a4200;
+  }
+  body.theme-plage #chatbox-header {
+    background: #d4b22e;
+    color: #3e2e00;
+  }
+  body.theme-plage .chat-content {
+    background: #d4b22e;
+    color: #2f2600;
+  }
+  body.theme-plage #chatInputForm input[type=text] {
+    border-color: #bca10e;
+    color: #5a4c00;
+  }
+  body.theme-plage #chatInputForm button {
+    background: #bca10e;
+  }
+  body.theme-plage #chatInputForm button:hover {
+    background: #927a0a;
+  }
+
+body.theme-neo {
+  background: #000 url('https://upload.wikimedia.org/wikipedia/commons/2/22/Animated_fire_by_nevit.gif') center/cover repeat;
+  font-family: 'Courier New', monospace;
+  color: #ffcc88;
+  position: relative;
+}
+
+/* Effet CRT (scanlines) */
+body.theme-neo::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.03) 0px,
+    rgba(255,255,255,0.03) 1px,
+    transparent 2px,
+    transparent 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Container principal */
+body.theme-neo #app {
+  background: rgba(0, 0, 0, 0.88);
+  border: 4px solid #ff5500;
+  box-shadow: 0 0 30px #ff9900;
+  animation: border-flash 2s infinite alternate;
+}
+@keyframes border-flash {
+  from { box-shadow: 0 0 15px #ff5500; }
+  to   { box-shadow: 0 0 40px #ffdd55; }
+}
+
+/* Barre du haut */
+body.theme-neo #topBar {
+  background: linear-gradient(90deg, #330000, #660000);
+  color: #ffdd99;
+  text-shadow: 0 0 4px #ff8800;
+  border-bottom: 3px solid #ff2200;
+}
+
+/* Boutons du haut */
+body.theme-neo #topBar button {
+  background: #ff2200;
+  color: #ffffff;
+  border: 2px solid #ffaa00;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 0 8px #ff7700;
+}
+body.theme-neo #topBar button:hover {
+  background: #ffaa00;
+}
+
+/* Main feed */
+body.theme-neo #mainFeed {
+  background: rgba(30, 0, 0, 0.82);
+  box-shadow: inset 0 0 20px #ff6600;
+}
+
+/* Formulaire post */
+body.theme-neo #newPostForm {
+  background: rgba(50, 0, 0, 0.88);
+  box-shadow: inset 0 0 25px #ff9900;
+  border-radius: 8px;
+}
+
+/* Posts */
+body.theme-neo {
+  --post-text-color: #ffddaa;
+}
+body.theme-neo .post {
+  background: rgba(80, 0, 0, 0.9);
+  border-left: 4px solid #ff6600;
+  text-shadow: none; /* Glow retiré pour lisibilité */
+  padding: 0.6rem;
+  margin-bottom: 0.5rem;
+  position: relative;
+}
+
+body.theme-neo .post-header {
+  color: #ffcc00;
+  text-shadow: 0 0 2px #ff8800; /* Glow réduit */
+}
+
+body.theme-neo .post img {
+  max-width: 100%;
+  max-height: 250px; /* Taille limitée */
+  object-fit: contain;
+  border: 1px solid #ff6600;
+  border-radius: 5px;
+}
+
+body.theme-neo .post::after {
+  content: "";
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%; height: 20px;
+  background: url('https://upload.wikimedia.org/wikipedia/commons/2/22/Animated_fire_by_nevit.gif') repeat-x;
+  background-size: contain;
+  pointer-events: none;
+}
+
+/* Commentaires */
+body.theme-neo .comments-section {
+  border-top: 2px solid #ff6600;
+}
+body.theme-neo .comment {
+  background: rgba(80, 0, 0, 0.9);
+  border-left: 4px solid #ff6600;
+  color: #ffddaa;
+  text-shadow: 0 0 3px #ff8800;
+  padding: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Champs texte */
+body.theme-neo input[type=text],
+body.theme-neo textarea {
+  background: #110000;
+  border: 1px solid #ff8800;
+  color: #ffcc88;
+  text-shadow: 0 0 4px #ff7700;
+}
+
+/* Boutons généraux */
+body.theme-neo button {
+  background: #ff3300;
+  border: 1px solid #ffaa00;
+  color: #ffffff;
+  box-shadow: 0 0 8px #ff7700;
+}
+body.theme-neo button:hover {
+  background: #ffaa00;
+}
+
+/* Chatbox */
+body.theme-neo #chatbox {
+  background: rgba(20, 0, 0, 0.92);
+  border-top: 3px solid #ff5500;
+  box-shadow: 0 -3px 20px #ff6600;
+}
+body.theme-neo #chatbox-header {
+  background: #660000;
+  color: #ffdd99;
+  text-shadow: 0 0 4px #ff8800;
+}
+body.theme-neo .chat-content {
+  background: rgba(40, 0, 0, 0.88);
+  color: #ffddaa;
+  text-shadow: 0 0 3px #ff7700;
+}
+
+/* Chat input */
+body.theme-neo #chatInputForm input[type=text] {
+  background: #220000;
+  border: 1px solid #ff8800;
+  color: #ffcc88;
+  text-shadow: 0 0 4px #ff7700;
+}
+body.theme-neo #chatInputForm button {
+  background: #ff3300;
+  border: none;
+  color: #ffffff;
+  box-shadow: 0 0 8px #ff7700;
+}
+body.theme-neo #chatInputForm button:hover {
+  background: #ffaa00;
+}
+
+
+
+
+  /* === STREET === */
+  body.theme-street {
+    background-image: url('https://i.pinimg.com/736x/72/5b/ef/725bef2ce9e503da5726aa463e3ea409.jpg');
+    background-repeat: repeat;
+    background-color: #777777;
+  }
+  body.theme-street #app {
+    border-color: #5a5a5a;
+    box-shadow: 0 0 20px #444444bb;
+    background: #e0e0e0;
+  }
+  body.theme-street #topBar {
+    background: linear-gradient(90deg, #5c5c5c, #3a3a3a);
+    color: #ddd;
+  }
+  body.theme-street #topBar button {
+    background: #3f3f3f;
+    color: #eee;
+  }
+  body.theme-street #topBar button:hover {
+    background: #222;
+  }
+  body.theme-street #mainFeed {
+    background: #d6d6d6;
+  }
+  body.theme-street #newPostForm {
+    background: #c8c8c8;
+    box-shadow: inset 0 0 8px #4c4c4caa;
+  }
+  body.theme-street .post {
+    background: #dddddd;
+    box-shadow: 0 0 10px #888888aa;
+    color: #222;
+  }
+  body.theme-street .post-header {
+    color: #2a2a2a;
+  }
+  body.theme-street .post-author {
+    color: #383838;
+  }
+  body.theme-street .post-date {
+    color: #555555;
+  }
+  body.theme-street .post-anonymous-tag {
+    background: #999999;
+    color: #333333;
+  }
+  body.theme-street .comments-section {
+    border-top-color: #666666;
+  }
+  body.theme-street .comment {
+    background: #eeeeee;
+    color: #333333;
+  }
+  body.theme-street .comment .comment-author {
+    color: #444444;
+  }
+  body.theme-street .comment .comment-date {
+    color: #666666;
+  }
+  body.theme-street .add-comment-form input[type=text] {
+    border-color: #555555;
+    color: #222;
+  }
+  body.theme-street .add-comment-form button {
+    background: #555555;
+  }
+  body.theme-street .add-comment-form button:hover {
+    background: #333333;
+  }
+  body.theme-street #chatboxToggle {
+    background: linear-gradient(90deg, #444444 0%, #555555 100%);
+    border-top-color: #222222;
+    color: #eee;
+  }
+  body.theme-street #chatboxToggle:hover {
+    background: linear-gradient(90deg, #222222 0%, #555555 100%);
+  }
+  body.theme-street #chatbox {
+    background: #eeeeee;
+    border-top-color: #222222;
+    box-shadow: 0 -3px 10px #444444aa;
+    color: #222;
+  }
+  body.theme-street #chatbox-header {
+    background: #555555;
+    color: #eee;
+  }
+  body.theme-street .chat-content {
+    background: #555555;
+    color: #eee;
+  }
+  body.theme-street #chatInputForm input[type=text] {
+    border-color: #444444;
+    color: #222;
+  }
+  body.theme-street #chatInputForm button {
+    background: #444444;
+  }
+  body.theme-street #chatInputForm button:hover {
+    background: #222222;
+  }
+
+/* === THEME MANGA OLD SCHOOL SOFT - version naturelle bg === */
+body.theme-manga-old {
+  background-image: url('https://w0.peakpx.com/wallpaper/750/495/HD-wallpaper-goku-good-old-times-cartoon-dragonball-anime.jpg');
+  background-repeat: repeat;
+  background-position: top left;
+  background-size: auto;
+
+  background-color: transparent; /* plus de couche d’estompage */
+
+  color: #222; /* texte sombre sur fond clair image */
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive, 'Arial Black', sans-serif;
+  text-shadow: 1px 1px 1px #fff9; /* léger contour clair */
+}
+
+body.theme-manga-old #app {
+  background: rgba(255 255 255 / 0.75); /* blanc pastel semi-transparent */
+  border: 3px solid #d98f7c; /* rouge pastel */
+  box-shadow:
+    0 0 15px #f2b8a0cc,
+    inset 0 0 10px #f3c1a2cc;
+  border-radius: 12px;
+  padding: 1rem;
+  max-width: 900px;
+  margin: 1rem auto;
+  color: #444;
+}
+
+/* Boutons dans la topBar */
+body.theme-manga-old #topBar {
+  background: linear-gradient(90deg, #f6c26d, #f2db7a); /* jaune pastel */
+  color: #2a2a1a;
+  text-shadow: none;
+}
+body.theme-manga-old #topBar button {
+  background: #99c68e; /* vert pastel */
+  color: #1f3115;
+  border: none;
+  box-shadow: 0 0 8px #b4d3b0;
+  cursor: pointer;
+  padding: 6px 12px;
+  font-weight: bold;
+  border-radius: 6px;
+  margin-left: 0.5rem;
+  transition: background 0.3s ease;
+}
+body.theme-manga-old #topBar button:hover {
+  background: #8bb478;
+  box-shadow: 0 0 12px #c2e0b8;
+}
+
+/* Posts */
+body.theme-manga-old #mainFeed {
+  background: #fff4e5; /* beige pastel clair */
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: inset 0 0 15px #d9c4a1aa;
+  color: #333;
+}
+body.theme-manga-old #newPostForm {
+  background: #faf0d5; /* jaune pastel très clair */
+  box-shadow: inset 0 0 15px #eedbafaa;
+  border-radius: 8px;
+  color: #555;
+}
+body.theme-manga-old .post {
+  background: #f0d9c1; /* rouge pastel clair */
+  box-shadow: 0 0 10px #e6bfa3aa;
+  color: #3d2e1f;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  padding: 0.7rem;
+  text-shadow: none;
+}
+body.theme-manga-old .post-header {
+  color: #b76952;
+  font-weight: 700;
+}
+body.theme-manga-old .post-author {
+  color: #8d5f47;
+}
+body.theme-manga-old .post-date {
+  color: #ac8a6c;
+}
+body.theme-manga-old .post-anonymous-tag {
+  background: #e8b26d; /* jaune pastel */
+  color: #573d12;
+  padding: 0 4px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+/* Commentaires */
+body.theme-manga-old .comments-section {
+  border-top: 1px solid #e2cca4;
+  margin-top: 0.7rem;
+  padding-top: 0.7rem;
+}
+body.theme-manga-old .comment {
+  background: #b0d297; /* vert pastel clair */
+  color: #3c3f23;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  margin-bottom: 0.4rem;
+  box-shadow: inset 0 0 6px #8db25a99;
+}
+body.theme-manga-old .comment .comment-author {
+  color: #6e8947;
+  font-weight: bold;
+}
+body.theme-manga-old .comment .comment-date {
+  color: #5c7a2a;
+  font-size: 0.8rem;
+}
+body.theme-manga-old .add-comment-form input[type=text] {
+  border: 1px solid #8eb963;
+  background: #cbe2aa;
+  color: #2d3300;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+body.theme-manga-old .add-comment-form button {
+  background: #a4cc64;
+  border: none;
+  color: #1e2800;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+  box-shadow: 0 0 10px #b8d87a;
+}
+body.theme-manga-old .add-comment-form button:hover {
+  background: #9cc654;
+  box-shadow: 0 0 15px #c0df89;
+}
+
+/* Chat */
+body.theme-manga-old #chatboxToggle {
+  background: linear-gradient(90deg, #c1d989 0%, #7d9d49 100%);
+  border-top: 1px solid #6c8040;
+  color: #2f3a10;
+  box-shadow: 0 2px 6px #91ad43;
+  cursor: pointer;
+  padding: 8px 14px;
+  border-radius: 8px 8px 0 0;
+  font-weight: 700;
+  text-shadow: none;
+}
+body.theme-manga-old #chatboxToggle:hover {
+  background: linear-gradient(90deg, #a9c463 0%, #6e8e35 100%);
+  box-shadow: 0 0 15px #bed87c;
+}
+body.theme-manga-old #chatbox {
+  background: #9cc969;
+  border-top: 1px solid #799a3e;
+  box-shadow: 0 -3px 10px #789c3a99;
+  color: #2a350e;
+  border-radius: 0 0 10px 10px;
+}
+body.theme-manga-old #chatbox-header {
+  background: #8abb50;
+  color: #1c2607;
+  font-weight: 700;
+  padding: 8px 12px;
+  border-radius: 8px 8px 0 0;
+  text-shadow: none;
+}
+body.theme-manga-old .chat-content {
+  background: #b1db76;
+  color: #1d2707;
+  padding: 6px 8px;
+  border-radius: 6px;
+  margin-bottom: 4px;
+  text-shadow: none;
+}
+body.theme-manga-old #chatInputForm input[type=text] {
+  border-color: #95b84b;
+  background: #c4e17c;
+  color: #1d2900;
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+body.theme-manga-old #chatInputForm button {
+  background: #8dbd48;
+  border: none;
+  color: #1a2300;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+  box-shadow: 0 0 8px #a4c562;
+}
+body.theme-manga-old #chatInputForm button:hover {
+  background: #a4d94e;
+  box-shadow: 0 0 12px #bde276;
+}
+
+/* === CYBER NÉON FLASHY & KITSCH === */
+body.theme-cyber {
+  background-image: url('https://img.freepik.com/premium-vector/purple-cyber-circuit-future-technology-concept-background_42077-4930.jpg');
+  background-repeat: repeat;
+  background-color: #1a004d; /* violet foncé très saturé */
+}
+body.theme-cyber #app {
+  border-color: #8a2aff;
+  box-shadow: 0 0 40px #b24dffcc;
+  background: #2a007a;
+}
+body.theme-cyber #topBar {
+  background: linear-gradient(90deg, #9e00ff, #4a00ff);
+  color: #e0d7ff;
+  text-shadow:
+    0 0 8px #bb66ff,
+    0 0 20px #d366ff,
+    0 0 30px #d366ff;
+  font-weight: 700;
+}
+body.theme-cyber #topBar button {
+  background: #ae4eff;
+  color: #f4eaff;
+  border: 2px solid #d999ff;
+  box-shadow:
+    0 0 10px #d166ff,
+    0 0 20px #e699ff,
+    0 0 30px #ffb3ff;
+  font-weight: 800;
+  padding: 0.4rem 1rem;
+  margin-left: 1rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  text-shadow:
+    0 0 6px #ff99ff,
+    0 0 15px #ff66ff;
+}
+body.theme-cyber #topBar button:hover {
+  background: #ff66ff;
+  color: #fff;
+  border-color: #ff99ff;
+  box-shadow:
+    0 0 20px #ff66ff,
+    0 0 40px #ff33ff,
+    0 0 60px #ff00ff;
+  text-shadow:
+    0 0 10px #ff66ff,
+    0 0 30px #ff00ff;
+}
+body.theme-cyber #mainFeed {
+  background: #3b0080;
+  box-shadow:
+    inset 0 0 20px #b366ffaa;
+  color: #f2e6ff;
+  text-shadow: 0 0 5px #a366ff;
+}
+body.theme-cyber #newPostForm {
+  background: #5e00d4;
+  box-shadow: inset 0 0 25px #b866ffcc;
+  border-radius: 10px;
+  color: #f9e6ff;
+  text-shadow: 0 0 6px #bb88ff;
+}
+body.theme-cyber .post {
+  background: #6a00ff;
+  box-shadow:
+    0 0 15px #b366ffbb,
+    0 0 25px #d366ffcc;
+  color: #fef9ff;
+  text-shadow:
+    0 0 8px #b366ff,
+    0 0 15px #cc99ff;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  padding: 0.8rem 1rem;
+}
+body.theme-cyber .post-header {
+  color: #e0cfff;
+  font-weight: 700;
+  text-shadow: 0 0 10px #d3aaff;
+}
+body.theme-cyber .post-author {
+  color: #ffd1ff;
+  font-weight: 600;
+  text-shadow: 0 0 8px #ff99ff;
+}
+body.theme-cyber .post-date {
+  color: #d4b6ff;
+  font-style: italic;
+  text-shadow: 0 0 6px #b38fff;
+}
+body.theme-cyber .post-anonymous-tag {
+  background: #d266ff;
+  color: #2d004d;
+  font-weight: 900;
+  padding: 3px 8px;
+  border-radius: 6px;
+  box-shadow:
+    0 0 10px #ff99ff,
+    0 0 15px #ff33ff;
+}
+body.theme-cyber .comments-section {
+  border-top-color: #b366ff;
+  margin-top: 1rem;
+}
+body.theme-cyber .comment {
+  background: #7f33ff;
+  color: #f3e9ff;
+  text-shadow: 0 0 6px #d1aaff;
+  border-radius: 6px;
+  margin-bottom: 0.6rem;
+  padding: 0.4rem 0.6rem;
+}
+body.theme-cyber .comment .comment-author {
+  color: #f1c7ff;
+  font-weight: 600;
+  text-shadow: 0 0 10px #ff99ff;
+}
+body.theme-cyber .comment .comment-date {
+  color: #cea3ff;
+  font-style: italic;
+  text-shadow: 0 0 6px #b38fff;
+}
+body.theme-cyber .add-comment-form input[type=text] {
+  border-color: #c486ff;
+  color: #f7eaff;
+  background: #4d00a5;
+  box-shadow: inset 0 0 10px #b477ff;
+  font-weight: 600;
+}
+body.theme-cyber .add-comment-form button {
+  background: #b84eff;
+  color: #ffe6ff;
+  border: none;
+  box-shadow:
+    0 0 10px #cc88ff,
+    0 0 25px #ff99ff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+body.theme-cyber .add-comment-form button:hover {
+  background: #ff5eff;
+  box-shadow:
+    0 0 25px #ff33ff,
+    0 0 50px #ff00ff;
+  color: #fff;
+}
+body.theme-cyber #chatboxToggle {
+  background: linear-gradient(90deg, #9a57ff 0%, #5a26ff 100%);
+  border-top-color: #4200a5;
+  color: #f0e8ff;
+  text-shadow: 0 0 10px #a466ff;
+  box-shadow: 0 0 20px #b880ff;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.3s ease;
+}
+body.theme-cyber #chatboxToggle:hover {
+  background: linear-gradient(90deg, #5a26ff 0%, #9a57ff 100%);
+  box-shadow: 0 0 40px #ff33ff;
+}
+body.theme-cyber #chatbox {
+  background: #6a3dff;
+  border-top-color: #4200a5;
+  box-shadow: 0 -3px 25px #804effcc;
+  color: #fef8ff;
+  text-shadow: 0 0 10px #d19bff;
+  border-radius: 10px 10px 0 0;
+  padding: 1rem;
+}
+body.theme-cyber #chatbox-header {
+  background: #883fff;
+  color: #fff3ff;
+  text-shadow:
+    0 0 8px #cc88ff,
+    0 0 15px #ff66ff;
+  font-weight: 800;
+  padding: 0.6rem 1rem;
+  border-radius: 8px 8px 0 0;
+}
+body.theme-cyber .chat-content {
+  background: #883fff;
+  color: #f8e9ff;
+  text-shadow:
+    0 0 6px #b477ff,
+    0 0 12px #d166ff;
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  margin-bottom: 0.4rem;
+}
+body.theme-cyber #chatInputForm input[type=text] {
+  border-color: #9f7eff;
+  color: #f6eaff;
+  background: #5d29a8;
+  box-shadow: inset 0 0 15px #bb88ff;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+}
+body.theme-cyber #chatInputForm button {
+  background: #9b56ff;
+  color: #f4eaff;
+  border: none;
+  box-shadow: 0 0 15px #bf88ff;
+  font-weight: 700;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+body.theme-cyber #chatInputForm button:hover {
+  background: #c778ff;
+  box-shadow:
+    0 0 25px #ff66ff,
+    0 0 50px #ff33ff;
+  color: #fff;
+}
+
+
+  /* === GIRLY === */
+  body.theme-girly {
+    background-image: url('https://www.freevector.com/uploads/vector/preview/1780/FreeVector-Girly-Background.jpg');
+    background-repeat: repeat;
+    background-color: #f5d4e9;
+  }
+  body.theme-girly #app {
+    border-color: #d594b5;
+    box-shadow: 0 0 20px #d594b5bb;
+    background: #fff0f8;
+  }
+  body.theme-girly #topBar {
+    background: linear-gradient(90deg, #f1a4c1, #e86fb8);
+    color: #70234a;
+  }
+  body.theme-girly #topBar button {
+    background: #ce5298;
+    color: #fff3fb;
+  }
+  body.theme-girly #topBar button:hover {
+    background: #a23771;
+  }
+  body.theme-girly #mainFeed {
+    background: #fff0f8;
+  }
+  body.theme-girly #newPostForm {
+    background: #fbd8ec;
+    box-shadow: inset 0 0 10px #e7a3caaa;
+  }
+  body.theme-girly .post {
+    background: #f9cdeb;
+    box-shadow: 0 0 10px #e073c0aa;
+    color: #701f5a;
+  }
+  body.theme-girly .post-header {
+    color: #7f2c61;
+  }
+  body.theme-girly .post-author {
+    color: #812a63;
+  }
+  body.theme-girly .post-date {
+    color: #a75292;
+  }
+  body.theme-girly .post-anonymous-tag {
+    background: #e597ca;
+    color: #561e49;
+  }
+  body.theme-girly .comments-section {
+    border-top-color: #d57eab;
+  }
+  body.theme-girly .comment {
+    background: #f8b8d8;
+    color: #5f1c46;
+  }
+  body.theme-girly .comment .comment-author {
+    color: #7c2760;
+  }
+  body.theme-girly .comment .comment-date {
+    color: #a8609c;
+  }
+  body.theme-girly .add-comment-form input[type=text] {
+    border-color: #d18ab1;
+    color: #6c1f58;
+  }
+  body.theme-girly .add-comment-form button {
+    background: #d18ab1;
+  }
+  body.theme-girly .add-comment-form button:hover {
+    background: #a8527c;
+  }
+  body.theme-girly #chatboxToggle {
+    background: linear-gradient(90deg, #e070b2 0%, #cc4c98 100%);
+    border-top-color: #a04d80;
+    color: #fff3fb;
+  }
+  body.theme-girly #chatboxToggle:hover {
+    background: linear-gradient(90deg, #a04d80 0%, #cc4c98 100%);
+  }
+  body.theme-girly #chatbox {
+    background: #f9cdeb;
+    border-top-color: #a04d80;
+    box-shadow: 0 -3px 10px #cc4c9855;
+    color: #701f5a;
+  }
+  body.theme-girly #chatbox-header {
+    background: #d18ab1;
+    color: #fff3fb;
+  }
+  body.theme-girly .chat-content {
+    background: #d18ab1;
+    color: #fff3fb;
+  }
+  body.theme-girly #chatInputForm input[type=text] {
+    border-color: #b3588e;
+    color: #701f5a;
+  }
+  body.theme-girly #chatInputForm button {
+    background: #b3588e;
+  }
+  body.theme-girly #chatInputForm button:hover {
+    background: #82335d;
+  }
+
+
+
+
+/* Variable par défaut */
+:root {
+  --post-text-color: #222;
+}
+
+/* Usage dans les posts */
+.post .post-content {
+  color: var(--post-text-color);
+}
+
+/* === BAIN DE SANG === */
+body.theme-bainsang {
+  background-image: url('https://images2.alphacoders.com/115/115460.jpg');
+  background-repeat: repeat;
+  background-color: #8a1010;
+  --post-text-color: #fff; /* Texte blanc dans les posts */
+}
+
+body.theme-bainsang #app {
+  border-color: #5e0a0a;
+  box-shadow: 0 0 25px #a11515bb;
+  background: #330606;
+}
+
+body.theme-bainsang #topBar {
+  background: linear-gradient(90deg, #a81919, #5f0d0d);
+  color: #fff0f0;
+}
+
+body.theme-bainsang #topBar button {
+  background: #8a1212;
+  color: #fff5f5;
+}
+
+body.theme-bainsang #topBar button:hover {
+  background: #5a0808;
+}
+
+body.theme-bainsang #mainFeed {
+  background: #400909;
+}
+
+body.theme-bainsang #newPostForm {
+  background: #600b0b;
+  box-shadow: inset 0 0 12px #a52020aa;
+}
+
+body.theme-bainsang .post {
+  background: #700c0c;
+  box-shadow: 0 0 12px #b0202020;
+  /* plus rien à changer ici pour la couleur texte */
+}
+
+
+  body.theme-bainsang .post-header {
+    color: #ffbaba;
+  }
+  body.theme-bainsang .post-author {
+    color: #ffbaba;
+  }
+  body.theme-bainsang .post-date {
+    color: #ffcccc;
+  }
+  body.theme-bainsang .post-anonymous-tag {
+    background: #d03c3c;
+    color: #520101;
+  }
+  body.theme-bainsang .comments-section {
+    border-top-color: #ff7b7b;
+  }
+  body.theme-bainsang .comment {
+    background: #9e1e1e;
+    color: #ffe9e9;
+  }
+  body.theme-bainsang .comment .comment-author {
+    color: #ffb6b6;
+  }
+  body.theme-bainsang .comment .comment-date {
+    color: #ffcaca;
+  }
+  body.theme-bainsang .add-comment-form input[type=text] {
+    border-color: #ff7070;
+    color: #4e0000;
+  }
+  body.theme-bainsang .add-comment-form button {
+    background: #a03131;
+  }
+  body.theme-bainsang .add-comment-form button:hover {
+    background: #7a2121;
+  }
+  body.theme-bainsang #chatboxToggle {
+    background: linear-gradient(90deg, #a82121 0%, #7a1c1c 100%);
+    border-top-color: #500909;
+    color: #fff5f5;
+  }
+  body.theme-bainsang #chatboxToggle:hover {
+    background: linear-gradient(90deg, #7a1c1c 0%, #a82121 100%);
+  }
+  body.theme-bainsang #chatbox {
+    background: #5c0a0a;
+    border-top-color: #500909;
+    box-shadow: 0 -3px 10px #7a1c1caa;
+    color: #ffe5e5;
+  }
+  body.theme-bainsang #chatbox-header {
+    background: #a31b1b;
+    color: #fff5f5;
+  }
+  body.theme-bainsang .chat-content {
+    background: #a31b1b;
+    color: #fff5f5;
+  }
+  body.theme-bainsang #chatInputForm input[type=text] {
+    border-color: #7a1c1c;
+    color: #fff0f0;
+  }
+  body.theme-bainsang #chatInputForm button {
+    background: #7a1c1c;
+  }
+  body.theme-bainsang #chatInputForm button:hover {
+    background: #4e0a0a;
+  }  
+
+/* Bandeau sang qui coule en haut */
+body.theme-bainsang #bloodBanner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 60px; /* Hauteur du bandeau, à ajuster si besoin */
+  background: url('https://static.wixstatic.com/media/7cbe3b_1aeccac506cd4918b793c9842195f471~mv2.gif') repeat-x top center;
+  background-size: auto 60px;
+  pointer-events: none; /* Pour ne pas gêner les clics */
+  z-index: 9999;
+}
+
+
+
+
+#topBar {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  background-color: #f0f0f0;
+  border-bottom: 2px solid #4A72C9;
+  /* tu peux adapter la couleur et padding selon ton design */
+}
+
+#topBar button, #topBar select {
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  /* retirer marges auto */
+  margin: 0;
+}
+
+
+</style>
+
+
+</head>
+<body>
+
+  <div id="bloodBanner"></div>
+  <div id="app">
+<div id="app">
+
+  <!-- Bandeau haut -->
+  <div id="topBar" style="display:none;">
+    <button id="btnLogout">Se déconnecter</button>
+  </div>
+
+<!-- Ajoute ce select juste après le bouton déconnexion dans #topBar -->
+<select id="themeSelect" aria-label="Changer de thème" style="
+  margin-left: 10px;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 6px;
+  border: 2px solid #4A72C9;
+  background: white;
+  color: #223366;
+  width: 130px;
+  height: 32px;
+  vertical-align: middle;
+  display: inline-block;
+  box-sizing: border-box;
+">
+  <option value="default">Thème normal</option>
+  <option value="theme-plage">Plage</option>
+  <option value="theme-street">Street</option>
+  <option value="theme-cyber">Cyber</option>
+  <option value="theme-girly">Girly</option>
+  <option value="theme-bainsang">Bain de sang</option>
+  <option value="theme-manga-old">Manga</option>
+  <option value="theme-neo">01:23</option>
+</select>
+
+
+  <!-- Login -->
+  <div id="loginScreen">
+    <h2>Skygoules (Ft neo le bg)</h2>
+    <input id="pseudoInput" placeholder="Choisis ton pseudo" maxlength="20" autocomplete="off" />
+    <select id="profileSelect" aria-label="Choix du profil">
+      <option value="">-- Choisis un profil --</option>
+      <option value="Benj">Benj</option>
+      <option value="Aksel">Aksel</option>
+      <option value="Jordan">Jordan</option>
+      <option value="Mike">Mike</option>
+      <option value="PNJ">PNJ</option>
+    </select>
+    <button id="loginBtn">Entrer</button>
+    <div id="loginError"></div>
+  </div>
+
+  <!-- Main Feed -->
+  <div id="mainFeed" style="display:none; flex-direction: column; gap: 1rem;">
+
+    <!-- Nouvelle publication -->
+    <form id="newPostForm">
+      <textarea id="postContent" placeholder="Écris un nouveau post..." maxlength="500" required></textarea>
+      <input id="postImageUrl" type="url" placeholder="Ajouter une URL d'image (optionnel)" />
+      <div>
+        <label><input type="checkbox" id="anonymousCheck" /> <span class="checkbox-label">Poster anonymement</span></label>
+      </div>
+      <button type="submit">Publier</button>
+    </form>
+
+    <!-- Posts affichés ici -->
+    <div id="postsContainer"></div>
+  </div>
+
+  <!-- Chatbox Toggle -->
+  <div id="chatboxToggle" style="display:none;">💬 Chat</div>
+
+  <!-- Chatbox -->
+  <div id="chatbox">
+    <div id="chatbox-header">Chat privé [Jordan, Mike, PJ1, PJ2]</div>
+    <div id="chatMessages"></div>
+    <form id="chatInputForm" autocomplete="off">
+      <input type="text" id="chatInput" placeholder="Écris un message..." maxlength="250" required />
+      <button type="button" id="emojiBtn" title="Choisir un emoji">😊</button>
+      <button type="submit" title="Envoyer le message">➤</button>
+
+      <!-- Emoji Picker déplacé DANS le form -->
+<div id="emojiPicker" tabindex="0" aria-label="Sélecteur d’émojis">
+  <span class="emoji" tabindex="0">😊</span>
+  <span class="emoji" tabindex="0">😂</span>
+  <span class="emoji" tabindex="0">😜</span>
+  <span class="emoji" tabindex="0">😍</span>
+  <span class="emoji" tabindex="0">😎</span>
+  <span class="emoji" tabindex="0">😢</span>
+  <span class="emoji" tabindex="0">😡</span>
+  <span class="emoji" tabindex="0">👍</span>
+  <span class="emoji" tabindex="0">👎</span>
+  <span class="emoji" tabindex="0">💖</span>
+  <span class="emoji" tabindex="0">🔥</span>
+  <span class="emoji" tabindex="0">💔</span>
+  <span class="emoji" tabindex="0">🎉</span>
+  <span class="emoji" tabindex="0">✨</span>
+  <span class="emoji" tabindex="0">🌟</span>
+  <span class="emoji" tabindex="0">💩</span>
+  <span class="emoji" tabindex="0">💀</span>
+  <span class="emoji" tabindex="0">🐱</span>
+  <span class="emoji" tabindex="0">👑</span>
+  <span class="emoji" tabindex="0">🎶</span>
+</div>
+
+
+    </form>
+  </div>
+
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+  import { getDatabase, ref, push, onValue, set } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAxLIG0vQUWo2zlVYJdF99OnN1wdscIKSM",
+    authDomain: "telgoules.firebaseapp.com",
+    databaseURL: "https://telgoules-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "telgoules",
+    storageBucket: "telgoules.firebasestorage.app",
+    messagingSenderId: "109988992794",
+    appId: "1:109988992794:web:4934e3e3169a3bb8e1fea3"
+  };
+
+  // Init Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // Elements
+  const loginScreen = document.getElementById('loginScreen');
+  const mainFeed = document.getElementById('mainFeed');
+  const loginBtn = document.getElementById('loginBtn');
+  const pseudoInput = document.getElementById('pseudoInput');
+  const profileSelect = document.getElementById('profileSelect');
+  const loginError = document.getElementById('loginError');
+
+  const newPostForm = document.getElementById('newPostForm');
+  const postContent = document.getElementById('postContent');
+  const anonymousCheck = document.getElementById('anonymousCheck');
+  const postsContainer = document.getElementById('postsContainer');
+  const postImageUrlInput = document.getElementById('postImageUrl');
+
+  const chatboxToggle = document.getElementById('chatboxToggle');
+  const chatbox = document.getElementById('chatbox');
+  const chatMessages = document.getElementById('chatMessages');
+  const chatInputForm = document.getElementById('chatInputForm');
+  const chatInput = document.getElementById('chatInput');
+  const emojiBtn = document.getElementById('emojiBtn');
+  const emojiPicker = document.getElementById('emojiPicker');
+
+  const topBar = document.getElementById('topBar');
+  const btnLogout = document.getElementById('btnLogout');
+
+  // Profils par défaut
+  const profilesDefaultImgs = {
+    "Benj": "https://static.wixstatic.com/media/7cbe3b_064d011a83d34d9583ee0f047a00b222~mv2.jpg",
+    "Aksel": "https://static.wixstatic.com/media/7cbe3b_c050986a877d462eb8b70e333f3e6b0d~mv2.jpg",
+    "Jordan": "https://i.pinimg.com/736x/14/9f/27/149f275e9033395d2fe9f34c734ec29c.jpg",
+    "Mike": "https://i.pinimg.com/736x/f6/0d/d3/f60dd3afe756377eebd363348b6de306.jpg",
+    "PNJ": "https://i.pinimg.com/736x/4f/09/09/4f0909341c5f2b7ec2b3c7c203cea173.jpg",
+  };
+
+  let currentUser = null;
+
+  function formatDate(ts) {
+    const d = new Date(ts);
+    // Forcer l'année à 2007
+    const fakeYear = 2007;
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+
+    return `${day}/${month}/${fakeYear} à ${hours}h${minutes}`;
+  }
+
+  // --- Persist currentUser dans localStorage ---
+
+  window.addEventListener('load', () => {
+    const savedUser = localStorage.getItem('currentUser');
+    if (savedUser) {
+      currentUser = JSON.parse(savedUser);
+      loginScreen.style.display = "none";
+      mainFeed.style.display = "flex";
+      chatboxToggle.style.display = "block";
+      updateTopBarVisibility();
+      loadPosts();
+      loadChatMessages();
+      loadAllProfilePhotos();
+    }
+  });
+
+  function updateTopBarVisibility() {
+    if(currentUser) {
+      topBar.style.display = "flex";
+    } else {
+      topBar.style.display = "none";
+    }
+  }
+
+  // Chargement photos profils depuis Firebase
+  const profilePhotos = {};
+  function loadAllProfilePhotos() {
+    const profilesRef = ref(db, 'profiles');
+    onValue(profilesRef, (snapshot) => {
+      const data = snapshot.val() || {};
+      for (const [profile, info] of Object.entries(data)) {
+        if (info.photoUrl && /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)$/i.test(info.photoUrl)) {
+          profilePhotos[profile] = info.photoUrl;
+        }
+      }
+    });
+  }
+
+  function getProfileImage(profile) {
+    return profilePhotos[profile] || profilesDefaultImgs[profile];
+  }
+
+  function createProfilePic(profile, size=40, anonymous=false) {
+    if(anonymous) return null;
+    const img = document.createElement('img');
+    img.className = "post-profile-pic";
+    img.style.width = size + "px";
+    img.style.height = size + "px";
+    img.alt = profile;
+    img.src = getProfileImage(profile);
+    return img;
+  }
+
+  function createPostElement(postId, postData) {
+    const container = document.createElement('div');
+    container.className = "post";
+
+    // Header
+    const header = document.createElement('div');
+    header.className = "post-header";
+
+    const pic = createProfilePic(postData.profile, 50, postData.anonymous);
+    if(pic) header.appendChild(pic);
+
+    const author = document.createElement('div');
+    author.className = "post-author";
+    author.textContent = postData.anonymous ? "Anonyme" : postData.pseudo;
+    header.appendChild(author);
+
+    if(postData.anonymous) {
+      const tag = document.createElement('span');
+      tag.className = "post-anonymous-tag";
+      tag.textContent = "Anonyme";
+      header.appendChild(tag);
+    }
+
+    const dateEl = document.createElement('div');
+    dateEl.className = "post-date";
+    dateEl.textContent = formatDate(postData.timestamp);
+    header.appendChild(dateEl);
+
+    // Bouton supprimer si posteur = currentUser
+    if(currentUser && postData.pseudo === currentUser.pseudo && postData.profile === currentUser.profile) {
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = "🗑️ Supprimer";
+      deleteBtn.className = "delete-post-btn";
+      deleteBtn.onclick = async () => {
+        const confirmDelete = confirm("Supprimer ce post ?");
+        if(confirmDelete) {
+          const postRef = ref(db, `posts/${postId}`);
+          await set(postRef, null);
+        }
+      };
+      header.appendChild(deleteBtn);
+    }
+
+    container.appendChild(header);
+
+    // Contenu
+    const content = document.createElement('div');
+    content.className = "post-content";
+    content.textContent = postData.content;
+    container.appendChild(content);
+
+if(postData.imageUrl) {
+  const img = document.createElement('img');
+  img.className = "post-image";
+  img.src = postData.imageUrl;
+  img.alt = "Image du post";
+  img.style.maxWidth = '300px';   // limite la largeur max à 300px
+  img.style.height = 'auto';      // hauteur automatique pour garder les proportions
+  img.onerror = () => { img.style.display = 'none'; };
+  container.appendChild(img);
+}
+
+
+    // SECTION COMMENTAIRES
+    const commentsSection = document.createElement('div');
+    commentsSection.className = "comments-section";
+
+    // Affichage commentaires (triés)
+    const commentsData = postData.comments || {};
+    const commentsSorted = Object.entries(commentsData).sort((a,b) => a[1].timestamp - b[1].timestamp);
+
+    for(const [cid, comment] of commentsSorted) {
+      const c = document.createElement('div');
+      c.className = "comment";
+
+      const cPic = createProfilePic(comment.profile, 34, false);
+      if(cPic) {
+        cPic.className = "comment-profile-pic";
+        c.appendChild(cPic);
+      }
+
+      const cAuthor = document.createElement('div');
+      cAuthor.className = "comment-author";
+      cAuthor.textContent = comment.pseudo;
+      c.appendChild(cAuthor);
+
+      const cText = document.createElement('div');
+      cText.className = "comment-text";
+      cText.textContent = comment.text;
+      c.appendChild(cText);
+
+      const cDate = document.createElement('div');
+      cDate.className = "comment-date";
+      cDate.textContent = formatDate(comment.timestamp);
+      c.appendChild(cDate);
+
+      commentsSection.appendChild(c);
+    }
+
+    // Formulaire ajout commentaire
+    const addCommentForm = document.createElement('form');
+    addCommentForm.className = "add-comment-form";
+
+    const commentInput = document.createElement('input');
+    commentInput.type = "text";
+    commentInput.placeholder = "Répondre...";
+    commentInput.maxLength = 200;
+    commentInput.required = true;
+    addCommentForm.appendChild(commentInput);
+
+    const submitBtn = document.createElement('button');
+    submitBtn.type = "submit";
+    submitBtn.textContent = "Envoyer";
+    addCommentForm.appendChild(submitBtn);
+
+    // Soumission commentaire
+    addCommentForm.onsubmit = async (e) => {
+      e.preventDefault();
+      if(!currentUser) return alert("Veuillez vous connecter.");
+
+      const text = commentInput.value.trim();
+      if(!text) return;
+
+      const commentRef = ref(db, `posts/${postId}/comments`);
+      const newCommentRef = push(commentRef);
+
+      await set(newCommentRef, {
+        pseudo: currentUser.pseudo,
+        profile: currentUser.profile,
+        text,
+        timestamp: Date.now()
+      });
+
+      commentInput.value = "";
+    };
+
+    commentsSection.appendChild(addCommentForm);
+    container.appendChild(commentsSection);
+
+    return container;
+  }
+
+  function loadPosts() {
+    const postsRef = ref(db, 'posts');
+    onValue(postsRef, (snapshot) => {
+      const posts = snapshot.val() || {};
+      postsContainer.innerHTML = "";
+
+      const sortedPosts = Object.entries(posts).sort((a,b) => b[1].timestamp - a[1].timestamp);
+
+      for(const [postId, postData] of sortedPosts) {
+        const postEl = createPostElement(postId, postData);
+        postsContainer.appendChild(postEl);
+      }
+    });
+  }
+
+  // Soumettre un nouveau post
+  newPostForm.onsubmit = async (e) => {
+    e.preventDefault();
+    if(!currentUser) return alert("Veuillez vous connecter.");
+
+    const content = postContent.value.trim();
+    if(!content) return;
+
+    const isAnonymous = anonymousCheck.checked;
+    const imageUrl = postImageUrlInput.value.trim() || null;
+
+    if(imageUrl && !/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)$/i.test(imageUrl)) {
+      alert("URL d'image invalide (doit être jpg/jpeg/png/gif/webp).");
+      return;
+    }
+
+    const postsRef = ref(db, 'posts');
+    const newPostRef = push(postsRef);
+
+    await set(newPostRef, {
+      pseudo: currentUser.pseudo,
+      profile: currentUser.profile,
+      content,
+      anonymous: isAnonymous,
+      imageUrl,
+      timestamp: Date.now(),
+      comments: {}
+    });
+
+    postContent.value = "";
+    postImageUrlInput.value = "";
+    anonymousCheck.checked = false;
+  };
+
+  // CHATBOX
+
+  chatboxToggle.onclick = () => {
+    if(chatbox.style.display === "flex") {
+      chatbox.style.display = "none";
+      chatboxToggle.textContent = "💬 Chat";
+    } else {
+      chatbox.style.display = "flex";
+      chatboxToggle.textContent = "❌ Fermer chat";
+      scrollChatToBottom();
+    }
+  };
+
+  function createChatMessageElement(msgId, msgData) {
+    const msg = document.createElement('div');
+    msg.className = "chat-message";
+
+    const pic = createProfilePic(msgData.profile, 42);
+    pic.className = "chat-profile-pic";
+    msg.appendChild(pic);
+
+    const content = document.createElement('div');
+    content.className = "chat-content";
+
+    const author = document.createElement('div');
+    author.className = "chat-author";
+    author.textContent = msgData.pseudo;
+    content.appendChild(author);
+
+    const text = document.createElement('div');
+    text.textContent = msgData.text;
+    content.appendChild(text);
+
+    msg.appendChild(content);
+
+    return msg;
+  }
+
+  function loadChatMessages() {
+    const chatRef = ref(db, 'chatMessages');
+    onValue(chatRef, (snapshot) => {
+      const messages = snapshot.val() || {};
+      chatMessages.innerHTML = "";
+      const sortedMsgs = Object.entries(messages).sort((a,b) => a[1].timestamp - b[1].timestamp);
+      for(const [msgId, msgData] of sortedMsgs) {
+        const msgEl = createChatMessageElement(msgId, msgData);
+        chatMessages.appendChild(msgEl);
+      }
+      scrollChatToBottom();
+    });
+  }
+
+  function scrollChatToBottom() {
+    setTimeout(() => {
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }, 100);
+  }
+
+  chatInputForm.onsubmit = async (e) => {
+    e.preventDefault();
+    if(!currentUser) return alert("Veuillez vous connecter.");
+
+    const text = chatInput.value.trim();
+    if(!text) return;
+
+    const chatRef = ref(db, 'chatMessages');
+    const newChatMsgRef = push(chatRef);
+    await set(newChatMsgRef, {
+      pseudo: currentUser.pseudo,
+      profile: currentUser.profile,
+      text,
+      timestamp: Date.now()
+    });
+
+    chatInput.value = "";
+  };
+
+  // LOGIN / LOGOUT
+
+  loginBtn.onclick = async () => {
+    loginError.textContent = '';
+    const pseudo = pseudoInput.value.trim();
+    const profile = profileSelect.value;
+
+    if(!pseudo) {
+      loginError.textContent = "Veuillez entrer un pseudo.";
+      return;
+    }
+    if(!profile) {
+      loginError.textContent = "Veuillez choisir un profil.";
+      return;
+    }
+
+    currentUser = {pseudo, profile};
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+    loginScreen.style.display = "none";
+    mainFeed.style.display = "flex";
+    chatboxToggle.style.display = "block";
+    updateTopBarVisibility();
+
+    loadPosts();
+    loadChatMessages();
+    loadAllProfilePhotos();
+  };
+
+  btnLogout.onclick = () => {
+    currentUser = null;
+    localStorage.removeItem('currentUser');
+    loginScreen.style.display = "flex";
+    mainFeed.style.display = "none";
+    chatboxToggle.style.display = "none";
+    chatbox.style.display = "none";
+    updateTopBarVisibility();
+  };
+
+  // EMOJI PICKER
+
+emojiBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  // Afficher ou cacher le picker
+  if (emojiPicker.style.display === 'block') {
+    emojiPicker.style.display = 'none';
+  } else {
+    emojiPicker.style.display = 'flex';  // flex pour activer flex-wrap
+  }
+});
+
+  emojiPicker.querySelectorAll('.emoji').forEach(span => {
+    span.addEventListener('click', () => {
+      chatInput.value += span.textContent;
+      emojiPicker.style.display = 'none';
+      chatInput.focus();
+    });
+    // Accessibilité clavier : ajout support touche Entrée pour sélectionner
+    span.addEventListener('keydown', (ev) => {
+      if(ev.key === 'Enter' || ev.key === ' ') {
+        ev.preventDefault();
+        span.click();
+      }
+    });
+  });
+
+  // Fermer emojiPicker si clic ailleurs
+  document.addEventListener('click', (e) => {
+    if (!emojiPicker.contains(e.target) && e.target !== emojiBtn) {
+      emojiPicker.style.display = 'none';
+    }
+  });
+
+
+
+// --- Gestion du thème ---
+
+const themeSelect = document.getElementById('themeSelect');
+
+function applyTheme(themeName) {
+  // Retirer toutes les classes de thème
+  document.body.classList.remove('theme-plage', 'theme-street', 'theme-cyber', 'theme-girly', 'theme-bainsang', 'theme-manga-old', 'theme-neo');
+  if(themeName && themeName !== 'default') {
+    document.body.classList.add(themeName);
+  }
+}
+
+function loadTheme() {
+  const savedTheme = localStorage.getItem('selectedTheme') || 'default';
+  applyTheme(savedTheme);
+  themeSelect.value = savedTheme;
+}
+
+themeSelect.addEventListener('change', () => {
+  const selected = themeSelect.value;
+  applyTheme(selected);
+  localStorage.setItem('selectedTheme', selected);
+});
+
+// Charger le thème au chargement (après login)
+window.addEventListener('load', () => {
+  loadTheme();
+});
+
+// Aussi appliquer le thème après connexion pour forcer affichage correct
+loginBtn.addEventListener('click', () => {
+  // Un petit délai pour être sûr que currentUser est bien défini
+  setTimeout(() => {
+    loadTheme();
+  }, 100);
+});
+
+</script>
+</body>
+</html>
+
+</html>

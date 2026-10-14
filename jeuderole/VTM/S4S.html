@@ -1,0 +1,210 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Sunny's Emotes</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body style="margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
+  <div id="header-placeholder" style="width: 870px; margin-top: 125px;"></div>
+  <script>
+    fetch('/header-template.html')
+      .then(response => response.text())
+      .then(data => {
+        const header = document.getElementById('header-placeholder');
+        header.innerHTML = data;
+        header.querySelectorAll('.dropdown').forEach(function(dd) {
+          var menu = dd.querySelector('.dropdown-menu');
+          if (!menu) return;
+          dd.addEventListener('mouseenter', function() { menu.style.display = 'block'; });
+          dd.addEventListener('mouseleave', function() { menu.style.display = 'none'; });
+        });
+      });
+  </script>
+<div class="global-container">
+  <div class="grid-container" style="display:flex; flex-direction:row; height:430px; width:870px; gap:16px;">
+    <div style="flex:0 0 260px; display:flex; flex-direction:column;">
+      <div class="post" style="height:100%;">
+        <div class="window" style="height:100%; display:flex; flex-direction:column;">
+          <div class="title-bar">
+            <div class="title-bar-text">
+              <img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="icon">Soul 4 Sale
+            </div>
+            <div class="title-bar-controls">
+              <button aria-label="Minimize"></button>
+              <button aria-label="Maximize"></button>
+              <button aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="window-body text" style="flex:1; overflow-y:auto">
+            <div style="font-size:11px;"> 
+            
+            <h2> Campagne Storyteller</h2>
+            <h3> Sabbat, V20, 4 séances, Terminé </h3>
+            <H4> Présentation campagne : </h4>
+            Les cloches de l’Église de Caïn résonnent dans la région : la croisade du Sabbat contre les vestiges du Concile Brujah est terminée. Vous êtes dans le camp des vainqueurs, et le Festivo dello Estinto vient tout juste de s’achever. Pour une rare fois en Russie, le sabbat écrase ses ennemis. 
+<br><br>
+Mais votre répit est de courte durée.
+<br><br>
+Votre meute, ou du moins nouvelle meute, est convoquée par Théodore Beliakov, Paladin du nouvel Archevêque de Moscou et puissant Ventrue antitribu. Avant que l’Archevêque puisse pleinement asseoir son pouvoir, un dernier obstacle doit être levé : une malédiction lancée par Baba Yaga elle-même lors de son réveil, et qui la limite dans ses actions.
+<br><br>
+Pour la contrer, un rituel puissant est nécessaire. On vous à déjà donné des ingrédients rares et des instructions arrachées à un Tremere agonisant, mais le plus dur reste à venir. Il vous faut retrouver les derniers composants, pénétrer dans la forêt sacrée de Baba Yaga et y accomplir le rituel… si la forêt ne vous dévore pas avant.
+<br><br>
+<i>On vous dit que le pire est derrière vous. Mais désormais, vous n’avez plus le droit à l’erreur.</i>
+      
+            </div>
+            <img src="https://i.pinimg.com/736x/7a/75/17/7a7517d49e9ea17e8d1d21a6e4b79957.jpg" alt="Sabbat" height="180">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="emote-scroll" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:16px; height:100%;">
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        
+        <!-- Image 6 (Lightno) - Full Width (First) -->
+        <div class="window" style="grid-column: span 2;">
+          <div class="title-bar">
+            <div class="title-bar-text">
+              <img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="icon">Poster scatter
+            </div>
+            <div class="title-bar-controls">
+              <button aria-label="Minimize"></button>
+              <button aria-label="Maximize"></button>
+              <button aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="window-body" style="padding: 0; display: flex;">
+            <img src="https://i.postimg.cc/W35LzBN5/Sans-titre-1.png" style="width: 100%; height: auto; display: block;">
+          </div>
+        </div>
+        
+        
+        
+              <!-- Image 1 (BD) - Half Width -->
+        <div class="window">
+          <div class="title-bar">
+            <div class="title-bar-text">
+              <img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="icon">Doctor needed
+            </div>
+            <div class="title-bar-controls">
+              <button aria-label="Minimize"></button>
+              <button aria-label="Maximize"></button>
+              <button aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="window-body" style="padding: 0; display: flex;">
+            <img src="https://i.postimg.cc/SsfQr1yz/frezf.webp" style="width: auto; height: 310px; display: block;">
+          </div>
+        </div>
+
+        <!-- Image 5 (IMG) - Half Width -->
+        <div class="window">
+          <div class="title-bar">
+            <div class="title-bar-text">
+              <img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="icon">Circus of Prague
+            </div>
+            <div class="title-bar-controls">
+              <button aria-label="Minimize"></button>
+              <button aria-label="Maximize"></button>
+              <button aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="window-body" style="padding: 0; display: flex;">
+            <img src="https://i.postimg.cc/gJHcDtYZ/circus-poster.webp" style="width: auto; height: 310px; display: block;">
+          </div>
+        </div>
+        
+              <!-- Image 1 (BD) - Half Width -->
+        <div class="window">
+          <div class="title-bar">
+            <div class="title-bar-text">
+              <img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="icon">Camarade
+            </div>
+            <div class="title-bar-controls">
+              <button aria-label="Minimize"></button>
+              <button aria-label="Maximize"></button>
+              <button aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="window-body" style="padding: 0; display: flex;">
+            <img src="https://i.postimg.cc/sX4fcHVm/urss-poster.webp" style="width: auto; height: 310px; display: block;">
+          </div>
+        </div>
+
+        <!-- Image 5 (IMG) - Half Width -->
+        <div class="window">
+          <div class="title-bar">
+            <div class="title-bar-text">
+              <img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="icon">Monster
+            </div>
+            <div class="title-bar-controls">
+              <button aria-label="Minimize"></button>
+              <button aria-label="Maximize"></button>
+              <button aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="window-body" style="padding: 0; display: flex;">
+            <img src="https://i.postimg.cc/Jn57qY1Q/MONSTER.webp" style="width: auto; height: 310px; display: block;">
+          </div>
+        </div>
+
+        <!-- Image 2 (Fall) - Full Width -->
+        <div class="window" style="grid-column: span 2;">
+          <div class="title-bar">
+            <div class="title-bar-text">
+              <img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="icon">Doc scatter
+            </div>
+            <div class="title-bar-controls">
+              <button aria-label="Minimize"></button>
+              <button aria-label="Maximize"></button>
+              <button aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="window-body" style="padding: 0; display: flex;">
+            <img src="https://i.postimg.cc/VvsfH96j/PAGES.webp" style="width: 100%; height: auto; display: block;">
+          </div>
+        </div>
+
+        <!-- Image 4 (Image) - Full Width -->
+        <div class="window" style="grid-column: span 2;">
+          <div class="title-bar">
+            <div class="title-bar-text">
+              <img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="icon">Stèle
+            </div>
+            <div class="title-bar-controls">
+              <button aria-label="Minimize"></button>
+              <button aria-label="Maximize"></button>
+              <button aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="window-body" style="padding: 0; display: flex;">
+            <img src="https://i.postimg.cc/wvQxV46t/10.webp" style="width: 100%; height: auto; display: block;">
+          </div>
+        </div>
+
+        <!-- Image 3 (Guilt) - Full Width -->
+        <div class="window" style="grid-column: span 2;">
+          <div class="title-bar">
+            <div class="title-bar-text">
+              <img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="icon">Cauldron
+            </div>
+            <div class="title-bar-controls">
+              <button aria-label="Minimize"></button>
+              <button aria-label="Maximize"></button>
+              <button aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="window-body" style="padding: 0; display: flex;">
+            <img src="https://i.postimg.cc/RFLCRpMw/Cauldron.webp" style="width: 100%; height: auto; display: block;">
+          </div>
+        </div>
+
+  
+
+      </div>
+    
+    </div>
+  </div>
+</div>
+</body>
+</html>

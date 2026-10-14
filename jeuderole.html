@@ -1,0 +1,263 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Jeu de role -- Sunny</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="ds.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" crossorigin="anonymous">
+  <script src="index.js" defer></script>
+  <style>
+    .schedule-table { width:100%; border-collapse:collapse; font-size:12px; border:2px solid #5eb3e6; box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf, inset -2px -2px #5eb3e6, inset 2px 2px #ffffff; }
+    .schedule-table th { background:linear-gradient(90deg,#5eb3e6,#73d9a6); color:#fff; font-weight:bold; padding:6px 10px; text-align:center; font-size:11px; text-shadow:0 1px 2px rgba(0,0,0,0.3); letter-spacing:0.5px; border-right:1px solid rgba(255,255,255,0.3); }
+    .schedule-table th:last-child { border-right:none; }
+    .schedule-table td { padding:8px 10px; border-right:1px solid #c8e4f4; border-bottom:2px solid #5eb3e6; vertical-align:top; min-width:80px; text-align:center; font-weight:bold; color:#1450a3; font-family:'Courier New',monospace; }
+    .schedule-table td:last-child { border-right:none; }
+    .schedule-table tr:nth-child(even) td { background:#f0f8ff; }
+    .schedule-table tr:nth-child(odd) td { background:#fff; }
+    .schedule-table td:empty, .schedule-table td:not(:has(*)):not([data-filled]) { color:#bbb; font-weight:normal; font-family:Arial,sans-serif; }
+    .campaign-entry { display:flex; flex-direction:column; gap:3px; padding:6px 0; border-bottom:1px dotted #b0d8f0; font-size:11px; }
+    .campaign-entry:last-child { border-bottom:none; }
+    .campaign-name { font-weight:900; color:#1450a3; font-family:'Courier New',monospace; }
+    .tag-row { display:flex; flex-wrap:wrap; gap:3px; margin-top:3px; }
+    .campaign-name .tag { margin-left:0; }
+    .campaign-content { display:flex; align-items:baseline; gap:8px; }
+    .campaign-blurb { flex:1; color:#444; font-style:italic; }
+    .campaign-link { flex:0 0 auto; margin-left:auto; font-size:10px; font-weight:bold; color:#1e6abf; text-decoration:none; border:1px solid #5eb3e6; padding:1px 6px; background:#dff0fb; white-space:nowrap; }
+    .campaign-link:hover { background:#5eb3e6; color:#fff; }
+    .sub-head { font-weight:900; font-size:14px; font-family:'Courier New',monospace; color:#1450a3; background:none; padding:3px 0; margin:14px 0 4px; display:block; letter-spacing:1px; border-bottom:3px solid #5eb3e6; text-transform:uppercase; }
+    .sub-head:first-child { margin-top:2px; }
+    .tag { display:inline-block; font-size:9px; font-weight:bold; padding:1px 6px; border-radius:10px; vertical-align:middle; margin-left:6px; white-space:nowrap; font-family:Arial,sans-serif; letter-spacing:0.3px; }
+    .tag-encours  { background:#d4f7e0; color:#1a6c35; border:1px solid #73d9a6; }
+    .tag-termine  { background:#e8e8e8; color:#666; border:1px solid #bbb; }
+    .tag-prep     { background:#fff3cd; color:#7a5000; border:1px solid #f5c842; }
+    .tag-fanpage  { background:#dff0fb; color:#1450a3; border:1px solid #5eb3e6; }
+    .tag-st       { background:#f0e8ff; color:#6600bb; border:1px solid #c09cf5; }
+    .tag-joueur   { background:#ffe8f0; color:#bb0044; border:1px solid #f5a0c0; }
+    .tag-vampire  { background:#f5e6e6; color:#8b0000; border:1px solid #d49090; }
+    .tag-ghoule   { background:#e6f0e6; color:#2e5e2e; border:1px solid #90c490; }
+    .tag-hunter   { background:#f5f0e6; color:#7a4e00; border:1px solid #d4b870; }
+    .tag-sabbat   { background:#2a2a2a; color:#ccc; border:1px solid #555; }
+    .campaign-icon { width:48px; height:48px; object-fit:cover; border-radius:3px; image-rendering:pixelated; flex-shrink:0; }
+    .campaign-icon[src=""] { background:#e8f4fb; border:1px dashed #5eb3e6; }
+    .sub-head .campaign-icon { width:18px; height:18px; vertical-align:middle; margin-right:5px; border-radius:2px; }
+    .campaign-header { display:flex; align-items:flex-start; gap:6px; }
+    .campaign-header-text { display:flex; flex-direction:column; gap:3px; flex:1; min-width:0; }
+    .campaign-name .tag { margin-left:4px; }
+    .schedule-table td { padding:8px 10px; border-right:1px solid #c8e4f4; border-bottom:2px solid #5eb3e6; vertical-align:top; min-width:80px; text-align:center; font-weight:900; color:#111; font-family:'Courier New',monospace; font-size:11px; }
+  </style>
+</head>
+<body>
+<script src="https://louisabraham.github.io/nekojs/neko.js" data-autostart></script>
+<div id="header-placeholder"></div>
+
+<div class="page-column">
+
+  <!-- Row 1: DS + Bio -->
+  <div class="row-flex">
+
+    <div style="flex:0 0 auto;">
+        <div class="dantendo"><div class="screen-division upper-screen"><div class="screen"><div class="dantendo-bar"><span>Dantendo</span> 20/03 11:11</div><img src="" class="welcome-image"/><div class="dantendo-tab" id="tab-1"><h6 class="tab-title"></h6><p class="tab-content"></p></div><div class="dantendo-tab" id="tab-2"><h6 class="tab-title"></h6><p class="tab-content"></p></div><div class="dantendo-tab" id="tab-3"><h6 class="tab-title"></h6><p class="tab-content"></p></div><div class="dantendo-tab" id="tab-4"><h6 class="tab-title"></h6><p class="tab-content"></p></div></div></div><div class="screen-divider"><div class="camera-thingy"></div></div><div class="screen-division lower-screen"><div class="arrows"><div class="arrow-up"><a href="#/"></a></div><div class="arrows-left-right"><a href="#/"></a> <a href="#/"></a></div><div class="arrow-down"><a href="#/"></a></div></div><div class="screen"><a href="#/" class="thumbnail" id="tab-1-button"><img src="" alt="tab 1 thumbnail"/> </a><a href="#/" class="thumbnail" id="tab-2-button"><img src="" alt="tab 2 thumbnail"/> </a><a href="#/" class="thumbnail" id="tab-3-button"><img src="" alt="tab 3 thumbnail"/> </a><a href="#/" class="thumbnail" id="tab-4-button"><img src="" alt="tab 4 thumbnail"/></a></div><div class="buttons"><div class="button-x"><a href="#/"></a></div><div class="buttons-y-a"><a href="#/"></a> <a href="#/"></a></div><div class="button-b"><a href="#/"></a></div></div><div class="start-btn">START</div><div class="select-btn">SELECT</div><a href="#/" class="power-button">POWER</a></div></div>
+
+    </div>
+
+    <div class="window flex-window" style="flex:1;min-width:0;">
+      <div class="title-bar">
+        <div class="title-bar-text"><img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="">Sunny -- Storyteller</div>
+        <div class="title-bar-controls">
+          <button aria-label="Minimize"></button>
+          <button aria-label="Maximize"></button>
+          <button aria-label="Close"></button>
+        </div>
+      </div>
+      <div class="window-body" style="padding:10px;font-size:11px;line-height:1.6;">
+        <p><strong>Je suis principalement un Storyteller</strong> mais aussi un joueur recemment. La plupart du contenu + info qu'il y a sur ce bloc depend pas mal des parties que j'ai en ce moment !</p>
+        <p>Je joue surtout a <strong>Vampire : la Mascarade</strong> cote meneur, mais j'ai recemment decouvert le plaisir d'etre joueuse avec des jeux de mystere et de fantasy.</p>
+        <hr style="border:0;border-top:1px dotted #5eb3e6;margin:8px 0;">
+        <p style="margin:0;"><strong>Jeux menes :</strong> Vampire : la Mascarade (6 campagnes)</p>
+        <p style="margin:4px 0 0;"><strong>Jeux joues :</strong> Jabrainor &middot; Monster of the Week &middot; Cthulhu &middot; Sigils &amp; Shadow</p>
+        <hr style="border:0;border-top:1px dotted #5eb3e6;margin:8px 0;">
+        <div style="display:flex; flex-direction:row; flex-wrap:wrap; gap:6px;">
+        <div style="text-align: center; width: 200px; height: 50px; background: black; border: 2px solid rgb(66, 224, 255); border-radius: 0px;">
+          <div style="border-radius: 0px; font-family: monospace; border-right: 2px solid rgb(66, 224, 255); height: 100%; width: 50px; font-size: 0.9rem; font-weight: bold; background: url('https://koboldpress.com/kpstore/wp-content/uploads/appIcon.png') center/cover black; color: white; display: table-cell; vertical-align: middle;"></div>
+          <div style="border-radius: 0px; height: 50px; font-family: monospace; font-size: 0.7rem; font-weight: normal; width: 148px; background: black; color: rgb(66, 224, 255); display: table-cell; vertical-align: middle;">This Storyteller uses Alchemy VTT</div>
+        </div>
+        <div style="text-align: center; width: 200px; height: 50px; background: black; border: 2px solid rgb(66, 255, 130); border-radius: 0px;">
+          <div style="border-radius: 0px; font-family: monospace; border-right: 2px solid rgb(66, 255, 130); height: 100%; width: 50px; font-size: 0.9rem; font-weight: bold; background: url('https://c10.patreonusercontent.com/4/patreon-media/p/campaign/2318879/c8897b019dab4c0284189e2422241ddd/eyJ3Ijo2MjB9/9.png?token-hash=VzRn8LLCHkxqPJ_7iz4jZU_9_kyTK7uK8EXEM_a_Fjg%3D') center/cover black; color: white; display: table-cell; vertical-align: middle;"></div>
+          <div style="border-radius: 0px; height: 50px; font-family: monospace; font-size: 0.7rem; font-weight: normal; width: 148px; background: black; color: rgb(66, 255, 130); display: table-cell; vertical-align: middle;">This Storyteller is a CzePeku subscriber</div>
+        </div>
+        
+        <div style="text-align: center; width: 200px; height: 50px; background: black; border: 2px solid rgb(255, 180, 220); border-radius: 0px;">
+          <div style="border-radius: 0px; font-family: monospace; border-right: 2px solid rgb(255, 180, 220); height: 100%; width: 50px; font-size: 0.9rem; font-weight: bold; background: url('https://static.wixstatic.com/media/7cbe3b_700224b5f3d94165bce77abcc24c5766~mv2.gif') center/cover black; color: white; display: table-cell; vertical-align: middle;"></div>
+          <div style="border-radius: 0px; height: 50px; font-family: monospace; font-size: 0.7rem; font-weight: normal; width: 148px; background: black; color: rgb(255, 180, 220); display: table-cell; vertical-align: middle;">This player draws during sessions</div>
+        </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Schedule -->
+  <table class="schedule-table">
+    <thead>
+      <tr>
+        <th>Lundi</th>
+        <th>Mardi</th>
+        <th>Mercredi</th>
+        <th>Jeudi</th>
+        <th>Vendredi</th>
+        <th>Samedi</th>
+        <th>Dimanche</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Jabrainor</td>
+        <td>&mdash;</td>
+        <td>&mdash;</td>
+        <td>&mdash;</td>
+        <td>&mdash;</td>
+        <td>Sigils &amp; Shadow</td>
+        <td>Amiens By Night</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Vampire : la Mascarade -->
+  <div class="window">
+    <div class="title-bar">
+      <div class="title-bar-text"><img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="">Vampire : la Mascarade</div>
+      <div class="title-bar-controls">
+        <button aria-label="Minimize"></button>
+        <button aria-label="Maximize"></button>
+        <button aria-label="Close"></button>
+      </div>
+    </div>
+    <div class="window-body">
+      <div class="campaign-entry">
+        <div class="campaign-header"><img class="campaign-icon" src="https://i.postimg.cc/Y2PyyVqr/elle-(2).webp" alt=""><div class="campaign-header-text"><span class="campaign-name">Amiens By Night</span>
+        <span class="tag-row"><span class="tag tag-termine">termin&eacute;</span><span class="tag tag-st">Storyteller</span><span class="tag tag-vampire">vampire</span></span>
+        <div class="campaign-content"><span class="campaign-blurb">Un trio dysfonctionnel qui essaye de rediger une constitution sans s'entretuer.</span><a href="jeuderole/VTM/AMIENS/index.html" class="campaign-link">&#8594; voir</a></div></div></div>
+      </div>
+      <div class="campaign-entry">
+        <div class="campaign-header"><img class="campaign-icon" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt=""><div class="campaign-header-text"><span class="campaign-name">Pest Control</span>
+        <span class="tag-row"><span class="tag tag-prep">en pr&eacute;paration</span><span class="tag tag-st">Storyteller</span><span class="tag tag-hunter">hunter</span></span><a href="https://sunnydelicieux.neocities.org/jeuderole/VTM/shibuya/main" class="campaign-link">&#8594; voir</a></div></div>
+      </div>
+      <div class="campaign-entry">
+        <div class="campaign-header"><img class="campaign-icon" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt=""><div class="campaign-header-text"><span class="campaign-name">Leopold</span>
+        <span class="tag-row"><span class="tag tag-prep">en pr&eacute;paration</span><span class="tag tag-st">Storyteller</span><span class="tag tag-vampire">vampire</span></span>
+        <div class="campaign-content"><span class="campaign-blurb">Ce sera probablement pas avant turbo longtemps.</span><a href="jeuderole/VTM/leopold/accueil.html" class="campaign-link">&#8594; voir</a></div></div></div>
+      </div>
+      <div class="campaign-entry">
+        <div class="campaign-header"><img class="campaign-icon" src="https://i.postimg.cc/m2Qbbc7r/sun.webp" alt=""><div class="campaign-header-text"><span class="campaign-name">FOL</span>
+        <span class="tag-row"><span class="tag tag-termine">termin&eacute;</span><span class="tag tag-joueur">Joueur</span><span class="tag tag-vampire">vampire</span></span>
+        <div class="campaign-content"><a href="jeuderole/VTM/FOL.html" class="campaign-link">&#8594; voir</a></div></div></div>
+      </div>
+      <div class="campaign-entry">
+        <div class="campaign-header"><img class="campaign-icon" src="https://files.catbox.moe/dytutk.png" alt=""><div class="campaign-header-text"><span class="campaign-name">San Francisco</span>
+        <span class="tag-row"><span class="tag tag-termine">termin&eacute;</span><span class="tag tag-joueur">Joueur</span><span class="tag tag-vampire">vampire</span></span></div></div>
+      </div>
+      <div class="campaign-entry">
+        <div class="campaign-header"><img class="campaign-icon" src="https://files.catbox.moe/s2e6v3.png" alt=""><div class="campaign-header-text"><span class="campaign-name">Marseille By Night</span>
+        <span class="tag-row"><span class="tag tag-termine">termin&eacute;</span><span class="tag tag-st">Storyteller</span><span class="tag tag-ghoule">ghoule</span></span>
+        <div class="campaign-content"><a href="jeuderole/VTM/marseille.html" class="campaign-link">&#8594; voir</a></div></div></div>
+      </div>
+      <div class="campaign-entry">
+        <div class="campaign-header"><img class="campaign-icon" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt=""><div class="campaign-header-text"><span class="campaign-name">Soul 4 Sale</span>
+        <span class="tag-row"><span class="tag tag-termine">termin&eacute;</span><span class="tag tag-st">Storyteller</span><span class="tag tag-vampire">vampire</span><span class="tag tag-sabbat">sabbat</span></span>
+        <div class="campaign-content"><a href="jeuderole/VTM/S4S.html" class="campaign-link">&#8594; voir</a></div></div></div>
+      </div>
+      <div class="campaign-entry">
+        <div class="campaign-header"><img class="campaign-icon" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt=""><div class="campaign-header-text"><span class="campaign-name">Philadelphia</span>
+        <span class="tag-row"><span class="tag tag-termine">termin&eacute;</span><span class="tag tag-joueur">Joueur</span><span class="tag tag-vampire">vampire</span></span></div></div>
+      </div>
+      <div class="campaign-entry">
+        <div class="campaign-header"><img class="campaign-icon" src="https://files.catbox.moe/3wlwfj.png" alt=""><div class="campaign-header-text"><span class="campaign-name">Moscow By Night</span>
+        <span class="tag-row">><span class="tag tag-termine">termin&eacute;</span><span class="tag tag-vampire">vampire</span><span class="tag tag-sabbat">sabbat</span></span></div></div>
+      </div>
+      <div class="campaign-entry">
+        <div class="campaign-header"><img class="campaign-icon" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt=""><div class="campaign-header-text"><span class="campaign-name">Country Roads</span>
+        <span class="tag-row"><span class="tag tag-termine">termin&eacute;</span><span class="tag tag-joueur">Joueur</span><span class="tag tag-vampire">vampire</span></span></div></div>
+      </div>
+      <div class="campaign-entry">
+        <div class="campaign-header"><img class="campaign-icon" src="https://i.postimg.cc/SQPtt5Nh/angel-(1).webp" alt=""><div class="campaign-header-text"><span class="campaign-name">Liege By Night</span>
+        <span class="tag-row"><span class="tag tag-fanpage">fan page</span></span>
+        <div class="campaign-content"><a href="jeuderole/VTM/LiegeByNight/page.html" class="campaign-link">&#8594; voir</a></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mystere et Horreur -->
+  <div class="window">
+    <div class="title-bar">
+      <div class="title-bar-text"><img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="">Mystere &amp; Horreur</div>
+      <div class="title-bar-controls">
+        <button aria-label="Minimize"></button>
+        <button aria-label="Maximize"></button>
+        <button aria-label="Close"></button>
+      </div>
+    </div>
+    <div class="window-body">
+      <span class="sub-head">Sigils &amp; Shadow</span>
+      <div class="campaign-entry">
+        <div class="campaign-header"><img class="campaign-icon" src="https://i.postimg.cc/fWfXVrkm/image-2026-05-05-143549328.png" alt=""><div class="campaign-header-text"><span class="tag-row"><span class="tag tag-encours">en cours</span><span class="tag tag-joueur">Joueur</span></span>
+        <div class="campaign-content"><span class="campaign-blurb">Apres avoir frole la mort deux fois, ils s'en sortent plutot bien... pour l'instant.</span></div></div></div>
+      </div>
+      <span class="sub-head">Monster of the Week</span>
+      <div class="campaign-entry">
+        <div class="campaign-header"><img class="campaign-icon" src="https://i.postimg.cc/FFYN1Lrp/image-(2).webp" alt=""><div class="campaign-header-text"><span class="tag-row"><span class="tag tag-termine">termin&eacute;</span><span class="tag tag-joueur">Joueur</span></span>
+        <div class="campaign-content"><a href="jeuderole/MOTW.html" class="campaign-link">&#8594; voir</a></div></div></div>
+      </div>
+      <span class="sub-head">L'Appel de Cthulhu</span>
+      <div class="campaign-entry">
+        <div class="campaign-header"><img class="campaign-icon" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt=""><div class="campaign-header-text"><span class="tag-row"><span class="tag tag-termine">termin&eacute;</span><span class="tag tag-joueur">Joueur</span></span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fantasy -->
+  <div class="window">
+    <div class="title-bar">
+      <div class="title-bar-text"><img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="">Fantasy</div>
+      <div class="title-bar-controls">
+        <button aria-label="Minimize"></button>
+        <button aria-label="Maximize"></button>
+        <button aria-label="Close"></button>
+      </div>
+    </div>
+    <div class="window-body">
+      <span class="sub-head">Jabrainor</span>
+      <div class="campaign-entry">
+        <div class="campaign-header"><img class="campaign-icon" src="https://i.postimg.cc/SNMNg4LS/Illustration40.png" alt=""><div class="campaign-header-text"><span class="tag-row"><span class="tag tag-encours">en cours</span><span class="tag tag-joueur">Joueur</span></span>
+        <div class="campaign-content"><span class="campaign-blurb">Un large desert de sel et une bande de quatre joyeux lurons. Il n'y a rien de mieux pour partir a l'aventure.</span><a href="jeuderole/jabrainor.html" class="campaign-link">&#8594; voir</a></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sci-fi -->
+  <div class="window">
+    <div class="title-bar">
+      <div class="title-bar-text"><img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="">Sci-fi</div>
+      <div class="title-bar-controls">
+        <button aria-label="Minimize"></button>
+        <button aria-label="Maximize"></button>
+        <button aria-label="Close"></button>
+      </div>
+    </div>
+    <div class="window-body">
+      <span class="sub-head"><img class="campaign-icon" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt=""> Wrath &amp; Glory</span>
+      <div class="campaign-entry">
+        <div class="campaign-header"><img class="campaign-icon" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt=""><div class="campaign-header-text"><span class="campaign-name">Mission Ork</span>
+        <span class="tag-row"><span class="tag tag-termine">termin&eacute;</span><span class="tag tag-joueur">Joueur</span></span>
+        <div class="campaign-content"><span class="campaign-blurb">&mdash;</span></div></div></div>
+      </div>
+      <div class="campaign-entry">
+        <div class="campaign-header"><img class="campaign-icon" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt=""><div class="campaign-header-text"><span class="campaign-name">Tra&icirc;tres dans le monde ruche</span>
+        <span class="tag-row"><span class="tag tag-termine">termin&eacute;</span><span class="tag tag-joueur">Joueur</span></span>
+        <div class="campaign-content"><span class="campaign-blurb">&mdash;</span></div></div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

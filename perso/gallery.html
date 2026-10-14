@@ -1,0 +1,260 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Sunny's Emotes</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body style="margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
+  <div id="header-placeholder" style="width: 870px; margin-top: 125px;"></div>
+  <script>
+    fetch('/header-template.html')
+      .then(response => response.text())
+      .then(data => {
+        const header = document.getElementById('header-placeholder');
+        header.innerHTML = data;
+        header.querySelectorAll('.dropdown').forEach(function(dd) {
+          var menu = dd.querySelector('.dropdown-menu');
+          if (!menu) return;
+          dd.addEventListener('mouseenter', function() { menu.style.display = 'block'; });
+          dd.addEventListener('mouseleave', function() { menu.style.display = 'none'; });
+        });
+      });
+  </script>
+<div class="text-popup" id="textPopup1" style="top: 168px; left: 24px;">
+  <div class="window">
+    <div class="title-bar">
+      <div class="title-bar-text">
+        <img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="icon">Marseille by day
+      </div>
+      <div class="title-bar-controls">
+        <button aria-label="Close" class="text-popup-close"></button>
+      </div>
+    </div>
+    <div class="window-body text">
+      <p style="font-size:11px;"> Les design et bases d'emote ne m'appartiennent pas, je fais simplement des emotes pour mes JDR. <br> Les bases sont de <b> @takiimikiku </b> et les designs sont des inspirations d'image pinterest ou des créations personelles.</p>
+      <p style="font-size:11px;"> Faire des emotes à toujours été une petite passion, parce que c'est simple à faire, et que ça permet de donner rapidement des émotions :3 Je devrais apprendre à faire mieux mais ce n'est pas encore dans mes projets, pas tant qu'il y a des PNJ a dessiner et des bases à utiliser. </p>
+      <img src="https://i.pinimg.com/originals/a5/b4/47/a5b4479a0d51a6aaa2f8d3cb7a0da80f.gif" alt="vaporeon" height="60">
+    </div>
+  </div>
+</div>
+
+<div class="global-container">
+  <div class="grid-container" style="display:flex; flex-direction:column; width:870px; gap:10px; align-items:stretch;">
+ <div class="post" style="display: flex; gap: 5px;">
+        <div class="window" style="flex: 1; width: auto;">
+          <div class="title-bar">
+            <div class="title-bar-text">
+              <img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="icon">Yap Sesh
+            </div>
+            <div class="title-bar-controls">
+              <button aria-label="Minimize"></button>
+              <button aria-label="Maximize"></button>
+              <button aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="window-body">
+            <div class="emote-grid emote-nowrap">
+              <img src="https://i.postimg.cc/8zx12jNt/shadow.webp" alt="shadow">
+              <img src="https://i.postimg.cc/XYtVRp4g/moustache.webp" alt="begone">
+              <img src="https://i.postimg.cc/13b9kfsM/money.webp" alt="money">
+              <img src="https://i.postimg.cc/Gm6cWHdv/GUN.webp" alt="gun">
+              <img src="https://i.postimg.cc/bvbzppwm/elfe.webp" alt="taptap">
+            </div>
+          </div>
+        </div>
+        <div class="window" style="flex: 1; width: auto;">
+          <div class="title-bar">
+            <div class="title-bar-text">
+              <img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="icon">Liege By Night
+            </div>
+            <div class="title-bar-controls">
+              <button aria-label="Minimize"></button>
+              <button aria-label="Maximize"></button>
+              <button aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="window-body">
+            <div class="emote-grid emote-nowrap">
+              <img src="https://i.postimg.cc/66VxRMpB/aha.webp" alt="bleh">
+              <img src="https://i.postimg.cc/ryG2Wfwy/smirk.webp" alt="smirk">
+              <img src="https://i.postimg.cc/kXn3yWB0/camille.webp" alt="popcorn">
+              <img src="https://i.postimg.cc/SQPtt5Nh/angel-(1).webp" alt="angel">
+              <img src="https://i.postimg.cc/52X4Kwd9/eyes.webp" alt="eyes">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="post">
+        <div class="window">
+          <div class="title-bar">
+            <div class="title-bar-text">
+              <img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="icon">Amiens by night
+            </div>
+            <div class="title-bar-controls">
+              <button aria-label="Minimize"></button>
+              <button aria-label="Maximize"></button>
+              <button aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="window-body">
+            <div class="emote-grid">
+            <img src="https://i.postimg.cc/Dw3mxJdp/helene.webp" alt="presenced">
+            <img src="https://i.postimg.cc/Jh2scTTt/idee.webp" alt="idee">
+            <img src="https://i.postimg.cc/Y2PyyVqr/elle-(2).webp" alt="salute">
+            <img src="https://i.postimg.cc/v8KSSjHc/PANIC.png" alt="panic">
+            <img src="https://i.postimg.cc/VshHHTL6/SLEEP.png" alt="sleep">
+            <img src="https://i.postimg.cc/CM266tLd/wadahell.png" alt="wadahell">
+            <img src="https://i.postimg.cc/xjZFF7Td/YAS.png" alt="yas">
+              <img src="https://files.catbox.moe/n5pd8p.png" alt="dara_notes">
+              <img src="https://files.catbox.moe/4flg4c.png" alt="seb_think">
+              <img src="https://files.catbox.moe/wklqj9.png" alt="isaak_panik">
+              <img src="https://files.catbox.moe/anx6k2.png" alt="eugne_smirk">
+              <img src="https://static.wixstatic.com/media/7cbe3b_700224b5f3d94165bce77abcc24c5766~mv2.gif" alt="madeleine_nom">
+              <img src="https://static.wixstatic.com/media/7cbe3b_9ec965d66468407ca3624e75cef9e1a0~mv2.webp" alt="samuel_eyes">
+              <img src="https://static.wixstatic.com/media/7cbe3b_040ebbed82964d4abd36ec04bf19c4cb~mv2.gif" alt="isaak_panik">
+              <img src="https://static.wixstatic.com/media/7cbe3b_e6f03a922c0749b2bd0b9b43cef44d22~mv2.png" alt="isaak_panik">
+              <img src="https://files.catbox.moe/nmegod.png">
+              <img src="https://files.catbox.moe/hcx4gj.png">
+              <img src="https://files.catbox.moe/hcxoa2.png">
+              <img src="https://files.catbox.moe/j2g6an.png">
+              <img src="https://files.catbox.moe/qcyva5.png">
+              <img src="https://files.catbox.moe/03p2qa.png">
+              <img src="https://files.catbox.moe/aemcoj.png">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="post" style="display: flex; gap: 5px;">
+        <div class="window" style="flex: 1; width: auto;">
+          <div class="title-bar">
+            <div class="title-bar-text">
+              <img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="icon">Marseille by day
+            </div>
+            <div class="title-bar-controls">
+              <button aria-label="Minimize"></button>
+              <button aria-label="Maximize"></button>
+              <button aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="window-body">
+            <div class="emote-grid emote-nowrap">
+            <img src="https://i.postimg.cc/zDwYWxG5/YO.webp" alt="emote">
+              <img src="https://files.catbox.moe/egk3zz.png" alt="emote">
+              <img src="https://files.catbox.moe/97ep05.png" alt="emote">
+              <img src="https://files.catbox.moe/s2e6v3.png" alt="emote">
+            </div>
+        </div>
+        </div>
+        <div class="window" style="flex: 1; width: auto;">
+          <div class="title-bar">
+            <div class="title-bar-text">
+              <img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="icon">San fransisco
+            </div>
+            <div class="title-bar-controls">
+              <button aria-label="Minimize"></button>
+              <button aria-label="Maximize"></button>
+              <button aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="window-body">
+            <div class="emote-grid emote-nowrap">
+              <img src="https://files.catbox.moe/ofo6en.png" alt="emote">
+              <img src="https://files.catbox.moe/dytutk.png" alt="emote">
+              <img src="https://files.catbox.moe/q6l555.png" alt="emote">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="post">
+        <div class="window">
+          <div class="title-bar">
+            <div class="title-bar-text">
+              <img src="https://pixels.crd.co/assets/images/gallery24/42bb7bc9.gif?v=29416114" alt="icon">Moscow by night
+            </div>
+            <div class="title-bar-controls">
+              <button aria-label="Minimize"></button>
+              <button aria-label="Maximize"></button>
+              <button aria-label="Close"></button>
+            </div>
+          </div>
+          <div class="window-body">
+            <div class="emote-grid">
+              <img src="https://files.catbox.moe/h8h016.png" alt="emote">
+              <img src="https://files.catbox.moe/4qlf2m.png" alt="emote">
+              <img src="https://files.catbox.moe/wevtk6.png" alt="emote">
+              <img src="https://files.catbox.moe/6j4esl.png" alt="emote">
+              <img src="https://files.catbox.moe/v6zlr3.png" alt="emote">
+              <img src="https://files.catbox.moe/ns5m5r.png" alt="emote">
+              <img src="https://files.catbox.moe/bppb8m.png" alt="emote">
+              <img src="https://files.catbox.moe/0qe9gj.png" alt="emote">
+              <img src="https://files.catbox.moe/5jbt3z.png" alt="emote">
+              <img src="https://files.catbox.moe/3wlwfj.png" alt="emote">
+              <img src="https://files.catbox.moe/b3tz49.png" alt="emote">
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+<script>
+  (function() {
+    const popups = document.querySelectorAll('.text-popup');
+    let activeDrag = null;
+    let zCounter = 2000;
+
+    function startDrag(popup, event) {
+      const rect = popup.getBoundingClientRect();
+      activeDrag = {
+        popup,
+        startX: event.clientX,
+        startY: event.clientY,
+        startLeft: rect.left,
+        startTop: rect.top
+      };
+
+      popup.style.left = `${rect.left}px`;
+      popup.style.top = `${rect.top}px`;
+      popup.style.right = 'auto';
+      popup.style.zIndex = String(++zCounter);
+      event.preventDefault();
+    }
+
+    popups.forEach((popup) => {
+      const titleBar = popup.querySelector('.title-bar');
+      const closeButton = popup.querySelector('.text-popup-close');
+
+      if (titleBar) {
+        titleBar.addEventListener('mousedown', (event) => {
+          if (event.target.closest('.title-bar-controls')) {
+            return;
+          }
+
+          startDrag(popup, event);
+        });
+      }
+
+      if (closeButton) {
+        closeButton.addEventListener('click', () => {
+          popup.remove();
+        });
+      }
+    });
+
+    window.addEventListener('mousemove', (event) => {
+      if (!activeDrag) {
+        return;
+      }
+
+      const dx = event.clientX - activeDrag.startX;
+      const dy = event.clientY - activeDrag.startY;
+      activeDrag.popup.style.left = `${activeDrag.startLeft + dx}px`;
+      activeDrag.popup.style.top = `${activeDrag.startTop + dy}px`;
+    });
+
+    window.addEventListener('mouseup', () => {
+      activeDrag = null;
+    });
+  })();
+</script>
+</body>
+</html>

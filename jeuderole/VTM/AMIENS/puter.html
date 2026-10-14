@@ -1,0 +1,3245 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Windows XP - Luna Desktop Prototype</title>
+<style>
+*{box-sizing:border-box}
+html,body{height:100vh;margin:0;font-family:Tahoma,Arial,sans-serif;background:transparent;overflow:hidden}
+#frame{width:100vw;height:100vh;margin:0;background:#87c0ff;position:relative;overflow:hidden;cursor:default;z-index:2000}
+#desktop{position:absolute;left:0;top:0;right:0;bottom:40px;background:linear-gradient(#7ec1ff 0%,#8cd05a 70%);background-size:cover;padding:12px}
+.icons{position:relative;height:100%;display:flex;flex-direction:column;flex-wrap:wrap;align-content:flex-start}
+.icon{width:88px;text-align:center;color:#fff;cursor:default;margin:8px;display:block}
+.icon img{width:48px;height:48px;display:block;margin:0 auto;object-fit:contain}
+.icon span{display:block;margin-top:6px;color:#012a6b;font-weight:bold;text-shadow:0 1px 0 rgba(255,255,255,0.6);font-size:13px;line-height:1.2}
+#contextMenu{position:absolute;background:#fff;border:1px solid #aaa;box-shadow:2px 2px 6px rgba(0,0,0,0.3);display:none;z-index:9999;min-width:180px;padding:2px 0;font-size:12px}
+#contextMenu .ctx-item{padding:4px 24px;cursor:pointer}
+#contextMenu .ctx-item:hover,#fileContextMenu .ctx-item:hover,.paint-menu-item:hover,.paint-dropdown-item:hover{background:#3166bb;color:#fff}
+.paint-tool{transition:none !important}
+.paint-tool:hover{background:#e6f2ff !important}
+.paint-tool:active,.paint-tool.active{border:1px solid #000 !important;border-right-color:#fff !important;border-bottom-color:#fff !important;box-shadow:inset 1px 1px 2px rgba(0,0,0,0.3) !important;background:#c0c0c0 !important}
+
+  .window{position:absolute;background:#fff;border:2px solid #154a9b;box-shadow:0 6px 18px rgba(0,0,0,0.5);overflow:hidden;display:none}
+  .titlebar{height:28px;background:linear-gradient(#1e68d9,#0b4fa0);color:#fff;display:flex;align-items:center;padding:0 8px;justify-content:space-between}
+  .titlebar .left{display:flex;align-items:center;gap:8px}
+  .titlebar .title{font-weight:bold;font-size:13px}
+  .titlebar .controls button{background:linear-gradient(#4b86d6,#2b5fb8);border:1px solid rgba(0,0,0,0.2);color:#fff;padding:2px 6px;border-radius:2px;cursor:pointer}
+  .content{padding:8px;background:#f8fbff}
+
+  /* Notepad specific override to mimic Windows XP Notepad */
+  #notepadWin .titlebar{height:26px;background:linear-gradient(#2d73d9,#125aa6);box-shadow:inset 0 -1px 0 rgba(0,0,0,0.15)}
+  #notepadWin .titlebar .title{font-size:12px;color:#fff;padding-left:6px}
+  #notepadWin .content{padding:6px;background:#f0f0f0}
+  #notepadWin .menu-bar{background:#efefef;border:1px solid #d4d4d4;padding:3px 6px;border-radius:2px}
+  #notepadWin .menu{position:relative}
+  #notepadWin .menu > span{font-size:11px;color:#000;padding:3px 8px;display:inline-block;border:1px solid transparent}
+  #notepadWin .menu > span:hover{background:#e1f0ff;border:1px solid #c0d8ef}
+  #notepadWin .submenu{position:absolute;left:0;top:100%;margin-top:0;box-shadow:2px 2px 4px rgba(0,0,0,0.3);border:1px solid #666;z-index:3000}
+  #notepadWin .submenu div{padding:6px 10px;background:#fff;color:#000;white-space:nowrap}
+  #notepadWin .submenu div:hover{background:#e6f0ff}
+  #notepadWin .submenu .disabled{color:#888;opacity:0.7}
+  #notepadWin textarea{width:100%;height:220px;font-size:13px;font-family:Tahoma, sans-serif;background:#fff;border:1px solid #cfcfcf;padding:6px;resize:none}
+  #notepadWin .retro-text{font-family:Tahoma, Arial, sans-serif}
+
+  /* XP-like taskbar */
+  #start{width:56px;height:28px;display:flex;align-items:center;justify-content:center;background:linear-gradient(#0d63c6,#0a4fa0);border-radius:4px;cursor:pointer;border:1px solid rgba(255,255,255,0.08)}
+  #start svg{width:20px;height:20px;display:block}
+  /* Start menu XP-like */
+  .start-menu{width:360px;background:#fff;border:2px solid #0b4fa0;border-radius:6px;box-shadow:0 12px 30px rgba(0,0,0,0.5);overflow:hidden;color:#013a6f}
+  .sm-item:hover{background:#dfeeff}
+  .sm-link:hover{background:rgba(255,255,255,0.5)}
+  #task-list{flex:1;display:flex;gap:8px;margin-left:12px}
+  .task{background:linear-gradient(#cfe6ff,#e6f2ff);color:#012a6b;padding:6px 10px;border-radius:4px;cursor:pointer;border:1px solid rgba(0,0,0,0.12);transition:box-shadow 180ms ease,background 180ms}
+  .task .task-icon svg{width:16px;height:16px;display:inline-block;vertical-align:middle}
+  .task.active{background:linear-gradient(#fff,#dfefff);box-shadow:inset 0 -2px 0 rgba(0,0,0,0.08);} 
+  .task.minimized{opacity:0.8;filter:grayscale(0.2);} 
+  #clock{width:160px;text-align:right;font-size:12px}
+
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:6px;border-bottom:1px solid #e6eef9}
+
+  /* Explorer-specific visuals */
+  .explorer-container{display:flex;gap:10px}
+  .explorer-left{width:200px;background:linear-gradient(#dbe9ff,#a8cfff);padding:8px;border-right:1px solid #c8ddff;border-radius:4px}
+  .explorer-left h4{margin:6px 0;color:#012a6b;font-weight:bold;font-size:12px}
+  .explorer-left .link{display:block;padding:4px 4px;color:#033d80;text-decoration:none;border-radius:3px;font-size:12px}
+  .explorer-left .link:hover{background:rgba(255,255,255,0.6)}
+  .explorer-toolbar button{background:#e9f6ff;border:1px solid #bcdcff;padding:6px;border-radius:3px;cursor:pointer;color:#023f78}
+  #files th{background:linear-gradient(#f7fbff,#eaf6ff);text-align:left;padding:6px;color:#013a6f;font-size:12px}
+  #files td{padding:6px;border-bottom:1px solid #e6eef9;font-size:12px}
+  #files tr:hover{background:#eef6ff}
+  tr.selected{background:linear-gradient(#cfe8ff,#dff4ff)}
+  .file-entry{display:flex;align-items:center;gap:8px}
+  .file-icon svg{width:16px;height:16px;display:block}
+
+  .retro-text{font-family:Tahoma, Arial, sans-serif;font-size:13px}
+  .disabled{ color:#999 !important; opacity:0.6; pointer-events:none; cursor:default; }
+  /* Camera window visuals */
+  .cam-screen{background:#000;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+  .cam-screen img{max-width:100%;max-height:100%;object-fit:contain;animation:cam-flicker 0.1s infinite steps(2)}
+  .cam-overlay{position:absolute;left:0;right:0;bottom:8px;padding:6px 8px;color:#0f0;font-family:monospace;text-shadow:0 0 6px rgba(0,0,0,0.8);font-size:12px}
+  .cam-scanlines{pointer-events:none;position:absolute;left:0;right:0;top:-100%;bottom:100%;background:repeating-linear-gradient(0deg,transparent 0,transparent 2px,rgba(0,0,0,0.2) 2px,rgba(0,0,0,0.2) 4px);z-index:5;animation:scan-move 4s linear infinite}
+  .cam-rec-indicator{position:absolute;top:12px;right:12px;background:#f00;width:12px;height:12px;border-radius:50%;box-shadow:0 0 10px #f00,0 0 20px rgba(255,0,0,0.5);animation:rec-blink 1.5s ease-in-out infinite;z-index:10}
+  .cam-noise{pointer-events:none;position:absolute;left:0;right:0;top:0;bottom:0;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="n"><feTurbulence baseFrequency="0.9" numOctaves="3" type="fractalNoise"/></filter><rect width="200" height="200" filter="url(%23n)" opacity="0.15"/></svg>');z-index:6;animation:noise-anim 0.15s steps(6) infinite;opacity:0.7}
+  @keyframes rec-blink{0%,100%{opacity:1}50%{opacity:0.2}}
+  @keyframes scan-move{0%{transform:translateY(0)}100%{transform:translateY(100%)}}
+  @keyframes cam-flicker{0%{opacity:1}50%{opacity:0.95}100%{opacity:1}}
+  @keyframes noise-anim{0%{transform:translate(0,0)}16%{transform:translate(-3%,3%)}33%{transform:translate(3%,-2%)}50%{transform:translate(-2%,2%)}66%{transform:translate(2%,-3%)}83%{transform:translate(-1%,1%)}100%{transform:translate(2%,-2%)}}
+  #cam-prev:hover, #cam-next:hover{background:rgba(0,255,0,0.15);border-color:rgba(0,255,0,0.7);transform:translateY(-50%) scale(1.1);box-shadow:0 3px 12px rgba(0,255,0,0.4)}
+  #cam-prev:active, #cam-next:active{transform:translateY(-50%) scale(0.95)}
+  /* Window minimize / restore animations */
+  .window{transition:transform 260ms cubic-bezier(.2,.8,.2,1),opacity 260ms cubic-bezier(.2,.8,.2,1);transform-origin:center top;}
+  .window.minimizing{transform:translateY(18px) scale(.85);opacity:0}
+  .window.restoring{transform:translateY(18px) scale(.85);opacity:0}
+  .window.restore-active{transform:none;opacity:1}
+
+  /* Custom scrollbars (thin, subtle like classic XP) */
+  /* WebKit / Blink */
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-track{background:linear-gradient(#f3f6fb,#e9f1ff)}
+  ::-webkit-scrollbar-thumb{background:linear-gradient(#c7dffb,#b3d0f9);border-radius:6px;border:2px solid rgba(255,255,255,0.6)}
+  ::-webkit-scrollbar-thumb:hover{background:linear-gradient(#9cc3f5,#88b8f1)}
+  /* Firefox */
+  *{scrollbar-width:thin;scrollbar-color:#b3d0f9 #e9f1ff}
+
+  /* calendar widget (XP-like improved style) */
+  .calendar-ui { font-family: Tahoma, Arial, sans-serif; color:#000; }
+  .calendar-ui table { width:100%; border-collapse:collapse; font-size:11px; }
+  .calendar-ui th { color:#000;padding:6px;font-weight:bold;background:linear-gradient(#d6dff7,#c6d5f0);border:1px solid #aaa;font-size:11px }
+  .calendar-ui td { width:14.28%; height:60px; vertical-align:top; padding:4px; border:1px solid #bbb; cursor:pointer; background:#fff;position:relative;transition:all 0.2s }
+  .calendar-ui td:hover { background:#fff8dc;border-color:#5090d0;box-shadow:0 2px 4px rgba(80,144,208,0.25) }
+  .calendar-ui .today { background:linear-gradient(#fff6d9,#ffe8b3); border:2px solid #f0a000 }
+  .calendar-ui .event-day { background:linear-gradient(#e6f2ff,#d0e8ff); border:1px solid #5090d0;font-weight:bold }
+  .calendar-ui .day-num { font-size:12px; color:#000;font-weight:bold;margin-bottom:2px;display:block }
+  .calendar-ui .moon-icon { font-size:10px;position:absolute;bottom:3px;right:3px;opacity:0.6 }
+  .month-btn.active{background:linear-gradient(#e6e6e6,#d0d0d0)!important;border-color:#666!important}
+
+  /* Minesweeper visuals */
+  .mines-grid { display:grid; gap:0; background:#c0c0c0; padding:0; font-size:0; line-height:0; }
+  .mines-grid button { width:20px; height:20px; background:linear-gradient(135deg, #fff 0%, #c0c0c0 50%, #808080 100%); border:1px outset #c0c0c0; font-weight:bold; cursor:pointer; padding:0; font-size:11px; font-family:sans-serif; margin:0; vertical-align:top; }
+  .mines-grid button:active { border-style:inset; }
+  .mines-grid button.revealed { background:#c0c0c0; border:1px solid #808080; cursor:default; color:#000; }
+  .mines-grid button.flagged { background:linear-gradient(135deg, #fff 0%, #c0c0c0 50%, #808080 100%); color:#f00; }
+  .mines-grid button.mine-exploded { background:#f00; color:#000; }
+
+.tamagotchi-screen{width:100%;height:100%;background:url("https://i.pinimg.com/736x/89/aa/b3/89aab327bf691c0fe1914dbfca9113ab.jpg");background-size:cover;background-position:center;display:flex;align-items:flex-end;justify-content:center;position:relative;padding-bottom:20px}
+#center-area{display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
+.tamagotchi-pet{width:60px;image-rendering:pixelated;filter:drop-shadow(2px 2px 4px rgba(0,0,0,0.4));transition:all 0.3s ease}
+.emotion-bubble{position:absolute;top:-16px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#ffffff,#f8f8f8);border:2px solid #4a7c59;padding:3px 5px;border-radius:10px;font-size:14px;box-shadow:0 2px 6px rgba(0,0,0,0.25),inset 0 1px 0 rgba(255,255,255,0.8);z-index:10;opacity:0;transform:translateX(-50%) scale(0.8) translateY(-3px);transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);min-width:26px;text-align:center}
+.emotion-bubble.show{opacity:1;transform:translateX(-50%) scale(1) translateY(0px)}
+.emotion-bubble::after{content:"";position:absolute;bottom:-6px;left:35%;width:6px;height:6px;background:linear-gradient(135deg,#ffffff,#f8f8f8);border:2px solid #4a7c59;border-radius:50%;transform:scale(0.6);box-shadow:0 2px 3px rgba(0,0,0,0.15)}
+
+#notepadContent{background:#fff;border:1px inset #c0c0c0;font-family:'Lucida Console',monospace;font-size:12px;padding:2px;margin:0;resize:none;outline:none;color:#000}
+#taskbar{position:absolute;bottom:0;left:0;right:0;height:40px;background:linear-gradient(to bottom,#245edc,#1941a5);border-top:1px solid #4578dc;display:flex;align-items:center;padding:0 8px}
+.start-button{background:linear-gradient(to bottom,#3d8b37,#2d6b28);border:1px outset #5cb85c;border-radius:3px;color:#fff;padding:4px 12px;cursor:pointer;font-weight:bold;margin-right:8px}
+.start-button:active{border:1px inset #5cb85c}
+.taskbar-items{display:flex;gap:2px;flex:1}
+.taskbar-item{background:linear-gradient(to bottom,#245edc,#1941a5);border:1px outset #4578dc;color:#fff;padding:2px 8px;cursor:pointer;border-radius:2px;font-size:11px}
+.taskbar-item:active{border:1px inset #4578dc}
+.taskbar-time{color:#fff;font-size:11px;margin-left:auto}
+  
+  .tamagotchi-stats{padding:4px;background:#555;color:#fff;font-size:8px;text-align:center;border-top:1px solid #333}
+</style>
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+  import { getDatabase, ref, set, onValue, push, update, remove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDOfviv-UtJHHuF2pYD8ukhZjFqcBc2ZBc",
+    authDomain: "amiensbynight-7db78.firebaseapp.com",
+    databaseURL: "https://amiensbynight-7db78-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "amiensbynight-7db78",
+    storageBucket: "amiensbynight-7db78.firebasestorage.app",
+    messagingSenderId: "23217146096",
+    appId: "1:23217146096:web:8d9445c739ef7c6fa95a35",
+    measurementId: "G-KB6B1E5ZSZ"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
+
+  // User ID for Firebase
+  let userId = localStorage.getItem('userId');
+  if (!userId) {
+    userId = 'user_' + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem('userId', userId);
+  }
+
+  // Expose Firebase functions globally
+  window.firebaseDB = {
+    database,
+    ref,
+    set,
+    onValue,
+    push,
+    update,
+    remove
+  };
+  
+  // Expose userId globally
+  window.userId = userId;
+</script>
+
+<script>
+// Unified utilities
+const utils = {
+  get: id => document.getElementById(id)
+};
+
+function showBubble(emoji, duration = 3000) {
+  const bubble = utils.get('emotionBubble');
+  const emojiSpan = utils.get('cowpet-emoji');
+  
+  if (bubble && emojiSpan) {
+    emojiSpan.innerText = emoji;
+    bubble.classList.add('show');
+
+    if (window.bubbleTimeout) {
+      clearTimeout(window.bubbleTimeout);
+    }
+
+    window.bubbleTimeout = setTimeout(() => {
+      bubble.classList.remove('show');
+    }, duration);
+  }
+}
+
+// Initialize desktop pet
+function initDesktopPet() {
+  const emojis = ['😊', '😄', '🤔', '😴', '😋', '🙂', '😌'];
+  setInterval(() => {
+    const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+    showBubble(randomEmoji, 3000);
+  }, 8000);
+  console.log('Desktop pet initialized!');
+}
+</script>
+
+</head>
+<body>
+  <div id="frame">
+    <div id="desktop">
+      <div class="icons" id="iconsContainer"></div>
+    </div>
+
+    <!-- Context Menu -->
+    <div id="contextMenu">
+      <div class="ctx-item" data-action="refresh">Actualiser</div>
+      <div class="ctx-item" data-action="paste" style="opacity:0.5;cursor:default">Coller</div>
+      <div style="height:1px;background:#ccc;margin:2px 0"></div>
+      <div class="ctx-item" data-action="arrange">Réorganiser les icônes</div>
+      <div style="height:1px;background:#ccc;margin:2px 0"></div>
+      <div class="ctx-item" data-action="bg1">Arrière-plan: Bliss</div>
+      <div class="ctx-item" data-action="bg2">Arrière-plan: Azul</div>
+      <div class="ctx-item" data-action="bg3">Arrière-plan: Vert</div>
+      <div class="ctx-item" data-action="customBg">Changer le fond d'écran...</div>
+      <div style="height:1px;background:#ccc;margin:2px 0"></div>
+      <div class="ctx-item" data-action="properties" style="opacity:0.5;cursor:default">Propriétés</div>
+    </div>
+
+    <!-- File Context Menu -->
+    <div id="fileContextMenu" style="position:absolute;background:#fff;border:1px solid #aaa;box-shadow:2px 2px 6px rgba(0,0,0,0.3);display:none;z-index:9999;min-width:180px;padding:2px 0;font-size:12px">
+      <div class="ctx-item" data-action="open" style="padding:4px 24px;cursor:pointer">Open</div>
+      <div class="ctx-item" data-action="duplicate" style="padding:4px 24px;cursor:pointer">Duplicate</div>
+      <div class="ctx-item" data-action="rename" style="padding:4px 24px;cursor:pointer">Rename</div>
+      <div class="ctx-item" data-action="move" style="padding:4px 24px;cursor:pointer">Move to folder...</div>
+      <div style="height:1px;background:#ccc;margin:2px 0"></div>
+      <div class="ctx-item" data-action="delete" style="padding:4px 24px;cursor:pointer">Delete</div>
+      <div style="height:1px;background:#ccc;margin:2px 0"></div>
+      <div class="ctx-item" data-action="refresh" style="padding:4px 24px;cursor:pointer">Refresh</div>
+    </div>
+
+    <!-- Camera Window -->
+    <div id="cameraWin" class="window" style="width:720px;height:400px;left:280px;top:70px;">
+      <div class="titlebar">
+        <div class="left"><div class="title">Security Camera - <span id="cam-location-name">Camera 1</span></div></div>
+        <div class="controls"><button class="minimize">_</button><button class="maximize" style="pointer-events:none;opacity:0.7">□</button><button class="close">X</button></div>
+      </div>
+      <div class="content cam-screen" style="padding:0;height:calc(100% - 28px);overflow:hidden;background:#000;position:relative">
+        <img id="cam-img" src="https://static.wixstatic.com/media/7cbe3b_ffeb1b2ab1c249bfbf2f6a08e330fb43~mv2.png" alt="camera feed" style="width:100%;height:100%;display:block;object-fit:contain;" />
+        
+        <!-- Previous camera button -->
+        <button id="cam-prev" onclick="window.switchToCamera(window.currentCameraIndex - 1)" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.6);border:2px solid rgba(0,255,0,0.4);color:#0f0;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.8);transition:all 0.2s;z-index:10">‹</button>
+        
+        <!-- Next camera button -->
+        <button id="cam-next" onclick="window.switchToCamera(window.currentCameraIndex + 1)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.6);border:2px solid rgba(0,255,0,0.4);color:#0f0;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.8);transition:all 0.2s;z-index:10">›</button>
+        
+        <!-- Recording indicator (beeping button) -->
+        <div class="cam-rec-indicator"></div>
+        
+        <!-- Timer overlay -->
+        <div class="cam-overlay" id="cam-ts" style="position:absolute;bottom:8px;left:8px;color:#0f0;font-family:monospace;font-size:14px;text-shadow:0 0 4px #000,0 0 8px #000;z-index:10">05/11/2003 --:--:--</div>
+        
+        <!-- Scanlines -->
+        <div class="cam-scanlines"></div>
+        
+        <!-- Video noise overlay -->
+        <div class="cam-noise"></div>
+      </div>
+    </div>
+
+    <!-- Gallery Window -->
+    <div id="galleryWin" class="window" style="width:900px;height:650px;left:240px;top:40px;">
+      <div class="titlebar">
+        <div class="left"><div class="title">🖼️ Gallery</div></div>
+        <div class="controls"><button class="minimize">_</button><button class="maximize" style="pointer-events:none;opacity:0.7">□</button><button class="close">X</button></div>
+      </div>
+      <div class="content" style="height:calc(100% - 28px);background:#fff;padding:0;overflow:hidden;display:flex;flex-direction:column">
+        <!-- Compact toolbar -->
+        <div style="background:linear-gradient(180deg,#f8fbff 0%,#eff5fc 100%);padding:8px 16px;border-bottom:1px solid #d5e3f0;display:flex;gap:12px;align-items:center">
+          <button id="galleryRefresh" style="padding:5px 12px;background:#fff;border:1px solid #c0d0e0;border-radius:3px;cursor:pointer;font-size:11px;color:#2a5a8a;font-weight:500;transition:all 0.15s" onmouseover="this.style.background='#f0f8ff';this.style.borderColor='#90b0d0'" onmouseout="this.style.background='#fff';this.style.borderColor='#c0d0e0'">🔄 Refresh</button>
+          <div style="flex:1;font-size:11px;color:#4a6a8a;font-weight:500" id="galleryCount">0 images</div>
+          <div style="font-size:10px;color:#7a92aa">👁️ Double-click to view</div>
+        </div>
+        <!-- Scrollable grid area -->
+        <div id="galleryGrid" style="flex:1;overflow-y:scroll;overflow-x:hidden;padding:20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:16px;background:#fafcfe;align-content:start"></div>
+      </div>
+    </div>
+
+    <!-- Picture Viewer Window -->
+    <div id="pictureViewerWin" class="window" style="width:800px;height:600px;left:200px;top:50px;display:none;">
+      <div class="titlebar">
+        <div class="left"><div class="title" id="viewerTitle">Picture Viewer</div></div>
+        <div class="controls"><button class="minimize">_</button><button class="maximize" style="pointer-events:none;opacity:0.7">□</button><button class="close">X</button></div>
+      </div>
+      <div class="content" style="height:calc(100% - 28px);background:#2b2b2b;padding:0;overflow:hidden;display:flex;flex-direction:column">
+        <div style="background:#1a1a1a;padding:8px 12px;border-bottom:1px solid #444;display:flex;gap:8px;align-items:center">
+          <button id="viewerPrev" style="padding:6px 12px;background:linear-gradient(#555,#333);border:1px solid #222;border-radius:3px;cursor:pointer;font-size:14px;color:#fff">◀ Previous</button>
+          <button id="viewerNext" style="padding:6px 12px;background:linear-gradient(#555,#333);border:1px solid #222;border-radius:3px;cursor:pointer;font-size:14px;color:#fff">Next ▶</button>
+          <div style="width:1px;height:20px;background:#555"></div>
+          <div style="flex:1;font-size:12px;color:#ccc;text-align:center" id="viewerInfo">1 of 1</div>
+          <button id="viewerZoomIn" style="padding:6px 12px;background:linear-gradient(#555,#333);border:1px solid #222;border-radius:3px;cursor:pointer;font-size:14px;color:#fff">🔍+</button>
+          <button id="viewerZoomOut" style="padding:6px 12px;background:linear-gradient(#555,#333);border:1px solid #222;border-radius:3px;cursor:pointer;font-size:14px;color:#fff">🔍-</button>
+          <button id="viewerZoomReset" style="padding:6px 12px;background:linear-gradient(#555,#333);border:1px solid #222;border-radius:3px;cursor:pointer;font-size:11px;color:#fff">100%</button>
+        </div>
+        <div id="viewerContainer" style="flex:1;overflow:auto;display:flex;align-items:center;justify-content:center;position:relative">
+          <img id="viewerImage" style="max-width:100%;max-height:100%;display:block;object-fit:contain;transition:transform 0.2s" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Fax Overlay (Fullscreen) -->
+    <div id="faxOverlay" style="position:fixed;left:0;top:0;width:100vw;height:100vh;background:linear-gradient(180deg, #5a8ec5 0%, #3a7cbd 50%, #2d6db5 100%);z-index:10000;display:none">
+      <button id="faxCloseBtn" style="position:absolute;top:8px;right:8px;background:rgba(21,74,155,0.8);border:1px solid #fff;color:#fff;padding:6px 12px;cursor:pointer;font-size:12px;border-radius:3px;z-index:10001">Close Fax View</button>
+      <div id="faxWindowsContainer" style="width:100%;height:70%;position:relative;overflow:hidden;padding:60px;top:20%">
+        <!-- Fax windows will be rendered here -->
+      </div>
+    </div>
+
+    <!-- Paint Window -->
+    <div id="paintWin" class="window" style="width:720px;height:500px;left:80px;top:40px;display:none;">
+      <div class="titlebar">
+        <div class="left"><div class="title">untitled - Paint</div></div>
+        <div class="controls"><button class="minimize">_</button><button class="maximize" style="pointer-events:none;opacity:0.7">□</button><button class="close">X</button></div>
+      </div>
+      <div class="content" style="height:calc(100% - 28px);background:#f0f0f0;padding:0;overflow:hidden;display:flex;flex-direction:column">
+        <!-- Menu Bar -->
+        <div style="background:#ece9d8;padding:1px 2px;border-bottom:1px solid #808080;display:flex;gap:0;position:relative">
+          <div class="paint-menu-item" id="paintFileMenu" style="padding:2px 6px;font-size:11px;cursor:pointer">File</div>
+          <div class="paint-menu-item" style="padding:2px 6px;font-size:11px;cursor:pointer">Edit</div>
+          <div class="paint-menu-item" style="padding:2px 6px;font-size:11px;cursor:pointer">View</div>
+          <div class="paint-menu-item" style="padding:2px 6px;font-size:11px;cursor:pointer">Image</div>
+          <div class="paint-menu-item" style="padding:2px 6px;font-size:11px;cursor:pointer">Colors</div>
+          <div class="paint-menu-item" style="padding:2px 6px;font-size:11px;cursor:pointer">Help</div>
+          
+          <!-- File Dropdown -->
+          <div id="paintFileDropdown" style="display:none;position:absolute;top:22px;left:2px;background:#fff;border:1px solid #0000ff;box-shadow:2px 2px 4px rgba(0,0,0,0.4);z-index:10000;min-width:180px">
+            <div class="paint-dropdown-item" data-action="new" style="padding:3px 20px;font-size:11px;cursor:pointer">New<span style="float:right;color:#808080">Ctrl+N</span></div>
+            <div class="paint-dropdown-item" data-action="open" style="padding:3px 20px;font-size:11px;cursor:pointer">Open...<span style="float:right;color:#808080">Ctrl+O</span></div>
+            <div class="paint-dropdown-item" data-action="save" style="padding:3px 20px;font-size:11px;cursor:pointer">Save<span style="float:right;color:#808080">Ctrl+S</span></div>
+            <div class="paint-dropdown-item" data-action="saveas" style="padding:3px 20px;font-size:11px;cursor:pointer">Save As...</div>
+            <div style="height:1px;background:#c0c0c0;margin:2px 0"></div>
+            <div class="paint-dropdown-item" data-action="close" style="padding:3px 20px;font-size:11px;cursor:pointer">Exit</div>
+          </div>
+        </div>
+        
+        <div style="display:flex;flex-direction:column;flex:1;min-height:0">
+          <!-- Tool Box -->
+          <div style="background:#ece9d8;border-bottom:1px solid #808080;padding:2px;display:flex;gap:1px;align-items:center">
+            <button class="paint-tool active" data-tool="select" style="width:24px;height:24px;background:#ece9d8;border:1px solid #ece9d8;cursor:pointer;padding:0;margin:0" title="Select">
+              <svg width="20" height="20" viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="10" fill="none" stroke="#000" stroke-width="1.5"/></svg>
+            </button>
+            <button class="paint-tool" data-tool="eraser" style="width:24px;height:24px;background:#ece9d8;border:1px solid #ece9d8;cursor:pointer;padding:0;margin:0" title="Eraser">
+              <svg width="20" height="20" viewBox="0 0 16 16"><path d="M13 11L11 13 5 7 7 5z" fill="#ffc0cb"/><path d="M5 7l6 6h4v-2L9 5l-4 2z" fill="#fff" stroke="#000" stroke-width="1"/></svg>
+            </button>
+            <button class="paint-tool" data-tool="fill" style="width:24px;height:24px;background:#ece9d8;border:1px solid #ece9d8;cursor:pointer;padding:0;margin:0" title="Fill With Color">
+              <svg width="20" height="20" viewBox="0 0 16 16"><path d="M8 2L4 6h8L8 2z" fill="#c0c0c0" stroke="#000"/><path d="M4 6h8v2H4z" fill="#8080ff"/><rect x="5" y="8" width="6" height="6" fill="#8080ff"/></svg>
+            </button>
+            <button class="paint-tool" data-tool="picker" style="width:24px;height:24px;background:#ece9d8;border:1px solid #ece9d8;cursor:pointer;padding:0;margin:0" title="Pick Color">
+              <svg width="20" height="20" viewBox="0 0 16 16"><path d="M8 2L2 8l2 2 6-6-2-2z" fill="#c0c0c0" stroke="#000"/><rect x="3" y="9" width="2" height="4" fill="#8b4513"/></svg>
+            </button>
+            <button class="paint-tool" data-tool="pencil" style="width:24px;height:24px;background:#ece9d8;border:1px solid #ece9d8;cursor:pointer;padding:0;margin:0" title="Pencil">
+              <svg width="20" height="20" viewBox="0 0 16 16"><path d="M11 2l3 3-8 8H3v-3l8-8z" fill="#ffd700" stroke="#000"/><path d="M2 14h12" stroke="#000" stroke-width="1.5"/></svg>
+            </button>
+            <button class="paint-tool" data-tool="brush" style="width:24px;height:24px;background:#ece9d8;border:1px solid #ece9d8;cursor:pointer;padding:0;margin:0" title="Brush">
+              <svg width="20" height="20" viewBox="0 0 16 16"><ellipse cx="8" cy="4" rx="3" ry="2" fill="#8b4513"/><path d="M5 4v4c0 2 1.5 3 3 3s3-1 3-3V4" fill="#c0c0c0" stroke="#000"/></svg>
+            </button>
+            <button class="paint-tool" data-tool="line" style="width:24px;height:24px;background:#ece9d8;border:1px solid #ece9d8;cursor:pointer;padding:0;margin:0" title="Line">
+              <svg width="20" height="20" viewBox="0 0 16 16"><line x1="2" y1="14" x2="14" y2="2" stroke="#000" stroke-width="2"/></svg>
+            </button>
+            <button class="paint-tool" data-tool="rectangle" style="width:24px;height:24px;background:#ece9d8;border:1px solid #ece9d8;cursor:pointer;padding:0;margin:0" title="Rectangle">
+              <svg width="20" height="20" viewBox="0 0 16 16"><rect x="3" y="5" width="10" height="6" fill="none" stroke="#000" stroke-width="2"/></svg>
+            </button>
+            <button class="paint-tool" data-tool="ellipse" style="width:24px;height:24px;background:#ece9d8;border:1px solid #ece9d8;cursor:pointer;padding:0;margin:0" title="Ellipse">
+              <svg width="20" height="20" viewBox="0 0 16 16"><ellipse cx="8" cy="8" rx="6" ry="4" fill="none" stroke="#000" stroke-width="2"/></svg>
+            </button>
+            <button class="paint-tool" data-tool="rounded-rect" style="width:24px;height:24px;background:#ece9d8;border:1px solid #ece9d8;cursor:pointer;padding:0;margin:0" title="Rounded Rectangle">
+              <svg width="20" height="20" viewBox="0 0 16 16"><rect x="3" y="5" width="10" height="6" rx="2" fill="none" stroke="#000" stroke-width="2"/></svg>
+            </button>
+          </div>
+
+          <!-- Canvas Area -->
+          <div style="flex:1;overflow:auto;background:#c0c0c0;position:relative;padding:4px;min-height:0">
+            <canvas id="paintCanvas" width="600" height="350" style="background:#fff;display:block;cursor:crosshair;margin:0"></canvas>
+          </div>
+            
+          <!-- Color Palette -->
+          <div style="background:#ece9d8;padding:3px 4px;display:flex;gap:6px;align-items:center;height:38px;border-top:1px solid #fff">
+            <div style="display:flex;gap:4px;align-items:center">
+              <div style="width:38px;height:28px;border:1px solid #808080;position:relative;background:#fff;box-shadow:inset 1px 1px 0 #000">
+                <div id="paintColorDisplay1" style="position:absolute;left:2px;top:2px;width:26px;height:20px;background:#000;border:1px solid #000;box-shadow:1px 1px 0 rgba(255,255,255,0.5)"></div>
+                <div id="paintColorDisplay2" style="position:absolute;right:1px;bottom:1px;width:22px;height:16px;background:#fff;border:1px solid #000;box-shadow:1px 1px 0 rgba(255,255,255,0.5)"></div>
+              </div>
+            </div>
+            <div id="paintPalette" style="display:grid;grid-template-columns:repeat(20,1fr);gap:0;flex:1">
+              <!-- Colors will be added by JS -->
+            </div>
+            <button id="paintEditColors" style="padding:3px 8px;background:#ece9d8;border:1px outset #fff;cursor:pointer;font-size:10px;height:28px;box-shadow:1px 1px 0 #808080">Edit Colors &gt;&gt;</button>
+          </div>
+
+          <!-- Status Bar -->
+          <div style="background:#ece9d8;border-top:1px solid #fff;padding:2px 4px;display:flex;gap:8px;align-items:center;font-size:11px;height:20px">
+            <div style="flex:1;font-size:10px">For Help, click Help Topics on the Help Menu.</div>
+            <div id="paintStatus" style="border:1px inset #808080;padding:1px 6px;background:#fff;font-size:10px;height:16px;line-height:14px;min-width:90px;text-align:center;box-shadow:inset 1px 1px 0 #000">600 x 350px</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="taskbar">
+      <div id="start">
+        <!-- XP logo -->
+        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="4" fill="#0b62b3"/><g transform="translate(4,6)"><rect width="10" height="7" rx="1" fill="#ff4d4d"/><rect x="11" width="10" height="7" rx="1" fill="#ffd24d"/><rect y="8" width="10" height="7" rx="1" fill="#00bfff"/><rect x="11" y="8" width="10" height="7" rx="1" fill="#82ff8a"/></g></svg>
+      </div>
+      <div id="task-list"></div>
+      <div id="clock"></div>
+    </div>
+
+    <!-- Explorer Window -->
+  <div id="explorerWin" class="window" style="width:620px;height:380px;left:40px;top:60px;">
+      <div class="titlebar">
+        <div class="left"><div class="title">Explorateur</div></div>
+        <div class="controls"><button class="minimize">_</button><button class="maximize" style="pointer-events:none;opacity:0.7">□</button><button class="close">X</button></div>
+      </div>
+      <div class="content" style="display:flex;flex-direction:column;height:calc(100% - 36px);">
+        <div class="explorer-container" style="flex:1;min-height:0">
+          <div class="explorer-left" style="height:100%;overflow:auto">
+            <h4>File and Folder Tasks</h4>
+            <button id="exNew" style="width:100%;padding:8px;background:linear-gradient(#fff,#e9f6ff);border:1px solid #bcdcff;border-radius:3px;cursor:pointer;font-size:11px;color:#023f78;margin-bottom:6px;text-align:left">📄 New File</button>
+            <button id="exNewFolder" style="width:100%;padding:8px;background:linear-gradient(#fff,#e9f6ff);border:1px solid #bcdcff;border-radius:3px;cursor:pointer;font-size:11px;color:#023f78;margin-bottom:6px;text-align:left">📁 New Folder</button>
+            <button id="exUpload" style="width:100%;padding:8px;background:linear-gradient(#fff,#e9f6ff);border:1px solid #bcdcff;border-radius:3px;cursor:pointer;font-size:11px;color:#023f78;margin-bottom:6px;text-align:left">📷 Upload Image</button>
+            <div style="height:10px"></div>
+            <h4>Other Places</h4>
+            <a class="link">My Documents</a>
+            <a class="link">My Computer</a>
+            <a class="link">My Network Places</a>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;min-height:0">
+            <div style="padding:6px 8px;background:#f7fbff;border:1px solid #dde9f7;border-radius:3px;margin:6px;margin-bottom:6px;font-size:11px" id="folderBreadcrumb">
+              <span style="font-weight:bold">📁 Documents</span>
+            </div>
+            <input type="file" id="fileUploadInput" accept="image/*" style="display:none">
+            <div style="flex:1;overflow:auto;min-height:0;padding:0 6px">
+              <table id="files" style="min-width:100%">
+                <thead>
+                  <tr><th>Name</th><th style="width:90px">Size</th><th style="width:160px">Modified</th></tr>
+                </thead>
+                <tbody id="filesTbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+    <!-- Firefox Browser Window -->
+    <div id="iexploreWin" class="window" style="width:750px;height:550px;left:100px;top:50px;display:none">
+      <div class="titlebar">
+        <div class="left"><div class="title">Saleux Actualités - Microsoft Internet Explorer</div></div>
+        <div class="controls"><button class="minimize">_</button><button class="maximize" style="pointer-events:none;opacity:0.7">□</button><button class="close">X</button></div>
+      </div>
+      <div class="content" style="padding:0;background:#fff;overflow:hidden;display:flex;flex-direction:column;height:calc(100% - 28px)">
+        <!-- IE 6 Menu Bar -->
+        <div style="background:linear-gradient(to bottom, #e8edf5, #d0d9e8);border-bottom:1px solid #8b99a8;padding:1px 3px;display:flex;gap:6px;font-size:11px;font-family:'MS Sans Serif',sans-serif;flex-shrink:0">
+          <div style="padding:2px 5px;cursor:pointer" onmouseover="this.style.background='#5a8dd5';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='#000'">Fichier</div>
+          <div style="padding:2px 5px;cursor:pointer" onmouseover="this.style.background='#5a8dd5';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='#000'">Edition</div>
+          <div style="padding:2px 5px;cursor:pointer" onmouseover="this.style.background='#5a8dd5';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='#000'">Affichage</div>
+          <div style="padding:2px 5px;cursor:pointer" onmouseover="this.style.background='#5a8dd5';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='#000'">Favoris</div>
+          <div style="padding:2px 5px;cursor:pointer" onmouseover="this.style.background='#5a8dd5';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='#000'">Outils</div>
+          <div style="padding:2px 5px;cursor:pointer" onmouseover="this.style.background='#5a8dd5';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='#000'">?</div>
+        </div>
+        
+        <!-- IE 6 Navigation Toolbar -->
+        <div style="background:linear-gradient(to bottom, #e8edf5, #d0d9e8);padding:3px 4px;border-bottom:1px solid #8b99a8;display:flex;align-items:center;gap:2px;flex-shrink:0">
+          <button onclick="ieGoBack()" style="background:linear-gradient(to bottom, #fff, #e3e9f1);border:1px solid #8b99a8;padding:2px 6px;cursor:pointer;font-size:16px;font-family:'MS Sans Serif',sans-serif;line-height:16px;min-width:24px;height:24px" onmouseover="this.style.background='linear-gradient(to bottom, #fff, #f0f4f9)'" onmouseout="this.style.background='linear-gradient(to bottom, #fff, #e3e9f1)'">←</button>
+          <button style="background:linear-gradient(to bottom, #fff, #e3e9f1);border:1px solid #8b99a8;padding:2px 6px;font-size:16px;font-family:'MS Sans Serif',sans-serif;line-height:16px;min-width:24px;height:24px;opacity:0.4;cursor:default">→</button>
+          <button style="background:linear-gradient(to bottom, #fff, #e3e9f1);border:1px solid #8b99a8;padding:2px 6px;cursor:pointer;font-size:16px;font-family:'MS Sans Serif',sans-serif;line-height:16px;min-width:24px;height:24px" onmouseover="this.style.background='linear-gradient(to bottom, #fff, #f0f4f9)'" onmouseout="this.style.background='linear-gradient(to bottom, #fff, #e3e9f1)'">⟳</button>
+          <button style="background:linear-gradient(to bottom, #fff, #e3e9f1);border:1px solid #8b99a8;padding:2px 6px;cursor:pointer;font-size:16px;font-family:'MS Sans Serif',sans-serif;line-height:16px;min-width:24px;height:24px" onmouseover="this.style.background='linear-gradient(to bottom, #fff, #f0f4f9)'" onmouseout="this.style.background='linear-gradient(to bottom, #fff, #e3e9f1)'">✕</button>
+          <div style="flex:1;display:flex;align-items:center;gap:3px;margin-left:2px">
+            <span style="font-size:11px;color:#000;font-family:'MS Sans Serif',sans-serif">Adresse</span>
+            <input type="text" id="ieUrlBar" value="http://www.saleux-actualites.fr/faits-divers/drame-saleux-lisa-retrouvee-morte" readonly style="flex:1;background:#fff;border:1px inset #8b99a8;padding:2px 4px;font-size:11px;font-family:'MS Sans Serif',sans-serif">
+          </div>
+          <button style="background:linear-gradient(to bottom, #fff, #e3e9f1);border:1px solid #8b99a8;padding:2px 8px;cursor:pointer;font-size:11px;font-family:'MS Sans Serif',sans-serif;height:24px" onmouseover="this.style.background='linear-gradient(to bottom, #fff, #f0f4f9)'" onmouseout="this.style.background='linear-gradient(to bottom, #fff, #e3e9f1)'">Aller</button>
+        </div>
+        
+        <!-- Tab bar (IE style - single page) -->
+        <div style="background:#d0d9e8;border-bottom:1px solid #8b99a8;padding:2px 2px 0 2px;display:flex;gap:1px;flex-shrink:0">
+          <div id="ieTab1" style="background:linear-gradient(to bottom, #fff, #f5f5f5);border:1px solid #8b99a8;border-bottom:none;padding:3px 8px;font-size:11px;font-family:'MS Sans Serif',sans-serif;border-radius:3px 3px 0 0">Saleux Actualités</div>
+        </div>
+        
+        <!-- Browser content area with scrollbar -->
+        <div style="flex:1;overflow-y:auto;overflow-x:hidden;background:#fff">
+          <!-- News Article -->
+          <div id="ieContent1" style="display:block">
+            <div style="padding:12px 16px;font-family:Arial,sans-serif;font-size:12px">
+            <!-- Header -->
+            <div style="border-bottom:2px solid #e95420;padding-bottom:8px;margin-bottom:12px">
+              <div style="color:#e95420;font-size:11px;font-weight:bold;letter-spacing:0.5px;margin-bottom:6px">SALEUX ACTUALITÉS</div>
+              <h1 style="font-size:18px;margin:0 0 8px 0;line-height:1.3;color:#000;font-weight:bold">Le corps de Lisa retrouvé sans vie</h1>
+              <div style="color:#666;font-size:10px">Par Marie Dubois | Decembre 2003 à 18h32</div>
+            </div>
+            
+            <!-- Article content -->
+            <div style="font-size:11px;line-height:1.6;color:#000">
+              <p style="margin:0 0 10px 0"><b>SALEUX</b> - Nous sommes dans le regret de vous annoncer la découverte du corps de Lisa, disparue depuis plusieurs semaines. C'est ce mardi que la police a découvert son corps, à quelques centaines de mètres des immeubles de la résidence la Rose des Sables. Il y a quelques jours, les habitants avaient découvert avec horreur des traces de sang dans la cave de l'immeuble, qui a mis la police sur la piste d'un meurtre dans la zone.</p>
+              
+              <p style="margin:0 0 10px 0">Lisa était une amie, mais également un membre clef de notre commune. Cette professeure des écoles avait toujours une place pour les enfants de la ville, et en sa mémoire l'école maternelle St-Gustave ne rouvrira pas ce janvier.</p>
+              
+              <p style="margin:0 0 10px 0">"C'était une personne adorable, toujours souriante", témoigne une voisine de Lisa, sous le choc. "On ne peut pas croire qu'une chose pareille soit arrivée. Son mari est complètement effondré, il ne quitte plus la maison."</p>
+              
+              <p style="margin:0 0 10px 0">La municipalité de Saleux a fait part de sa "profonde tristesse" et assure les proches de la victime de son soutien. Selon nos informations, une cellule psychologique pourrait être mise en place pour accompagner les habitants du quartier, particulièrement affectés par ce drame.</p>
+              
+              <p style="margin:0 0 10px 0"><i>L'enquête se poursuit. Nos équipes restent mobilisées pour vous tenir informés des développements de cette affaire.</i></p>
+            </div>
+            
+            <!-- Comments section -->
+            <div style="border-top:2px solid #ddd;padding-top:12px;margin-top:16px">
+              <div style="font-size:13px;font-weight:bold;margin-bottom:10px;color:#000">Commentaires (4)</div>
+              
+              <div style="margin-bottom:12px;padding:8px;background:#f5f5f5;border-left:2px solid #999">
+                <div style="font-weight:bold;font-size:11px;color:#0645ad;margin-bottom:4px">Sophie M. • il y a 10 jours</div>
+                <div style="font-size:11px;line-height:1.5">Tellement triste... je la croisais souvent à l'école quand je venais chercher mon fils. Elle était si dévouée. Mes pensées vont à son mari, il doit être détruit. Courage à lui. 😢</div>
+              </div>
+              
+              <div style="margin-bottom:12px;padding:8px;background:#f5f5f5;border-left:2px solid #999">
+                <div style="font-weight:bold;font-size:11px;color:#0645ad;margin-bottom:4px">MamanDeuxEnfants • il y a 8 jours</div>
+                <div style="font-size:11px;line-height:1.5">Une vraie tragédie pour notre petite commune. Lisa était une enseignante formidable. Le pauvre mari ne méritait pas ça. Toutes mes condoléances à la famille.</div>
+              </div>
+              
+              <div style="margin-bottom:12px;padding:8px;background:#f5f5f5;border-left:2px solid #999">
+                <div style="font-weight:bold;font-size:11px;color:#0645ad;margin-bottom:4px">ApresMidiSoleil. • il y a 8 jour</div>
+                <div style="font-size:11px;line-height:1.5">Mon cœur se brise pour le mari... Les traces de sang dans la cave, c'est horrible. J'espère qu'il trouvera la force de surmonter cette épreuve. Repose en paix Lisa.</div>
+              </div>
+              
+              <div style="margin-bottom:12px;padding:8px;background:#f5f5f5;border-left:2px solid #999">
+                <div style="font-weight:bold;font-size:11px;color:#0645ad;margin-bottom:4px">LaCuisineDeMarie. • il y a 4 jour</div>
+                <div style="font-size:11px;line-height:1.5">Le pauvre mari . . . perdre sa fille il y a quelques mois, puis sa femme. Courage à lui.</div>
+              </div>
+
+               <div style="margin-bottom:12px;padding:8px;background:#f5f5f5;border-left:2px solid #999">
+                <div style="font-weight:bold;font-size:11px;color:#0645ad;margin-bottom:4px">Claire D. • il y a 20 heures</div>
+                <div style="font-size:11px;line-height:1.5">Je connaissais Lisa, elle était dévastée par la mort de sa fille, surtout qu'elle était au volant de la voiture. On pensais qu'elle avait prit sa vie, mais la vérité est encore pire.</div>
+              </div>
+              
+                    <div style="margin-bottom:12px;padding:8px;background:#f5f5f5;border-left:2px solid #999">
+                <div style="font-weight:bold;font-size:11px;color:#0645ad;margin-bottom:4px">SoDire. • il y a 10 heures</div>
+                <div style="font-size:11px;line-height:1.5">Sa fille était pas attachée c'était un peu de sa faute bien fait.</div>
+              </div>
+              
+
+            </div>
+            </div>
+          </div>
+          
+        </div>
+        
+        <!-- Status bar -->
+        <div style="background:linear-gradient(to bottom, #e8edf5, #d0d9e8);border-top:1px solid #8b99a8;padding:2px 6px;font-size:10px;font-family:'MS Sans Serif',sans-serif;color:#000;flex-shrink:0">Terminé</div>
+      </div>
+    </div>
+
+    <!-- Notepad Window -->
+    <div id="notepadWin" class="window" style="width:650px;height:450px;left:140px;top:100px;">
+      <div class="titlebar">
+        <div class="left"><div class="title">Sans titre - Notepad</div></div>
+        <div class="controls"><button class="minimize">_</button><button class="maximize" style="pointer-events:none;opacity:0.7">□</button><button class="close">X</button></div>
+      </div>
+      <div class="content" style="padding:0;background:#ece9d8">
+        <!-- Menu bar -->
+        <div class="menu-bar" style="display:flex;gap:0;margin-bottom:0;font-size:11px;background:#ece9d8;padding:0;border:none;border-bottom:1px solid #d4d0c8">
+          <div class="menu" data-menu="file"><span style="display:block;padding:3px 8px;cursor:pointer">Fichier</span>
+            <div class="submenu" style="display:none;position:absolute;background:#fff;border:1px solid #666;box-shadow:2px 2px 4px rgba(0,0,0,0.3);min-width:180px;z-index:3000">
+              <div id="mn-file-new" style="padding:4px 26px 4px 8px;cursor:pointer;position:relative"><span>Nouveau</span><span style="position:absolute;right:8px;color:#666">Ctrl+N</span></div>
+              <div id="mn-file-open" style="padding:4px 26px 4px 8px;cursor:pointer;position:relative"><span>Ouvrir...</span><span style="position:absolute;right:8px;color:#666">Ctrl+O</span></div>
+              <div id="mn-file-save" style="padding:4px 26px 4px 8px;cursor:pointer;position:relative"><span>Enregistrer</span><span style="position:absolute;right:8px;color:#666">Ctrl+S</span></div>
+              <div id="mn-file-saveas" style="padding:4px 8px;cursor:pointer">Enregistrer sous...</div>
+              <div style="height:1px;background:#d4d0c8;margin:2px 0"></div>
+              <div id="mn-file-print" class="disabled" style="padding:4px 26px 4px 8px;position:relative"><span>Imprimer...</span><span style="position:absolute;right:8px;color:#666">Ctrl+P</span></div>
+            </div>
+          </div>
+          <div class="menu" data-menu="edit"><span style="display:block;padding:3px 8px;cursor:pointer">Édition</span>
+            <div class="submenu" style="display:none;position:absolute;background:#fff;border:1px solid #666;box-shadow:2px 2px 4px rgba(0,0,0,0.3);min-width:180px;z-index:3000">
+              <div id="mn-edit-undo" style="padding:4px 26px 4px 8px;cursor:pointer;position:relative"><span>Annuler</span><span style="position:absolute;right:8px;color:#666">Ctrl+Z</span></div>
+              <div style="height:1px;background:#d4d0c8;margin:2px 0"></div>
+              <div id="mn-edit-cut" class="disabled" style="padding:4px 26px 4px 8px;position:relative"><span>Couper</span><span style="position:absolute;right:8px;color:#666">Ctrl+X</span></div>
+              <div id="mn-edit-copy" class="disabled" style="padding:4px 26px 4px 8px;position:relative"><span>Copier</span><span style="position:absolute;right:8px;color:#666">Ctrl+C</span></div>
+              <div id="mn-edit-paste" class="disabled" style="padding:4px 26px 4px 8px;position:relative"><span>Coller</span><span style="position:absolute;right:8px;color:#666">Ctrl+V</span></div>
+            </div>
+          </div>
+          <div class="menu" data-menu="format"><span style="display:block;padding:3px 8px;cursor:pointer">Format</span>
+            <div class="submenu" style="display:none;position:absolute;background:#fff;border:1px solid #666;box-shadow:2px 2px 4px rgba(0,0,0,0.3);min-width:180px;z-index:3000">
+              <div id="mn-format-bold" style="padding:4px 26px 4px 8px;cursor:pointer;position:relative"><span><b>Gras</b></span><span style="position:absolute;right:8px;color:#666">Ctrl+B</span></div>
+              <div id="mn-format-italic" style="padding:4px 26px 4px 8px;cursor:pointer;position:relative"><span><i>Italique</i></span><span style="position:absolute;right:8px;color:#666">Ctrl+I</span></div>
+              <div id="mn-format-underline" style="padding:4px 26px 4px 8px;cursor:pointer;position:relative"><span><u>Souligné</u></span><span style="position:absolute;right:8px;color:#666">Ctrl+U</span></div>
+              <div style="height:1px;background:#d4d0c8;margin:2px 0"></div>
+              <div id="mn-format-font" style="padding:4px 8px;cursor:pointer">Police...</div>
+              <div id="mn-format-color" style="padding:4px 8px;cursor:pointer">Couleur du texte...</div>
+            </div>
+          </div>
+          <div class="menu" data-menu="insert"><span style="display:block;padding:3px 8px;cursor:pointer">Insertion</span>
+            <div class="submenu" style="display:none;position:absolute;background:#fff;border:1px solid #666;box-shadow:2px 2px 4px rgba(0,0,0,0.3);min-width:180px;z-index:3000">
+              <div id="mn-insert-checkbox" style="padding:4px 8px;cursor:pointer">☐ Case à cocher</div>
+              <div id="mn-insert-date" style="padding:4px 26px 4px 8px;cursor:pointer;position:relative"><span>Date/Heure</span><span style="position:absolute;right:8px;color:#666">F5</span></div>
+            </div>
+          </div>
+          <div class="menu" data-menu="view"><span style="display:block;padding:3px 8px;cursor:pointer">Affichage</span>
+            <div class="submenu" style="display:none;position:absolute;background:#fff;border:1px solid #666;box-shadow:2px 2px 4px rgba(0,0,0,0.3);min-width:180px;z-index:3000">
+              <div id="mn-view-toolbar" style="padding:4px 8px;cursor:pointer;position:relative"><span>✓ Barre d'outils</span></div>
+              <div id="mn-view-statusbar" style="padding:4px 8px;cursor:pointer;position:relative"><span>✓ Barre d'état</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Barre d'outils de mise en forme -->
+        <div id="notepadToolbar" style="display:flex;gap:3px;align-items:center;padding:4px 6px;background:#ece9d8;border-bottom:1px solid #d4d0c8;flex-wrap:wrap">
+          <!-- Groupe: Fichier -->
+          <button id="btnNew" title="Nouveau (Ctrl+N)" style="width:24px;height:24px;background:#fff;border:1px solid #bbb;cursor:pointer;border-radius:2px;font-size:16px;line-height:20px;padding:0">📄</button>
+          <button id="btnOpen" title="Ouvrir (Ctrl+O)" style="width:24px;height:24px;background:#fff;border:1px solid #bbb;cursor:pointer;border-radius:2px;font-size:16px;line-height:20px;padding:0">📁</button>
+          <button id="btnSave" title="Enregistrer (Ctrl+S)" style="width:24px;height:24px;background:#fff;border:1px solid #bbb;cursor:pointer;border-radius:2px;font-size:16px;line-height:20px;padding:0">💾</button>
+          <div style="width:1px;height:20px;background:#bbb;margin:0 3px"></div>
+          
+          <!-- Groupe: Mise en forme -->
+          <button id="btnBold" title="Gras (Ctrl+B)" style="padding:2px 6px;font-weight:bold;font-size:12px;background:#fff;border:1px solid #bbb;cursor:pointer;border-radius:2px;height:24px">B</button>
+          <button id="btnItalic" title="Italique (Ctrl+I)" style="padding:2px 6px;font-style:italic;font-size:12px;background:#fff;border:1px solid #bbb;cursor:pointer;border-radius:2px;height:24px">I</button>
+          <button id="btnUnderline" title="Souligné (Ctrl+U)" style="padding:2px 6px;text-decoration:underline;font-size:12px;background:#fff;border:1px solid #bbb;cursor:pointer;border-radius:2px;height:24px">U</button>
+          <div style="width:1px;height:20px;background:#bbb;margin:0 3px"></div>
+          
+          <!-- Groupe: Police -->
+          <select id="fontSize" title="Taille de police" style="padding:2px 4px;background:#fff;border:1px solid #bbb;cursor:pointer;font-size:11px;height:24px">
+            <option value="8px">8</option>
+            <option value="10px">10</option>
+            <option value="12px">12</option>
+            <option value="14px" selected>14</option>
+            <option value="16px">16</option>
+            <option value="18px">18</option>
+            <option value="20px">20</option>
+            <option value="24px">24</option>
+            <option value="28px">28</option>
+          </select>
+          
+          <input id="textColor" type="color" value="#000000" title="Couleur du texte" style="width:32px;height:24px;cursor:pointer;border:1px solid #bbb;border-radius:2px;padding:2px">
+          <div style="width:1px;height:20px;background:#bbb;margin:0 3px"></div>
+          
+          <!-- Groupe: Surligneur -->
+          <button id="highlightYellow" title="Surligner en jaune" style="width:24px;height:24px;background:#ffff00;border:1px solid #bbb;cursor:pointer;border-radius:2px"></button>
+          <button id="highlightGreen" title="Surligner en vert" style="width:24px;height:24px;background:#90ee90;border:1px solid #bbb;cursor:pointer;border-radius:2px"></button>
+          <button id="highlightPink" title="Surligner en rose" style="width:24px;height:24px;background:#ffb6c1;border:1px solid #bbb;cursor:pointer;border-radius:2px"></button>
+          <button id="highlightBlue" title="Surligner en bleu" style="width:24px;height:24px;background:#add8e6;border:1px solid #bbb;cursor:pointer;border-radius:2px"></button>
+          <button id="highlightOrange" title="Surligner en orange" style="width:24px;height:24px;background:#ffa500;border:1px solid #bbb;cursor:pointer;border-radius:2px"></button>
+          <button id="clearHighlight" title="Aucun surlignage" style="width:24px;height:24px;background:#fff;border:1px solid #bbb;cursor:pointer;border-radius:2px;font-size:14px;line-height:20px">⊗</button>
+          <div style="width:1px;height:20px;background:#bbb;margin:0 3px"></div>
+          
+          <!-- Groupe: Insertion -->
+          <button id="btnCheckbox" title="Insérer une case à cocher" style="padding:2px 6px;background:#fff;border:1px solid #bbb;cursor:pointer;border-radius:2px;font-size:14px;height:24px">☐</button>
+          <div style="width:1px;height:20px;background:#bbb;margin:0 3px"></div>
+          
+          <!-- Groupe: Alignement -->
+          <button id="btnAlignLeft" title="Aligner à gauche" style="padding:2px 6px;background:#fff;border:1px solid #bbb;cursor:pointer;border-radius:2px;font-size:12px;height:24px;line-height:20px">⬅</button>
+          <button id="btnAlignCenter" title="Centrer" style="padding:2px 6px;background:#fff;border:1px solid #bbb;cursor:pointer;border-radius:2px;font-size:12px;height:24px;line-height:20px">↔</button>
+          <button id="btnAlignRight" title="Aligner à droite" style="padding:2px 6px;background:#fff;border:1px solid #bbb;cursor:pointer;border-radius:2px;font-size:12px;height:24px;line-height:20px">➡</button>
+        </div>
+        
+        <div id="notepadArea" contenteditable="true" style="width:100%;height:330px;font-size:14px;font-family:Tahoma, sans-serif;background:#fff;border:none;padding:8px;overflow-y:auto;white-space:pre-wrap;outline:none"></div>
+        
+        <div id="notepadStatusbar" style="display:flex;gap:8px;align-items:center;padding:2px 8px;border-top:1px solid #d4d0c8;background:#ece9d8;height:20px">
+          <div id="notepadStatus" class="retro-text" style="font-size:11px;color:#000;flex:1"></div>
+          <div style="font-size:11px;color:#000">Ln <span id="statusLine">1</span>, Col <span id="statusCol">1</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calendar Window -->
+    <div id="calendarWin" class="window" style="width:680px;height:500px;left:220px;top:80px;display:none;">
+      <div class="titlebar">
+        <div class="left"><img class="app-icon" style="width:16px;height:16px"/><div class="title" id="calendarTitle">Calendrier - Janvier 2004</div></div>
+        <div class="controls"><button class="minimize">_</button><button class="maximize" style="pointer-events:none;opacity:0.7">□</button><button class="close">X</button></div>
+      </div>
+      <div class="content calendar-ui" style="padding:8px;display:flex;gap:8px;height:calc(100% - 28px);background:#ece9d8">
+        <div style="flex:1;min-width:400px;display:flex;flex-direction:column">
+          <!-- Year and Month Navigation -->
+          <div style="margin-bottom:8px;display:flex;gap:6px;align-items:center;background:#fff;padding:6px;border:2px outset #dfdfdf;border-radius:2px">
+            <button id="prevYear" style="padding:4px 8px;background:linear-gradient(#fff,#e0e0e0);border:1px solid #999;border-radius:2px;cursor:pointer;font-weight:bold;font-size:11px">◄◄</button>
+            <button id="prevMonth" style="padding:4px 8px;background:linear-gradient(#fff,#e0e0e0);border:1px solid #999;border-radius:2px;cursor:pointer;font-weight:bold;font-size:11px">◄</button>
+            <select id="monthSelect" style="flex:1;padding:4px;border:1px solid #999;background:#fff;cursor:pointer;font-size:11px">
+              <option value="0">Janvier</option>
+              <option value="1">Février</option>
+              <option value="2">Mars</option>
+              <option value="3">Avril</option>
+              <option value="4">Mai</option>
+              <option value="5">Juin</option>
+              <option value="6">Juillet</option>
+              <option value="7">Août</option>
+              <option value="8">Septembre</option>
+              <option value="9">Octobre</option>
+              <option value="10">Novembre</option>
+              <option value="11">Décembre</option>
+            </select>
+            <select id="yearSelect" style="padding:4px;border:1px solid #999;background:#fff;cursor:pointer;font-size:11px">
+              <option value="2003">2003</option>
+              <option value="2004">2004</option>
+            </select>
+            <button id="nextMonth" style="padding:4px 8px;background:linear-gradient(#fff,#e0e0e0);border:1px solid #999;border-radius:2px;cursor:pointer;font-weight:bold;font-size:11px">►</button>
+            <button id="nextYear" style="padding:4px 8px;background:linear-gradient(#fff,#e0e0e0);border:1px solid #999;border-radius:2px;cursor:pointer;font-weight:bold;font-size:11px">►►</button>
+          </div>
+          <div class="calendar-container" style="background:#fff;padding:8px;border:2px inset #dfdfdf;flex:1;overflow:auto">
+            <table style="width:100%;border-collapse:collapse">
+              <thead>
+                <tr style="background:linear-gradient(#d6dff7,#c6d5f0)"><th style="padding:6px;font-size:11px;color:#000;border:1px solid #aaa">Lun</th><th style="padding:6px;font-size:11px;color:#000;border:1px solid #aaa">Mar</th><th style="padding:6px;font-size:11px;color:#000;border:1px solid #aaa">Mer</th><th style="padding:6px;font-size:11px;color:#000;border:1px solid #aaa">Jeu</th><th style="padding:6px;font-size:11px;color:#000;border:1px solid #aaa">Ven</th><th style="padding:6px;font-size:11px;color:#000;border:1px solid #aaa">Sam</th><th style="padding:6px;font-size:11px;color:#000;border:1px solid #aaa">Dim</th></tr>
+              </thead>
+              <tbody id="calendarBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="event-panel retro-text" id="eventPanel" style="width:220px;background:#fff;padding:8px;border:2px inset #dfdfdf;overflow-y:auto;overflow-x:hidden">
+          <h3 style="margin:0 0 8px 0;font-size:12px;color:#00008b;font-weight:bold">Aucun événement</h3>
+          <p style="margin:0;font-size:11px;color:#000">Sélectionne un jour pour voir ou ajouter des événements.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Miltank Virtual Pet Window -->
+    <div id="tamagotchiWin" class="window" style="width:330px;height:349px;left:50px;top:50px;display:none;">
+      <div class="titlebar">
+        <div class="left"><img class="app-icon" style="width:16px;height:16px"/><div class="title">Desktop Pet</div></div>
+        <div class="controls"><button class="minimize">_</button><button class="maximize" style="pointer-events:none;opacity:0.7">□</button><button class="close">X</button></div>
+      </div>
+      <div class="content" style="padding:0;background:#f8fbff;height:calc(100% - 28px);overflow:hidden;">
+        <iframe width="314" height="321" scrolling="no" src="https://gifypet.neocities.org/pet/pet.html?name=Cow&dob=1764932344&gender=f&element=Water&pet=https%3A%2F%2Fstatic.wixstatic.com%2Fmedia%2F7cbe3b_a44cfdcc40464db0b559c304a101b4cd~mv2.png&map=hills.jpg&background=paper.jpg&tablecolor=black&textcolor=black" frameborder="0" style="width:100%;height:100%;border:none;"></iframe>
+      </div>
+    </div>
+
+    <!-- Minesweeper Window (Démineur) -->
+    <div id="minesWin" class="window" style="width:220px;height:280px;left:260px;top:90px;display:none;">
+      <div class="titlebar">
+        <div class="left"><div class="title">Démineur</div></div>
+        <div class="controls"><button class="minimize">_</button><button class="maximize" style="pointer-events:none;opacity:0.7">□</button><button class="close">X</button></div>
+      </div>
+      <div class="content retro-text" style="height:calc(100% - 28px);display:flex;flex-direction:column;background:#ece9d8;padding:8px">
+        <div style="background:#bdbdbd;border:3px inset #808080;padding:6px">
+          <div class="mines-info" style="display:flex;gap:12px;align-items:center;margin-bottom:6px;padding:6px;background:#bdbdbd;border:3px inset #808080">
+            <div class="mines-count" id="minesRemaining" style="background:#000;color:#f00;padding:2px 6px;font-family:'Courier New',monospace;font-size:16px;font-weight:bold;border:1px solid #000">007</div>
+            <div style="flex:1;text-align:center"><button id="minesNew" style="font-size:18px;padding:2px 6px;background:linear-gradient(135deg, #fff 0%, #c0c0c0 50%, #808080 100%);border:1px outset #c0c0c0;cursor:pointer">🙂</button></div>
+            <div id="minesStatus" style="background:#000;color:#f00;padding:2px 6px;font-family:'Courier New',monospace;font-size:16px;font-weight:bold;border:1px solid #000">000</div>
+          </div>
+          <div id="minesGrid" class="mines-grid"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Start Menu (dynamic with icons) -->
+    <div id="startMenu" class="start-menu" style="display:none;position:absolute;z-index:4000;left:8px;bottom:48px">
+      <div class="sm-header" style="background:linear-gradient(#0b62b3,#0b4fa0);color:#fff;padding:6px 8px;display:flex;align-items:center;gap:6px">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Frutiger_Aero_icon.png" alt="user" style="width:32px;height:32px;border-radius:50%"/>
+        <div>
+          <div style="font-weight:bold;font-size:12px">Utilisateur</div>
+          <div style="font-size:10px;opacity:0.9">Bienvenue</div>
+        </div>
+      </div>
+      <div class="sm-body" style="display:flex;height:300px">
+        <div class="sm-left" id="leftPanel" style="width:200px;background:#fff;padding:8px;overflow-y:auto"></div>
+        <div class="sm-right" id="rightPanel" style="flex:1;background:linear-gradient(#dbeeff,#c6dff7);padding:8px;overflow-y:auto"></div>
+      </div>
+      <div class="sm-footer" id="smFooter" style="display:flex;justify-content:flex-end;gap:4px;padding:4px;background:linear-gradient(#dbeeff,#c6dff7);border-top:1px solid #aaa">
+        <button id="logoff-btn" style="padding:4px 8px;background:linear-gradient(#fff,#e6e6e6);border:1px solid #999;border-radius:3px;cursor:pointer;font-size:10px;display:flex;align-items:center;gap:3px">
+          <img src="https://64.media.tumblr.com/e828bffd77096317aac410f124fcee64/3071d944cb6fb042-2d/s540x810/30f58710d62d1ac1da03e96a77334ada17b67c40.png" style="width:14px;height:14px"/><span>Log Off</span>
+        </button>
+        <button id="shutdown-btn" style="padding:4px 8px;background:linear-gradient(#fff,#e6e6e6);border:1px solid #999;border-radius:3px;cursor:pointer;font-size:10px;display:flex;align-items:center;gap:3px">
+          <img src="https://64.media.tumblr.com/4e932aabdfe572f340dbe32cfc06f1cb/840b4b6888f1f93f-e3/s540x810/c3d700cbea3465ba7c8215250e988acb638676e8.png" style="width:14px;height:14px"/><span>Shut Down</span>
+        </button>
+      </div>
+    </div>
+
+<script>
+/* === Virtual File System (localStorage-backed) === */
+let vfs = [];
+let currentFolder = ''; // '' = root, 'foldername' = inside folder
+const VFS_KEY = 'xp_vfs_v1';
+
+function saveVFS(){ 
+  try{ 
+    localStorage.setItem(VFS_KEY, JSON.stringify(vfs)); 
+    if(window.syncVFS) window.syncVFS();
+  }catch(e){ 
+    console.warn(e); 
+  } 
+}
+function saveVFSNoSync(){ 
+  try{ 
+    localStorage.setItem(VFS_KEY, JSON.stringify(vfs)); 
+  }catch(e){ 
+    console.warn(e); 
+  } 
+}
+function loadVFS(){ try{ const data = localStorage.getItem(VFS_KEY); if(data) vfs = JSON.parse(data); }catch(e){ console.warn(e); } }
+function createFile(name,text,folder){ 
+  const f = {
+    id:'f'+Date.now(), 
+    name:name, 
+    text:text||'', 
+    modifiedAt:Date.now(),
+    folder: folder || currentFolder || ''
+  }; 
+  vfs.push(f); 
+  saveVFSNoSync(); 
+  return f; 
+}
+function createFolder(name, parentFolder){
+  const f = {
+    id:'d'+Date.now(),
+    name:name,
+    type:'folder',
+    modifiedAt:Date.now(),
+    folder: parentFolder || currentFolder || ''
+  };
+  vfs.push(f);
+  saveVFS();
+  return f;
+}
+
+loadVFS();
+if(vfs.length === 0){ createFile('readme.txt','Welcome to Windows XP Desktop Simulation!\n\nDouble-click files to open them in Notepad.'); }
+
+/* === Desktop icons === */
+const icons = [
+  {id:'explorer', name:'My Documents', img:'https://64.media.tumblr.com/1ad75b3b6e5bbf8fc0a61507fd0cc3a9/352118494480b7d6-84/s540x810/c4d7e7079764a1425333be63d59f4e4cc25a65ac.png'},
+  {id:'notepad', name:'Notepad', img:'https://64.media.tumblr.com/091435cda9870d6e97ba9a29dfbb5683/ea8c8dfb4ea15613-cd/s540x810/bfe2d0fdb47ebc25220bae6ae7c14f1f150df504.png'},
+  {id:'camera', name:'Security Cam', img:'https://64.media.tumblr.com/880bcbbcd12d2d4f1a9f4080cf47ebb3/e606a3a17e10509b-bb/s540x810/a222578284e66ee82909ff887b10664464ffdb31.png'},
+  {id:'gallery', name:'Gallery', img:'https://64.media.tumblr.com/c98bf3520ef34e85968215d4e6a8d263/fdc6c7af1442736b-18/s540x810/4dd55fdfeaca3a1d4067ae4a76e40e5dd868f6c1.png'},
+  {id:'paint', name:'Paint', img:'https://64.media.tumblr.com/89039978d688765290090b4c3d5f7e1d/e407752210514977-90/s540x810/a97468e29e8d4d583a3ba98b0e13085bd77a67de.png'},
+  {id:'recycle', name:'Corbeille', img:'https://64.media.tumblr.com/41a1bd9c061b4794ac5ff5621ff9bba1/532a355f1936d0d2-96/s540x810/c48f9c8d76635b87a318a741ba4fe3ef0ca8112e.png'},
+  {id:'calendar', name:'Calendrier', img:'https://64.media.tumblr.com/dc83e630e80ea3d2e7d6109c04413e5f/4bb96d483664ea8b-25/s540x810/b670b73f866a86b26b9ed891db5692c3d59ecf30.png'},
+  // demineur icon
+  {id:'demineur', name:"Démineur", img:'https://64.media.tumblr.com/a37de7520c46fc1ce62d94a79bc66d6c/9b87b7571538c226-f7/s540x810/fe69745eb7b7c074fc87fd5a723bbc2928a82002.png'},
+  // Animacare virtual pet icon
+  {id:'tamagotchi', name:"Animacare", img:'https://stardewvalleywiki.com/mediawiki/images/b/b2/Animals_Icon.png'},
+  // Internet Explorer browser icon
+  {id:'iexplore', name:"Internet Explorer", img:'https://64.media.tumblr.com/52e8408d405544cbe44ec09e2682843c/351345486ce3b804-cb/s540x810/3307fbb33eb73cc5036d92289df136613b182724.png'}
+];
+
+async function renderDesktopIcons() {
+  const container = utils.get('iconsContainer');
+  if (!container) return;
+  
+  container.innerHTML = '';
+  for (const icon of icons) {
+    const croppedUrl = await cropImage(icon.img);
+    const iconDiv = document.createElement('div');
+    iconDiv.className = 'icon';
+    iconDiv.dataset.id = icon.id;
+    iconDiv.innerHTML = `<img src='${croppedUrl}'/><span>${icon.name}</span>`;
+    container.appendChild(iconDiv);
+  }
+  bindIconClicks();
+}
+
+function bindIconClicks() {
+  const apps = {
+    camera: 'cameraWin',
+    demineur: 'minesWin',
+    tamagotchi: () => {
+      const tw = utils.get('tamagotchiWin');
+      if (tw) {
+        openWindow(tw);
+        initDesktopPet();
+      }
+    },
+    calendar: 'calendarWin',
+    notepad: 'notepadWin',
+    explorer: 'explorerWin',
+    gallery: () => window.openGallery?.(),
+    paint: () => window.openPaint?.(),
+    iexplore: () => window.openInternetExplorer?.()
+  };
+  
+  document.querySelectorAll('#iconsContainer .icon').forEach(el => {
+    const id = el.dataset.id;
+    el.onclick = () => {
+      try {
+        const app = apps[id];
+        if (typeof app === 'function') {
+          app();
+        } else if (app) {
+          const window = utils.get(app);
+          if (window) openWindow(window);
+        }
+      } catch (e) {
+        console.warn('Icon click failed', id, e);
+      }
+    };
+  });
+}
+
+// Explorer list
+const filesTbody = document.getElementById('filesTbody');
+
+// Right-click on table/empty space shows context menu
+const filesTable = document.getElementById('files');
+if(filesTable){
+  filesTable.addEventListener('contextmenu', (e)=>{
+    // Only show menu if clicking on table background (not on a row)
+    if(e.target.closest('tr')) return;
+    e.preventDefault();
+    const fileContextMenu = document.getElementById('fileContextMenu');
+    fileContextMenu.style.left = e.pageX + 'px';
+    fileContextMenu.style.top = e.pageY + 'px';
+    fileContextMenu.style.display = 'block';
+  });
+}
+
+function renderFiles(){ 
+  filesTbody.innerHTML = '';
+  
+  // Update breadcrumb
+  const breadcrumb = document.getElementById('folderBreadcrumb');
+  if(breadcrumb) {
+    breadcrumb.innerHTML = currentFolder 
+      ? `<span style="cursor:pointer;color:#0b4ea2" onclick="navigateToFolder('')">📁 Documents</span> > <span style="font-weight:bold">${currentFolder}</span>`
+      : '<span style="font-weight:bold">📁 Documents</span>';
+  }
+  
+  // Filter items in current folder
+  const itemsInFolder = vfs.filter(f => (f.folder || '') === currentFolder);
+  
+  itemsInFolder.forEach((f,i)=>{
+    const tr = document.createElement('tr'); tr.dataset.fileId = f.id; tr.style.cursor='default';
+    // Name cell with small icon
+    const tdName = document.createElement('td');
+    const nameWrap = document.createElement('div'); nameWrap.className='file-entry';
+    const icon = document.createElement('div'); icon.className='file-icon';
+    
+    // Show folder icon for folders
+    if(f.type === 'folder'){
+      icon.innerHTML = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" fill="#FDD835" stroke="#F9A825"/></svg>`;
+    }
+    // Show thumbnail for images
+    else if(f.type === 'image' && f.text){
+      const img = document.createElement('img');
+      img.src = f.text;
+      img.style.width = '16px';
+      img.style.height = '16px';
+      img.style.objectFit = 'cover';
+      icon.appendChild(img);
+    } else {
+      // Show calendar icon for calendar-linked notes
+      const noteIcon = f.calendarDate ? '📅' : '';
+      icon.innerHTML = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="2" width="14" height="20" rx="2" fill="#fff" stroke="#0b4ea2"/><path d="M17 2v6h6" transform="translate(-6 0)" fill="#dfefff"/></svg>`;
+      if(noteIcon) {
+        icon.innerHTML = '<span style="font-size:16px">' + noteIcon + '</span>';
+      }
+    }
+    const nm = document.createElement('div'); 
+    nm.textContent = f.name; 
+    nm.style.color='#012a6b';
+    if(f.type === 'folder') nm.style.fontWeight = 'bold';
+    nameWrap.appendChild(icon); nameWrap.appendChild(nm); tdName.appendChild(nameWrap);
+
+    const tdSize = document.createElement('td'); 
+    tdSize.style.color='#03406e'; 
+    tdSize.textContent = f.type === 'folder' ? '--' : ((f.text||'').length)+' B';
+    const tdDate = document.createElement('td'); 
+    tdDate.style.color='#03406e'; 
+    tdDate.textContent = new Date(f.modifiedAt).toLocaleString();
+
+    tr.appendChild(tdName); tr.appendChild(tdSize); tr.appendChild(tdDate);
+    // changed: one-click selects, second click (when already selected) opens
+    tr.addEventListener('click', ()=>{
+      // clear previous selection
+      const prev = document.querySelector('#files tbody tr.selected');
+      if(prev && prev !== tr){
+        prev.classList.remove('selected');
+      }
+      if(tr.classList.contains('selected')){
+        // already selected -> open file or folder
+        if(f.type === 'folder'){
+          navigateToFolder(f.name);
+        } else {
+          openFile(f.id);
+        }
+      } else {
+        // first click -> select only
+        tr.classList.add('selected');
+      }
+    });
+    
+    // Right-click context menu
+    tr.addEventListener('contextmenu', (e)=>{
+      e.preventDefault();
+      // Select the row
+      const prev = document.querySelector('#files tbody tr.selected');
+      if(prev) prev.classList.remove('selected');
+      tr.classList.add('selected');
+      
+      // Position and show context menu
+      const fileContextMenu = document.getElementById('fileContextMenu');
+      fileContextMenu.style.left = e.pageX + 'px';
+      fileContextMenu.style.top = e.pageY + 'px';
+      fileContextMenu.style.display = 'block';
+    });
+    
+      filesTbody.appendChild(tr);
+    });
+  }
+
+
+function openFile(id){ 
+  const f = vfs.find(x=>x.id===id); 
+  if(!f) return; 
+  if(f.type === 'image'){
+    // Open image in picture viewer
+    if(window.openPictureViewer){
+      window.openPictureViewer(f.id);
+    }
+  } else {
+    notepadArea.innerHTML = f.text||''; 
+    notepadWin.dataset.fileId = f.id; 
+    notepadWin.dataset.readOnly = '';
+    setNotepadTitle(f.name); 
+    openWindow(notepadWin); 
+    updateStatus();
+  }
+}
+// set title text for notepad window
+function setNotepadTitle(name){ const t = notepadWin.querySelector('.titlebar .title'); if(t) t.textContent = name ? `${name} - Notepad` : 'Sans titre - Notepad'; }
+
+function saveNotepad(){ 
+  const fid = notepadWin.dataset.fileId; 
+  if(!fid) {
+    // No file ID means brand new file, use Save As
+    saveNotepadAs();
+    return;
+  }
+  const f = vfs.find(x=>x.id===fid); 
+  if(!f) return alert('File not found');
+  
+  // If file has never been named (Untitled and needsname flag), force Save As
+  const needsName = notepadWin.dataset.needsname === '1' || f.name === 'Untitled';
+  if(needsName){
+    saveNotepadAs();
+    return;
+  }
+  
+  // Sync checkbox states to HTML before saving
+  const checkboxes = notepadArea.querySelectorAll('input[type="checkbox"]');
+  checkboxes.forEach(cb => {
+    if (cb.checked) {
+      cb.setAttribute('checked', 'checked');
+    } else {
+      cb.removeAttribute('checked');
+    }
+  });
+  
+  // Otherwise perform silent save (no alert, no prompt)
+  f.text = notepadArea.innerHTML; 
+  f.modifiedAt = Date.now(); 
+  saveVFS(); 
+  renderFiles(); 
+  // Silent save - no alert popup
+}
+function saveNotepadAs(){ 
+  const fid = notepadWin.dataset.fileId;
+  const entered = prompt('Nom du fichier'); 
+  if(!entered) return;
+  
+  // Sync checkbox states to HTML before saving
+  const checkboxes = notepadArea.querySelectorAll('input[type="checkbox"]');
+  checkboxes.forEach(cb => {
+    if (cb.checked) {
+      cb.setAttribute('checked', 'checked');
+    } else {
+      cb.removeAttribute('checked');
+    }
+  });
+  
+  // if editing an existing file, rename it instead of creating a new duplicate
+  if(fid){
+    const f = vfs.find(x=>x.id===fid);
+    if(f){
+      f.name = entered;
+      f.text = notepadArea.innerHTML;
+      f.modifiedAt = Date.now();
+      saveVFS();
+      // clear the needs-name flag
+      notepadWin.dataset.needsname = '';
+      setNotepadTitle(f.name);
+      renderFiles();
+      alert('Saved as '+entered);
+      return;
+    }
+  }
+  // fallback: create new file
+  const nf = createFile(entered, notepadArea.innerHTML);
+  notepadWin.dataset.fileId = nf.id;
+  notepadWin.dataset.needsname = '';
+  setNotepadTitle(nf.name);
+  renderFiles(); 
+  alert('Saved as '+entered); 
+}
+function openNotepadCreate(){
+  // Create a new blank file and open it
+  const nf = createFile('Untitled', '');
+  notepadArea.innerHTML = '';
+  notepadWin.dataset.fileId = nf.id;
+  notepadWin.dataset.needsname = '1';
+  setNotepadTitle('Untitled');
+  openWindow(notepadWin);
+  updateStatus();
+}
+function updateStatus(){ 
+  const text = notepadArea.innerText || ''; 
+  const words = text.trim() ? text.trim().split(/\s+/).length : 0; 
+  
+  // Calculer la position du curseur
+  const sel = window.getSelection();
+  let line = 1, col = 1;
+  if(sel.rangeCount > 0) {
+    const range = sel.getRangeAt(0);
+    const preText = notepadArea.innerText.substring(0, range.startOffset);
+    const linesArr = preText.split('\n');
+    line = linesArr.length;
+    col = linesArr[linesArr.length - 1].length + 1;
+  }
+  
+  document.getElementById('notepadStatus').textContent = `${words} mot${words > 1 ? 's' : ''}`;
+  document.getElementById('statusLine').textContent = line;
+  document.getElementById('statusCol').textContent = col;
+}
+
+/* File Context Menu handlers */
+const fileContextMenu = document.getElementById('fileContextMenu');
+
+// Close file context menu when clicking outside
+document.addEventListener('click', (e) => {
+  if (!fileContextMenu.contains(e.target)) {
+    fileContextMenu.style.display = 'none';
+  }
+});
+
+// File upload input handler
+document.getElementById('fileUploadInput').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev)=>{
+    const imgData = ev.target.result;
+    const f = {id:'f'+Date.now(), name:file.name, text:imgData, type:'image', modifiedAt:Date.now()};
+    vfs.push(f);
+    saveVFS(); // Use saveVFS to sync with Firebase
+    renderFiles();
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+});
+
+// Folder navigation
+function navigateToFolder(folderName) {
+  currentFolder = folderName;
+  renderFiles();
+}
+
+// Sidebar button handlers
+document.getElementById('exNew').addEventListener('click', ()=>{
+  const name = prompt('Nom du fichier', 'nouveau.txt');
+  if(name){ createFile(name,''); renderFiles(); }
+});
+
+document.getElementById('exNewFolder').addEventListener('click', ()=>{
+  const name = prompt('Nom du dossier', 'Nouveau dossier');
+  if(name){ createFolder(name); renderFiles(); }
+});
+
+document.getElementById('exUpload').addEventListener('click', ()=>{
+  document.getElementById('fileUploadInput').click();
+});
+
+// Context menu actions
+fileContextMenu.querySelectorAll('.ctx-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const action = item.dataset.action;
+    const sel = document.querySelector('#files tr.selected');
+    
+    if(action === 'open'){
+      if(sel){
+        const fileId = sel.dataset.fileId;
+        const f = vfs.find(f => f.id === fileId);
+        if(f) openFile(f.id);
+      }
+    } else if(action === 'duplicate'){
+      if(!sel) return alert('Select a file');
+      const fileId = sel.dataset.fileId;
+      const original = vfs.find(f => f.id === fileId);
+      if(original){
+        const copy = JSON.parse(JSON.stringify(original));
+        copy.id = 'f'+Date.now();
+        vfs.push(copy);
+        saveVFS();
+        renderFiles();
+      }
+    } else if(action === 'rename'){
+      if(!sel) return alert('Select a file');
+      const fileId = sel.dataset.fileId;
+      const file = vfs.find(f => f.id === fileId);
+      if(file){
+        const nn = prompt('Nouveau nom', file.name);
+        if(nn){
+          file.name = nn;
+          file.modifiedAt = Date.now();
+          saveVFS();
+          renderFiles();
+        }
+      }
+    } else if(action === 'move'){
+      if(!sel) return alert('Select a file');
+      const fileId = sel.dataset.fileId;
+      const file = vfs.find(f => f.id === fileId);
+      if(!file) return;
+      
+      // Get list of all folders
+      const folders = vfs.filter(f => f.type === 'folder');
+      let folderList = 'Root (Documents)';
+      folders.forEach((folder, idx) => {
+        folderList += '\n' + (idx + 1) + '. ' + folder.name;
+      });
+      
+      const choice = prompt('Move to:\n0. Root (Documents)\n' + folders.map((f, idx) => (idx + 1) + '. ' + f.name).join('\n') + '\n\nEnter number:', '0');
+      if(choice === null) return;
+      
+      const choiceNum = parseInt(choice);
+      if(isNaN(choiceNum)) return alert('Invalid choice');
+      
+      if(choiceNum === 0){
+        file.folder = '';
+      } else if(choiceNum > 0 && choiceNum <= folders.length){
+        const targetFolder = folders[choiceNum - 1];
+        // Prevent moving folder into itself
+        if(file.type === 'folder' && targetFolder.name === file.name){
+          return alert('Cannot move folder into itself');
+        }
+        file.folder = targetFolder.name;
+      } else {
+        return alert('Invalid choice');
+      }
+      
+      file.modifiedAt = Date.now();
+      saveVFS();
+      renderFiles();
+    } else if(action === 'delete'){
+      if(!sel) return alert('Select a file');
+      const fileId = sel.dataset.fileId;
+      const file = vfs.find(f => f.id === fileId);
+      if(file && confirm('Supprimer?')){
+        // Si c'est un dossier, vérifier s'il contient des fichiers
+        if(file.type === 'folder'){
+          const hasFiles = vfs.some(f => f.folder === file.name);
+          if(hasFiles && !confirm('Ce dossier contient des fichiers. Tout supprimer?')){
+            fileContextMenu.style.display = 'none';
+            return;
+          }
+          // Supprimer récursivement tous les fichiers du dossier
+          vfs = vfs.filter(f => f.folder !== file.name);
+        }
+        // Supprimer le fichier/dossier lui-même
+        vfs = vfs.filter(f => f.id !== fileId);
+        saveVFS();
+        renderFiles();
+      }
+    } else if(action === 'refresh'){
+      renderFiles();
+    }
+    
+    fileContextMenu.style.display = 'none';
+  });
+});
+
+// Notepad toolbar
+const notepadArea = document.getElementById('notepadArea');
+notepadArea.addEventListener('keyup', updateStatus); 
+notepadArea.addEventListener('click', updateStatus);
+notepadArea.addEventListener('input', updateStatus);
+
+// === Fonctionnalités de mise en forme ===
+
+// Helper for execCommand
+const execCmd = (cmd, val = null) => document.execCommand(cmd, false, val);
+
+// Boutons de fichier
+document.getElementById('btnNew').addEventListener('click', ()=> openNotepadCreate());
+document.getElementById('btnOpen').addEventListener('click', ()=> { /* Ouvrir via explorer */ });
+document.getElementById('btnSave').addEventListener('click', ()=> saveNotepad());
+
+// Gras, Italique, Souligné
+document.getElementById('btnBold').addEventListener('click', ()=> execCmd('bold'));
+document.getElementById('btnItalic').addEventListener('click', ()=> execCmd('italic'));
+document.getElementById('btnUnderline').addEventListener('click', ()=> execCmd('underline'));
+
+// Menu Format
+document.getElementById('mn-format-bold').addEventListener('click', ()=> execCmd('bold'));
+document.getElementById('mn-format-italic').addEventListener('click', ()=> execCmd('italic'));
+document.getElementById('mn-format-underline').addEventListener('click', ()=> execCmd('underline'));
+
+// Taille de police
+document.getElementById('fontSize').addEventListener('change', (e)=> {
+  execCmd('fontSize', '7');
+  const fontElements = notepadArea.querySelectorAll('font[size="7"]');
+  fontElements.forEach(el => {
+    el.removeAttribute('size');
+    el.style.fontSize = e.target.value;
+  });
+});
+
+// Couleur du texte
+document.getElementById('textColor').addEventListener('change', (e)=> execCmd('foreColor', e.target.value));
+
+// Surligneurs de couleurs - consolidated
+const highlights = {
+  highlightYellow: '#ffff00',
+  highlightGreen: '#90ee90',
+  highlightPink: '#ffb6c1',
+  highlightBlue: '#add8e6',
+  highlightOrange: '#ffa500',
+  clearHighlight: 'transparent'
+};
+Object.entries(highlights).forEach(([id, color]) => {
+  document.getElementById(id).addEventListener('click', ()=> execCmd('backColor', color));
+});
+
+// Cases à cocher
+document.getElementById('btnCheckbox').addEventListener('click', ()=> {
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.style.marginRight = '5px';
+  checkbox.style.verticalAlign = 'middle';
+  
+  const selection = window.getSelection();
+  if (selection.rangeCount > 0) {
+    const range = selection.getRangeAt(0);
+    range.insertNode(checkbox);
+    range.collapse(false);
+  } else {
+    notepadArea.appendChild(checkbox);
+  }
+  
+  // Ajouter un espace après la checkbox
+  const space = document.createTextNode(' ');
+  checkbox.parentNode.insertBefore(space, checkbox.nextSibling);
+});
+
+// Alignement du texte
+['btnAlignLeft', 'btnAlignCenter', 'btnAlignRight'].forEach((id, i) => {
+  const cmds = ['justifyLeft', 'justifyCenter', 'justifyRight'];
+  document.getElementById(id).addEventListener('click', ()=> execCmd(cmds[i]));
+});
+
+// --- Notepad advanced features: menus, undo, find/replace, go-to, time/date ---
+const menuEls = document.querySelectorAll('#notepadWin .menu');
+menuEls.forEach(m=>{
+  m.addEventListener('mouseenter', ()=>{ const s=m.querySelector('.submenu'); if(s) s.style.display='block'; });
+  m.addEventListener('mouseleave', ()=>{ const s=m.querySelector('.submenu'); if(s) s.style.display='none'; });
+});
+
+// Simple undo stack
+let undoStack = [];
+let redoStack = [];
+function pushUndo(){ undoStack.push(notepadArea.innerHTML); if(undoStack.length>100) undoStack.shift(); redoStack = []; }
+let undoTimeout;
+notepadArea.addEventListener('input', ()=> { clearTimeout(undoTimeout); undoTimeout = setTimeout(pushUndo, 500); });
+function doUndo(){ if(undoStack.length===0) return; redoStack.push(notepadArea.innerHTML); const v = undoStack.pop(); notepadArea.innerHTML = v; updateStatus(); }
+
+/* Find / Replace / Go To modals */
+function createModal(html){ const m = document.createElement('div'); m.style.position='fixed'; m.style.left='50%'; m.style.top='40%'; m.style.transform='translate(-50%,-50%)'; m.style.background='#fff'; m.style.border='1px solid #666'; m.style.padding='10px'; m.style.zIndex=4000; m.className='retro-text'; m.innerHTML = html; document.body.appendChild(m); return m; }
+
+/* Font dialog (very simple) */
+function openFontDialog(){ const modal = createModal(`<div style='font-weight:bold;margin-bottom:6px'>Font</div>
+  <div>Size: <input id='fd-size' type='number' value='14' style='width:80px'/></div>
+  <div style='margin-top:8px;display:flex;gap:6px;justify-content:flex-end'><button id='fd-ok'>OK</button><button id='fd-cancel'>Cancel</button></div>`);
+  modal.querySelector('#fd-cancel').addEventListener('click', ()=> modal.remove());
+  modal.querySelector('#fd-ok').addEventListener('click', ()=>{ const s = modal.querySelector('#fd-size').value; notepadArea.style.fontSize = s+'px'; modal.remove(); });
+}
+
+// Menu wiring
+function noop(){ /* feature disabled */ }
+
+// Menu Fichier
+document.getElementById('mn-file-new').addEventListener('click', ()=> openNotepadCreate());
+document.getElementById('mn-file-open').addEventListener('click', ()=> { /* TODO: Ouvrir via explorer */ });
+document.getElementById('mn-file-save').addEventListener('click', ()=> saveNotepad());
+document.getElementById('mn-file-saveas').addEventListener('click', ()=> saveNotepadAs());
+document.getElementById('mn-file-print').addEventListener('click', noop);
+
+// Menu Édition
+document.getElementById('mn-edit-undo').addEventListener('click', ()=> doUndo());
+document.getElementById('mn-edit-cut').addEventListener('click', noop);
+document.getElementById('mn-edit-copy').addEventListener('click', noop);
+document.getElementById('mn-edit-paste').addEventListener('click', noop);
+
+// Menu Insertion
+document.getElementById('mn-insert-checkbox').addEventListener('click', ()=> {
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.style.marginRight = '5px';
+  checkbox.style.verticalAlign = 'middle';
+  const selection = window.getSelection();
+  if (selection.rangeCount > 0) {
+    const range = selection.getRangeAt(0);
+    range.insertNode(checkbox);
+    range.collapse(false);
+  } else {
+    notepadArea.appendChild(checkbox);
+  }
+  const space = document.createTextNode(' ');
+  checkbox.parentNode.insertBefore(space, checkbox.nextSibling);
+});
+
+document.getElementById('mn-insert-date').addEventListener('click', ()=> {
+  const now = new Date();
+  const s = now.toLocaleString('fr-FR');
+  const sel = window.getSelection();
+  if(sel.rangeCount > 0) {
+    const range = sel.getRangeAt(0);
+    range.insertNode(document.createTextNode(s));
+    range.collapse(false);
+  }
+});
+
+// Menu Format (police et couleur)
+document.getElementById('mn-format-font').addEventListener('click', ()=> openFontDialog());
+document.getElementById('mn-format-color').addEventListener('click', ()=> {
+  document.getElementById('textColor').click();
+});
+
+// Menu Affichage (toggle toolbar et statusbar)
+let toolbarVisible = true;
+let statusbarVisible = true;
+
+document.getElementById('mn-view-toolbar').addEventListener('click', ()=> {
+  toolbarVisible = !toolbarVisible;
+  document.getElementById('notepadToolbar').style.display = toolbarVisible ? 'flex' : 'none';
+  document.getElementById('mn-view-toolbar').innerHTML = toolbarVisible ? '<span>✓ Barre d\'outils</span>' : '<span>Barre d\'outils</span>';
+  // Ajuster la hauteur de l'éditeur
+  notepadArea.style.height = toolbarVisible ? '330px' : '370px';
+});
+
+document.getElementById('mn-view-statusbar').addEventListener('click', ()=> {
+  statusbarVisible = !statusbarVisible;
+  document.getElementById('notepadStatusbar').style.display = statusbarVisible ? 'flex' : 'none';
+  document.getElementById('mn-view-statusbar').innerHTML = statusbarVisible ? '<span>✓ Barre d\'état</span>' : '<span>Barre d\'état</span>';
+  // Ajuster la hauteur de l'éditeur
+  const adjustment = statusbarVisible ? 0 : 20;
+  const currentHeight = parseInt(notepadArea.style.height);
+  notepadArea.style.height = (currentHeight + adjustment) + 'px';
+});
+
+// Keyboard shortcuts (basic)
+notepadArea.addEventListener('keydown', (e)=>{
+  const shortcuts = {
+    'b': () => execCmd('bold'),
+    'i': () => execCmd('italic'),
+    'u': () => execCmd('underline'),
+    's': saveNotepad,
+    'n': openNotepadCreate
+  };
+  
+  if(e.ctrlKey && shortcuts[e.key.toLowerCase()]) {
+    e.preventDefault();
+    shortcuts[e.key.toLowerCase()]();
+  }
+  
+  if(e.key === 'F5'){ 
+    e.preventDefault(); 
+    const now = new Date();
+    const s = now.toLocaleString('fr-FR');
+    const sel = window.getSelection();
+    if(sel.rangeCount > 0) {
+      const range = sel.getRangeAt(0);
+      range.insertNode(document.createTextNode(s));
+      range.collapse(false);
+    }
+  }
+});
+
+// Window manager + taskbar
+const WM = { z: 1000 };
+function focusWindow(el){ WM.z++; el.style.zIndex = WM.z; }
+function addTaskTab(id,title,onClick){ 
+	// if already present, just activate and focus the window
+	if(document.querySelector(`.task[data-id='${id}']`)) {
+		const existing = document.querySelector(`.task[data-id='${id}']`);
+		const win = document.getElementById(id);
+		if(win) { existing.classList.add('active'); focusWindow(win); }
+		return;
+	}
+	const tab = document.createElement('div');
+	tab.className = 'task';
+	tab.dataset.id = id;
+	// icon with actual images
+	const icon = document.createElement('span'); 
+	icon.className='task-icon'; 
+	icon.style.marginRight='4px';
+	icon.style.display='inline-flex';
+	icon.style.alignItems='center';
+	
+	// Map window IDs to icon URLs from the pack
+	const iconMap = {
+		'explorer': 'https://64.media.tumblr.com/1ad75b3b6e5bbf8fc0a61507fd0cc3a9/352118494480b7d6-84/s540x810/c4d7e7079764a1425333be63d59f4e4cc25a65ac.png',
+		'notepad': 'https://64.media.tumblr.com/091435cda9870d6e97ba9a29dfbb5683/ea8c8dfb4ea15613-cd/s540x810/bfe2d0fdb47ebc25220bae6ae7c14f1f150df504.png',
+		'camera': 'https://64.media.tumblr.com/880bcbbcd12d2d4f1a9f4080cf47ebb3/e606a3a17e10509b-bb/s540x810/a222578284e66ee82909ff887b10664464ffdb31.png',
+		'calendar': 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48"><rect width="48" height="48" fill="%23f6d365" rx="6"/><rect x="6" y="10" width="36" height="30" fill="%23ffffff" rx="2"/><rect x="8" y="12" width="8" height="4" fill="%230b4ea2"/><rect x="24" y="12" width="8" height="4" fill="%230b4ea2"/></svg>',
+		'demineur': 'https://64.media.tumblr.com/a37de7520c46fc1ce62d94a79bc66d6c/9b87b7571538c226-f7/s540x810/fe69745eb7b7c074fc87fd5a723bbc2928a82002.png'
+	};
+	
+	if(iconMap[id]){
+		// Crop the icon and set it
+		cropImage(iconMap[id]).then(croppedUrl => {
+			const img = document.createElement('img');
+			img.src = croppedUrl;
+			img.style.width = '16px';
+			img.style.height = '16px';
+			img.style.display = 'block';
+			icon.appendChild(img);
+		});
+	}
+	
+	const label = document.createElement('span'); label.textContent = title;
+	tab.appendChild(icon); tab.appendChild(label);
+
+	// click behavior: find the window by id and toggle/restore/focus appropriately
+	tab.addEventListener('click', ()=>{
+		const win = document.getElementById(id);
+		if(!win){
+			// if a custom onClick was supplied, call it as a fallback
+			try{ if(typeof onClick === 'function') onClick(tab); }catch(e){ console.warn(e); }
+			return;
+		}
+		const visible = getComputedStyle(win).display !== 'none';
+		if(!visible){
+			// restore / show window
+			win.style.display = 'block';
+			// ensure only this tab is active
+			document.querySelectorAll('.task').forEach(t=>t.classList.remove('active'));
+			tab.classList.remove('minimized');
+			tab.classList.add('active');
+			// use the same animation flow used elsewhere
+			win.classList.add('restoring');
+			requestAnimationFrame(()=>{
+				win.classList.add('restore-active');
+				win.classList.remove('restoring');
+				focusWindow(win);
+			});
+			focusWindow(win);
+		} else {
+			// window visible: if this tab is already active, minimize/hide it; otherwise just focus it
+			if(tab.classList.contains('active')){
+				win.style.display = 'none';
+				tab.classList.remove('active');
+				tab.classList.add('minimized');
+			} else {
+				// deactivate others and activate this one
+				document.querySelectorAll('.task').forEach(t=>t.classList.remove('active'));
+				tab.classList.add('active');
+				focusWindow(win);
+			}
+		}
+	});
+
+	document.getElementById('task-list').appendChild(tab);
+}
+
+function removeTaskTab(id){ const t=document.querySelector(`.task[data-id='${id}']`); if(t) t.remove(); }
+
+const explorerWin = document.getElementById('explorerWin');
+const notepadWin = document.getElementById('notepadWin');
+const calendarWin = document.getElementById('calendarWin');
+const minesWin = document.getElementById('minesWin');
+
+function openWindow(el) {
+  if (el.style.display === 'none' || getComputedStyle(el).display === 'none') {
+    el.style.display = 'block';
+    focusWindow(el);
+    addTaskTab(el.id, el.querySelector('.titlebar .title').innerText, (tab) => {
+      if (el.style.display === 'none') {
+        el.style.display = 'block';
+        tab.classList.remove('minimized');
+        tab.classList.add('active');
+        el.classList.add('restoring');
+        setTimeout(() => {
+          el.classList.remove('restoring');
+          el.classList.add('restore-active');
+        }, 10);
+        setTimeout(() => {
+          el.classList.remove('restore-active');
+        }, 270);
+        focusWindow(el);
+      } else {
+        el.style.display = 'none';
+        tab.classList.remove('active');
+      }
+    });
+  } else {
+    focusWindow(el);
+  }
+}
+function makeDraggable(win){const tb=win.querySelector('.titlebar');if(!tb)return;let dragging=false,sx,sy,ox,oy;tb.addEventListener('mousedown',e=>{if(e.target.closest('.controls'))return;dragging=true;sx=e.clientX;sy=e.clientY;ox=win.offsetLeft;oy=win.offsetTop;focusWindow(win)});window.addEventListener('mousemove',e=>{if(!dragging)return;win.style.left=(ox+e.clientX-sx)+'px';win.style.top=(oy+e.clientY-sy)+'px'});window.addEventListener('mouseup',()=>dragging=false);const btnClose=win.querySelector('.titlebar .controls .close');if(btnClose)btnClose.onclick=()=>{win.style.display='none';removeTaskTab(win.id)}}
+
+// Initialize all windows with dragging and controls
+['explorerWin','notepadWin','cameraWin','galleryWin','pictureViewerWin','paintWin','calendarWin','minesWin','tamagotchiWin','iexploreWin'].forEach(id=>{const w=utils.get(id);if(w){makeDraggable(w);const bc=w.querySelector('.close'),bm=w.querySelector('.minimize');if(bc)bc.onclick=()=>{w.style.display='none';removeTaskTab(w.id)};if(bm)bm.onclick=()=>{w.classList.add('minimizing');setTimeout(()=>{w.style.display='none';w.classList.remove('minimizing')},260)}}});
+
+/* === Calendar logic (compact month view) === */
+// Moon phases for October-November 2003
+const moonPhases2003 = {
+  "2003-10-02":"◑","2003-10-10":"●","2003-10-18":"◐","2003-10-25":"○",
+  "2003-11-01":"◑","2003-11-09":"●","2003-11-17":"◐","2003-11-23":"○"
+};
+
+const eventsData = {
+  "2003-10-02": [{
+    title: "Début de Formation",
+    organiser: "Noémie Fouquier",
+    desc: "Début de deux semaines de formations à la CDJ. Au rythme de 2 fois par semaine, vous l'avez rencontrée 4 soirs.",
+    npcs: "Noémie Fouquier"
+  }],
+  "2003-10-18": [{
+    title: "Investiture de la Cour de Justice",
+    organiser: "Le Praetor",
+    desc: "Premier jour officiel en tant que Cour de Justice, et rencontre avec les primogènes et le praetor.",
+    npcs: "Victor Mavros, Eleanore Lambert, Samuel Morel, Madeleine Valette, Leon, Noémie Fouquier, Dara."
+  }],
+  "2003-10-23": [{
+    title: "Journal de Dara",
+    organiser: "Dara",
+    desc: "Publication du Journal - L'Observateur - de Dara.",
+    npcs: "Dara"
+  }],
+  "2003-10-29": [{
+    title: "Exploration de la Chantry",
+    organiser: "Eugène",
+    desc: "Découverte de l’état de la Chantry Tremere aux côtés d’Isaak.",
+    npcs: "Isaak, Priscilla, Dante."
+  }],
+  "2003-10-31": [{
+    title: "Soirée du cercle des cendres",
+    organiser: "Hélène d'Ulster",
+    desc: "Organisée par Hélène, la soirée avait pour but de rencontrer Clément et de lui demander les documents manquants. Elle a quelque peu tourné au vinaigre.",
+    npcs: "Clément, Eleanore, Priscilla, Ju Won"
+  }],
+  "2003-11-03": [{
+    title: "Rencontre Clément",
+    organiser: "Clément",
+    desc: "Vous êtes invités dans l'ancien bureau non officiel de la CDJ pour récupérer les documents manquants. Vous avez demandé à ce que M soit présente.",
+    npcs: " ? ? ? "
+  }],
+  "2003-11-04": [{
+    title: "Réunion des Primogènes",
+    organiser: "? ? ?",
+    desc: "Réunion concernant l'attribution de ressources pour protéger la Mascarade. Discussion autour de votre nouvelle proposition.",
+    npcs: "? ? ?"
+  }]
+};
+
+let currentMonth = 0; // January
+let currentYear = 2004;
+
+const calendarBody = document.getElementById("calendarBody");
+const eventPanel = document.getElementById("eventPanel");
+const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+
+function renderCalendar(year, month) {
+  if(!calendarBody) return;
+  calendarBody.innerHTML = '';
+  
+  // Update title and selects
+  const calTitle = document.getElementById('calendarTitle');
+  if(calTitle) calTitle.textContent = `Calendrier - ${monthNames[month]} ${year}`;
+  const monthSel = document.getElementById('monthSelect');
+  if(monthSel) monthSel.value = month;
+  const yearSel = document.getElementById('yearSelect');
+  if(yearSel) yearSel.value = year;
+  
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const startDay = (firstDay.getDay() + 6) % 7; // monday-first
+  const totalDays = lastDay.getDate();
+
+  let day = 1;
+  for (let i = 0; i < 6; i++) {
+    const row = document.createElement('tr');
+    for (let j = 0; j < 7; j++) {
+      const cell = document.createElement('td');
+      if ((i === 0 && j < startDay) || day > totalDays) {
+        cell.innerHTML = '';
+      } else {
+        const dateStr = `${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+        const moonPhase = moonPhases2003[dateStr] || '';
+        const linkedNotes = vfs.filter(f => f.calendarDate === dateStr);
+        const hasNotes = linkedNotes.length > 0;
+        
+        // Create clickable note indicator
+        let noteIndicator = '';
+        if(hasNotes) {
+          if(linkedNotes.length === 1) {
+            // If only one note, click directly opens it
+            noteIndicator = `<span onclick="event.stopPropagation();openNoteFromCalendar('${linkedNotes[0].id}')" style="position:absolute;top:2px;left:2px;font-size:9px;cursor:pointer;z-index:10" title="Ouvrir: ${linkedNotes[0].name}">📝</span>`;
+          } else {
+            // If multiple notes, show in events panel
+            noteIndicator = `<span onclick="event.stopPropagation();showEvents('${dateStr}')" style="position:absolute;top:2px;left:2px;font-size:9px;cursor:pointer;z-index:10" title="${linkedNotes.length} notes - cliquer pour voir">📝</span>`;
+          }
+        }
+        
+        cell.innerHTML = `${noteIndicator}<div class='day-num'>${day}</div><span class='moon-icon'>${moonPhase}</span>`;
+        if (eventsData[dateStr]) {
+          cell.classList.add('event-day');
+        }
+        cell.addEventListener('click', ()=> showEvents(dateStr));
+        day++;
+      }
+      row.appendChild(cell);
+    }
+    calendarBody.appendChild(row);
+    if (day > totalDays) break;
+  }
+}
+
+function showEvents(dateStr) {
+  if(!eventPanel) return;
+  window.lastViewedDate = dateStr;
+  const dateParts = dateStr.split('-');
+  const dateDisplay = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+  const events = eventsData[dateStr] || [];
+  
+  // Find notes linked to this date
+  const linkedNotes = vfs.filter(f => f.calendarDate === dateStr);
+  
+  let html = `<h3 style="margin:0 0 8px 0;font-size:12px;color:#00008b;border-bottom:1px solid #5090d0;padding-bottom:4px;font-weight:bold">📅 ${dateDisplay}</h3>`;
+  
+  // Show linked notes section
+  if(linkedNotes.length > 0) {
+    html += `<div style="margin-bottom:8px;padding:6px;background:#fff8dc;border:1px solid #d4af37;border-radius:3px">`;
+    html += `<div style="font-weight:bold;font-size:10px;color:#8b6914;margin-bottom:4px">📝 Notes liées:</div>`;
+    linkedNotes.forEach(note => {
+      html += `
+        <div style="display:flex;align-items:center;gap:4px;padding:3px;background:#fff;border:1px solid #ddd;border-radius:2px;margin-bottom:3px">
+          <span style="font-size:10px;flex:1;cursor:pointer;color:#0066cc;text-decoration:underline" onclick="openNoteFromCalendar('${note.id}')" onmouseover="this.style.color='#004499'" onmouseout="this.style.color='#0066cc'" title="Cliquer pour ouvrir">📄 ${note.name}</span>
+          <button onclick="unlinkNoteFromDate('${note.id}', '${dateStr}')" style="padding:2px 4px;background:#fff;border:1px solid #999;cursor:pointer;border-radius:2px;font-size:8px" title="Délier">🔗❌</button>
+        </div>
+      `;
+    });
+    html += `</div>`;
+  }
+  
+  // Events section
+  if(events.length > 0) {
+    events.forEach((event, idx) => {
+      const isEditing = window.editingEvent === `${dateStr}-${idx}`;
+      
+      if(isEditing) {
+        html += `
+          <div style="margin-bottom:8px;padding:6px;background:#ffffee;border:2px solid #5090d0;border-radius:3px">
+            <input type="text" id="edit-title-${idx}" value="${event.title}" style="width:100%;padding:4px;margin-bottom:4px;border:1px solid #999;font-size:11px;font-weight:bold" placeholder="Titre">
+            <input type="text" id="edit-organiser-${idx}" value="${event.organiser || ''}" style="width:100%;padding:4px;margin-bottom:4px;border:1px solid #999;font-size:10px" placeholder="Organisateur">
+            <textarea id="edit-desc-${idx}" style="width:100%;padding:4px;margin-bottom:4px;border:1px solid #999;font-size:10px;resize:vertical;min-height:40px" placeholder="Description">${event.desc || ''}</textarea>
+            <input type="text" id="edit-npcs-${idx}" value="${event.npcs || ''}" style="width:100%;padding:4px;margin-bottom:6px;border:1px solid #999;font-size:10px" placeholder="PNJ (séparés par virgules)">
+            <div style="display:flex;gap:4px">
+              <button onclick="saveEvent('${dateStr}', ${idx})" style="flex:1;padding:4px;background:linear-gradient(#e0f0e0,#c0e0c0);border:1px solid #5a5;cursor:pointer;border-radius:2px;font-size:10px;font-weight:bold">💾 OK</button>
+              <button onclick="cancelEdit()" style="flex:1;padding:4px;background:linear-gradient(#f0f0f0,#e0e0e0);border:1px solid #999;cursor:pointer;border-radius:2px;font-size:10px">✖</button>
+            </div>
+          </div>
+        `;
+      } else {
+        html += `
+          <div style="margin-bottom:8px;padding:6px;background:#f7fbff;border:1px solid #ddd;border-radius:3px">
+            <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:4px">
+              <div style="font-weight:bold;font-size:11px;color:#00008b">${event.title}</div>
+              <button onclick="editEventInline('${dateStr}', ${idx})" style="padding:2px 6px;background:#fff;border:1px solid #999;cursor:pointer;border-radius:2px;font-size:9px;margin-left:6px" title="Modifier">✏️</button>
+            </div>
+            <div style="font-size:10px;color:#666;margin-bottom:3px"><strong>Org:</strong> ${event.organiser || "Inconnu"}</div>
+            <div style="font-size:10px;color:#000;margin-bottom:3px;line-height:1.3">${event.desc || "Aucune description."}</div>
+            <div style="font-size:10px;color:#666"><strong>PNJ:</strong> ${event.npcs || "Aucun"}</div>
+          </div>
+        `;
+      }
+    });
+  } else {
+    html += `<p style="margin:8px 0;font-size:10px;color:#666;text-align:center;padding:12px 0">Aucun événement.</p>`;
+  }
+  
+  // Action buttons
+  html += `<div style="display:flex;gap:4px;margin-top:6px">`;
+  html += `<button onclick="addNewEventInline('${dateStr}')" style="flex:1;padding:6px;background:linear-gradient(#e0f0ff,#c0e0ff);border:1px solid #5090d0;cursor:pointer;border-radius:3px;font-size:10px;font-weight:bold;color:#00008b">➕ Événement</button>`;
+  html += `<button onclick="createNoteForDate('${dateStr}')" style="flex:1;padding:6px;background:linear-gradient(#fff8dc,#f0e68c);border:1px solid #d4af37;cursor:pointer;border-radius:3px;font-size:10px;font-weight:bold;color:#8b6914">📝 Note</button>`;
+  html += `</div>`;
+  
+  // Link existing note button
+  if(vfs.filter(f => !f.type || f.type !== 'image').length > 0) {
+    html += `<button onclick="showNoteLinkMenu('${dateStr}')" style="width:100%;padding:4px;background:linear-gradient(#fff,#f5f5f5);border:1px solid #999;cursor:pointer;border-radius:3px;font-size:9px;color:#666;margin-top:4px">🔗 Lier une note existante</button>`;
+  }
+  
+  eventPanel.innerHTML = html;
+}
+
+function clearEvent() {
+  if(!eventPanel) return;
+  eventPanel.innerHTML = `<h3 style="margin:0 0 8px 0;font-size:12px;color:#00008b;font-weight:bold">Aucun événement</h3><p style="margin:0;font-size:11px;color:#000">Sélectionne un jour pour voir ou ajouter des événements.</p>`;
+}
+
+function editEventInline(dateStr, eventIndex) {
+  window.editingEvent = `${dateStr}-${eventIndex}`;
+  showEvents(dateStr);
+}
+
+function saveEvent(dateStr, eventIndex) {
+  const events = eventsData[dateStr];
+  if(!events || !events[eventIndex]) return;
+  
+  const title = document.getElementById(`edit-title-${eventIndex}`).value;
+  const organiser = document.getElementById(`edit-organiser-${eventIndex}`).value || 'Inconnu';
+  const desc = document.getElementById(`edit-desc-${eventIndex}`).value || '';
+  const npcs = document.getElementById(`edit-npcs-${eventIndex}`).value || 'Aucun';
+  
+  if(!title.trim()) {
+    alert('Le titre est obligatoire!');
+    return;
+  }
+  
+  events[eventIndex] = { title, organiser, desc, npcs };
+  window.editingEvent = null;
+  renderCalendar(currentYear, currentMonth);
+  showEvents(dateStr);
+  if(window.syncEvents) window.syncEvents();
+}
+
+function cancelEdit() {
+  window.editingEvent = null;
+  const dateStr = window.lastViewedDate;
+  if(dateStr) showEvents(dateStr);
+}
+
+function addNewEventInline(dateStr) {
+  if(!eventsData[dateStr]) eventsData[dateStr] = [];
+  eventsData[dateStr].push({ title: 'Nouvel événement', organiser: 'Inconnu', desc: '', npcs: 'Aucun' });
+  const newIndex = eventsData[dateStr].length - 1;
+  window.editingEvent = `${dateStr}-${newIndex}`;
+  renderCalendar(currentYear, currentMonth);
+  showEvents(dateStr);
+}
+
+// Note linking functions
+function createNoteForDate(dateStr) {
+  const dateParts = dateStr.split('-');
+  const dateDisplay = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+  const noteName = prompt(`Nom de la note pour le ${dateDisplay}:`, `Note - ${dateDisplay}`);
+  if(!noteName) return;
+  
+  // Create note in root folder (empty string) so it's visible
+  const newNote = createFile(noteName, `Note pour le ${dateDisplay}\n\n`, '');
+  newNote.calendarDate = dateStr;
+  saveVFS();
+  renderCalendar(currentYear, currentMonth);
+  showEvents(dateStr);
+  
+  // Open the note in notepad
+  openFile(newNote.id);
+}
+
+function openNoteFromCalendar(fileId) {
+  // Use the existing openFile function which handles notepad properly
+  openFile(fileId);
+}
+
+function showNoteLinkMenu(dateStr) {
+  const notes = vfs.filter(f => (!f.type || f.type !== 'image') && f.calendarDate !== dateStr);
+  if(notes.length === 0) {
+    alert('Aucune note disponible. Créez d\'abord une note dans le gestionnaire de fichiers.');
+    return;
+  }
+  
+  let menuHtml = '<div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border:2px solid #0b4fa0;border-radius:6px;padding:12px;box-shadow:0 8px 24px rgba(0,0,0,0.4);z-index:10000;min-width:300px;max-width:400px;max-height:400px;overflow-y:auto">';
+  menuHtml += '<h3 style="margin:0 0 10px 0;font-size:13px;color:#00008b">🔗 Lier une note existante</h3>';
+  menuHtml += '<div style="display:flex;flex-direction:column;gap:4px">';
+  
+  notes.forEach(note => {
+    const linkedDate = note.calendarDate ? ` (📅 ${note.calendarDate.split('-').reverse().join('/')})` : '';
+    menuHtml += `
+      <button onclick="linkNoteToDate('${note.id}', '${dateStr}');closeNoteLinkMenu()" style="padding:6px;background:#f5f5f5;border:1px solid #999;cursor:pointer;border-radius:3px;font-size:11px;text-align:left">
+        📄 ${note.name}${linkedDate}
+      </button>
+    `;
+  });
+  
+  menuHtml += '</div>';
+  menuHtml += '<button onclick="closeNoteLinkMenu()" style="width:100%;padding:6px;background:linear-gradient(#f0f0f0,#e0e0e0);border:1px solid #999;cursor:pointer;border-radius:3px;font-size:11px;margin-top:10px">Annuler</button>';
+  menuHtml += '</div>';
+  
+  // Add backdrop
+  menuHtml = '<div id="noteLinkBackdrop" onclick="closeNoteLinkMenu()" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999"></div>' + menuHtml;
+  
+  const container = document.createElement('div');
+  container.id = 'noteLinkMenu';
+  container.innerHTML = menuHtml;
+  document.body.appendChild(container);
+}
+
+function closeNoteLinkMenu() {
+  const menu = document.getElementById('noteLinkMenu');
+  if(menu) menu.remove();
+}
+
+function linkNoteToDate(fileId, dateStr) {
+  const file = vfs.find(f => f.id === fileId);
+  if(!file) return;
+  
+  file.calendarDate = dateStr;
+  saveVFS();
+  renderCalendar(currentYear, currentMonth);
+  showEvents(dateStr);
+}
+
+function unlinkNoteFromDate(fileId, dateStr) {
+  const file = vfs.find(f => f.id === fileId);
+  if(!file) return;
+  
+  if(confirm(`Délier la note "${file.name}" de cette date?`)) {
+    delete file.calendarDate;
+    saveVFS();
+    renderCalendar(currentYear, currentMonth);
+    showEvents(dateStr);
+  }
+}
+
+// Calendar navigation handlers
+function setupCalendarNavigation() {
+  const prevYear = document.getElementById('prevYear');
+  const nextYear = document.getElementById('nextYear');
+  const prevMonth = document.getElementById('prevMonth');
+  const nextMonth = document.getElementById('nextMonth');
+  const monthSel = document.getElementById('monthSelect');
+  const yearSel = document.getElementById('yearSelect');
+  
+  if(prevYear) prevYear.addEventListener('click', () => {
+    currentYear--;
+    if(currentYear < 2003) currentYear = 2003;
+    renderCalendar(currentYear, currentMonth);
+    clearEvent();
+  });
+  
+  if(nextYear) nextYear.addEventListener('click', () => {
+    currentYear++;
+    if(currentYear > 2004) currentYear = 2004;
+    renderCalendar(currentYear, currentMonth);
+    clearEvent();
+  });
+  
+  if(prevMonth) prevMonth.addEventListener('click', () => {
+    currentMonth--;
+    if(currentMonth < 0) {
+      currentMonth = 11;
+      currentYear--;
+      if(currentYear < 2003) {
+        currentYear = 2003;
+        currentMonth = 0;
+      }
+    }
+    renderCalendar(currentYear, currentMonth);
+    clearEvent();
+  });
+  
+  if(nextMonth) nextMonth.addEventListener('click', () => {
+    currentMonth++;
+    if(currentMonth > 11) {
+      currentMonth = 0;
+      currentYear++;
+      if(currentYear > 2004) {
+        currentYear = 2004;
+        currentMonth = 11;
+      }
+    }
+    renderCalendar(currentYear, currentMonth);
+    clearEvent();
+  });
+  
+  if(monthSel) monthSel.addEventListener('change', () => {
+    currentMonth = parseInt(monthSel.value);
+    renderCalendar(currentYear, currentMonth);
+    clearEvent();
+  });
+  
+  if(yearSel) yearSel.addEventListener('change', () => {
+    currentYear = parseInt(yearSel.value);
+    renderCalendar(currentYear, currentMonth);
+    clearEvent();
+  });
+}
+
+setupCalendarNavigation();
+
+function openCalendar(){ 
+  const calWin = document.getElementById('calendarWin');
+  if(!calWin) return;
+  // Set calendar icon in titlebar
+  const calIcon = calWin.querySelector('.app-icon');
+  if(calIcon && !calIcon.src){
+    cropImage('https://64.media.tumblr.com/dc83e630e80ea3d2e7d6109c04413e5f/4bb96d483664ea8b-25/s540x810/b670b73f866a86b26b9ed891db5692c3d59ecf30.png').then(url => {
+      calIcon.src = url;
+    });
+  }
+  openWindow(calWin); 
+  renderCalendar(currentYear, currentMonth); 
+  clearEvent(); 
+}
+
+// wire taskbar clock to open calendar on click (and show date on hover)
+const clockEl = document.getElementById('clock');
+function updateClock(){
+  if(!clockEl) return;
+  const now = new Date();
+  // Fixed date 05/11/2003 with current time
+  const timeStr = now.toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'});
+  clockEl.textContent = timeStr + '  05/11/2003';
+  clockEl.title = '05 novembre 2003 ' + timeStr;
+}
+if(clockEl){
+  clockEl.style.cursor = 'pointer';
+  // open calendar when clicking the clock
+  clockEl.addEventListener('click', (e)=>{ e.stopPropagation(); openCalendar(); });
+  // start live updates
+  updateClock();
+  setInterval(updateClock, 1000);
+}
+
+// ensure desktop calendar icon opens calendar (icons are already wired in renderDesktopIcons)
+window.openCalendar = openCalendar;
+
+// Icon pack for Start menu
+const leftIcons = [
+  {url:"https://64.media.tumblr.com/52e8408d405544cbe44ec09e2682843c/351345486ce3b804-cb/s540x810/3307fbb33eb73cc5036d92289df136613b182724.png", label:"Internet", id:"sm-iexplore"},
+  {url:"https://64.media.tumblr.com/0ac804bd37c32df1a2fbac531716b5fb/af023c361ba2be99-b3/s540x810/5fa47df22e35c29fa9fea7fdd327f80476980e8c.png", label:"Email", divider:true},
+  {url:"https://64.media.tumblr.com/a37de7520c46fc1ce62d94a79bc66d6c/9b87b7571538c226-f7/s540x810/fe69745eb7b7c074fc87fd5a723bbc2928a82002.png", label:"Minesweeper", id:"sm-demineur"},
+  {url:"https://64.media.tumblr.com/091435cda9870d6e97ba9a29dfbb5683/ea8c8dfb4ea15613-cd/s540x810/bfe2d0fdb47ebc25220bae6ae7c14f1f150df504.png", label:"Notepad", id:"sm-notepad"},
+  {url:"https://64.media.tumblr.com/880bcbbcd12d2d4f1a9f4080cf47ebb3/e606a3a17e10509b-bb/s540x810/a222578284e66ee82909ff887b10664464ffdb31.png", label:"Security Camera", id:"sm-camera"},
+  {url:"https://64.media.tumblr.com/c98bf3520ef34e85968215d4e6a8d263/fdc6c7af1442736b-18/s540x810/4dd55fdfeaca3a1d4067ae4a76e40e5dd868f6c1.png", label:"Gallery", id:"sm-gallery"},
+  {url:"https://64.media.tumblr.com/cd3f0ca6b98394eef36ee3eb93d34ecd/b3d9fa90b1e63e01-31/s540x810/1ae88b69f98bf3be18266b705e6910e125f4e49f.png", label:"Windows Media Player"},
+  {url:"https://64.media.tumblr.com/89039978d688765290090b4c3d5f7e1d/e407752210514977-90/s540x810/a97468e29e8d4d583a3ba98b0e13085bd77a67de.png", label:"Paint", id:"sm-paint"},
+];
+
+const rightIcons = [
+  {url:"https://64.media.tumblr.com/1ad75b3b6e5bbf8fc0a61507fd0cc3a9/352118494480b7d6-84/s540x810/c4d7e7079764a1425333be63d59f4e4cc25a65ac.png", label:"My Documents"},
+  {url:"https://64.media.tumblr.com/1fc4e226d9f9d6d4654101c459a8a60c/75b9b7d22e63887a-94/s540x810/67248ed7064c7cbfcd35683acc5a517ae643f5ad.png", label:"My Recent Documents"},
+  {url:"https://64.media.tumblr.com/9b046ccf46b0dc1cc7aa1aac1cfe8eda/52ec940b350d99cf-3c/s540x810/5beb93124fd321ab061055af0d00d544cecd6a77.png", label:"My Pictures"},
+  {url:"https://64.media.tumblr.com/075fd38c6d6a00db53bd473ac9bed93d/696b75159bb23f9a-c1/s540x810/b3aadb0cf7965b57d259a8398f8b1537e8d89cd3.png", label:"My Music"},
+  {url:"https://64.media.tumblr.com/b25bfc3736abbeabd446a2ac7d495fe5/63d64a7aad5dabee-b6/s540x810/c419d39f12d46b2251f3033c4d3912e507557ae6.png", label:"My Computer", divider:true},
+  {url:"https://64.media.tumblr.com/f6a0415735322b7dc1a6415be25d4886/226d20a59aeb6ebc-1a/s540x810/247739e54aa61934aa7e7427d25072802c557191.png", label:"Control Panel"},
+  {url:"https://64.media.tumblr.com/4a877ea1656489e8d2b4e85a58176509/9efead692767243e-64/s540x810/bdb3c74a4840f88399b27e12b6fb82784ef24ab8.png", label:"Connect To"},
+  {url:"https://64.media.tumblr.com/a8449b86a1b242962aef8ae61adb31a0/13c888e035acb238-37/s540x810/d142d2908c746bd5fa7dab551fd4df2bdbddb8d2.png", label:"Printers and Faxes", divider:true},
+  {url:"https://64.media.tumblr.com/893a5fefc720ebac2c2834623230f645/af69d22e25b03f8b-ee/s540x810/af0b310165ae21fdb5180a9ee462526c0f77a794.png", label:"Help and Support"},
+  {url:"https://64.media.tumblr.com/9a4a3f2d328d24b19c812637ccff9c98/da85e979ab97fe3b-8f/s540x810/d171750eb10915f21e73ab41d722c77416350e77.png", label:"Search"},
+  {url:"https://64.media.tumblr.com/7db36ac437308c32b4435efffd290352/5242c2075339d408-1f/s540x810/ca59d216ba56a907a6d8f30f69254bfd78595131.png", label:"Run"},
+];
+
+async function cropImage(url){
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+      const data = ctx.getImageData(0, 0, img.width, img.height);
+      let minX = img.width, minY = img.height, maxX = 0, maxY = 0;
+      for (let y = 0; y < img.height; y++) {
+        for (let x = 0; x < img.width; x++) {
+          if (data.data[(y * img.width + x) * 4 + 3] > 10) {
+            minX = Math.min(minX, x);
+            maxX = Math.max(maxX, x);
+            minY = Math.min(minY, y);
+            maxY = Math.max(maxY, y);
+          }
+        }
+      }
+      const w = maxX - minX + 1;
+      const h = maxY - minY + 1;
+      const newCanvas = document.createElement('canvas');
+      newCanvas.width = w;
+      newCanvas.height = h;
+      newCanvas.getContext('2d').drawImage(img, minX, minY, w, h, 0, 0, w, h);
+      resolve(newCanvas.toDataURL());
+    };
+    img.onerror = () => resolve(url);
+    img.src = url;
+  });
+}
+
+// Render Start menu panels with icons
+async function renderStartMenuPanels(){
+  const leftPanel = document.getElementById('leftPanel');
+  const rightPanel = document.getElementById('rightPanel');
+  
+  if(leftPanel){
+    for(const icon of leftIcons){
+      const croppedUrl = await cropImage(icon.url);
+      const wrapper = document.createElement('div');
+      wrapper.className='sm-item';
+      if(icon.id) wrapper.id = icon.id;
+      wrapper.style.cssText = 'display:flex;gap:6px;padding:5px 6px;border-radius:3px;cursor:pointer;align-items:center;margin-bottom:3px';
+      const img = document.createElement('img');
+      img.src=croppedUrl;
+      img.style.width="24px";
+      img.style.height="24px";
+      const label = document.createElement('div');
+      label.style.cssText = 'font-weight:bold;font-size:11px;color:#03406e';
+      label.textContent = icon.label;
+      wrapper.appendChild(img);
+      wrapper.appendChild(label);
+      if(icon.divider){
+        wrapper.style.borderBottom = "1px solid rgba(0,0,0,0.1)";
+        wrapper.style.paddingBottom = "6px";
+        wrapper.style.marginBottom = "6px";
+      }
+      leftPanel.appendChild(wrapper);
+    }
+  }
+  
+  if(rightPanel){
+    for(const icon of rightIcons){
+      const croppedUrl = await cropImage(icon.url);
+      const wrapper = document.createElement('div');
+      wrapper.className='sm-link';
+      wrapper.style.cssText = 'display:flex;gap:6px;align-items:center;padding:4px;color:#03406e;font-size:11px;font-weight:bold;cursor:pointer;border-radius:3px;margin-bottom:1px';
+      const img = document.createElement('img');
+      img.src=croppedUrl;
+      img.style.width="16px";
+      img.style.height="16px";
+      const label = document.createElement('span');
+      label.textContent = icon.label;
+      wrapper.appendChild(img);
+      wrapper.appendChild(label);
+      if(icon.divider){
+        wrapper.style.borderBottom = "1px solid rgba(0,0,0,0.15)";
+        wrapper.style.paddingBottom = "4px";
+        wrapper.style.marginBottom = "4px";
+      }
+      rightPanel.appendChild(wrapper);
+    }
+  }
+  
+  // Crop footer button images
+  const logoffBtn = document.getElementById('logoff-btn');
+  const shutdownBtn = document.getElementById('shutdown-btn');
+  if(logoffBtn){
+    const img = logoffBtn.querySelector('img');
+    if(img) img.src = await cropImage(img.src);
+  }
+  if(shutdownBtn){
+    const img = shutdownBtn.querySelector('img');
+    if(img) img.src = await cropImage(img.src);
+  }
+}
+
+// ensure desktop icons / files / calendar get rendered on load
+{
+  // initialization: render UI parts that were not being rendered automatically
+  try {
+    // desktop icons and explorer file list
+    if (typeof renderDesktopIcons === 'function') renderDesktopIcons();
+    if (typeof renderFiles === 'function') renderFiles();
+    // calendar: prepare the calendar grid for the default month/year
+    if (typeof renderCalendar === 'function') renderCalendar(currentYear, currentMonth);
+    // clear event panel initially
+    if (typeof clearEvent === 'function') clearEvent();
+
+    // ensure desktop icons open windows (delegated handler) - fixes camera/calendar icon clicks
+    const iconsWrap = document.getElementById('iconsContainer');
+    if(iconsWrap){
+      // remove previous handler if any
+      if(iconsWrap._handler) iconsWrap.removeEventListener('click', iconsWrap._handler);
+      iconsWrap._handler = function(ev){
+        const el = ev.target.closest('.icon');
+        if(!el) return;
+        const id = el.dataset.id;
+        try {
+          const windowByIconId = {
+            camera: 'cameraWin',
+            calendar: 'calendarWin',
+            notepad: 'notepadWin',
+            explorer: 'explorerWin',
+            demineur: 'minesWin'
+          };
+          const target = document.getElementById(windowByIconId[id]);
+          if(target) openWindow(target);
+        } catch(err){
+          console.warn('iconsWrap handler failed', err);
+        }
+      };
+      iconsWrap.addEventListener('click', iconsWrap._handler);
+    }
+
+    // Render Start menu icons and wire events
+    let startMenu = document.getElementById('startMenu');
+    if(startMenu){
+      renderStartMenuPanels().then(()=>{
+        // Wire menu items to open windows after rendering
+        const smNotepad = document.getElementById('sm-notepad');
+        const smCamera = document.getElementById('sm-camera');
+        const smGallery = document.getElementById('sm-gallery');
+        const smPaint = document.getElementById('sm-paint');
+        const smDemineur = document.getElementById('sm-demineur');
+        const smIexplore = document.getElementById('sm-iexplore');
+        
+        if(smNotepad) smNotepad.addEventListener('click', ()=>{ startMenu.style.display='none'; openNotepadCreate(); });
+        if(smCamera) smCamera.addEventListener('click', ()=>{ startMenu.style.display='none'; openCamera(); });
+        if(smGallery) smGallery.addEventListener('click', ()=>{ startMenu.style.display='none'; openGallery(); });
+        if(smPaint) smPaint.addEventListener('click', ()=>{ startMenu.style.display='none'; if(window.openPaint) window.openPaint(); });
+        if(smDemineur) smDemineur.addEventListener('click', ()=>{ startMenu.style.display='none'; openMines(); });
+        if(smIexplore) smIexplore.addEventListener('click', ()=>{ startMenu.style.display='none'; if(window.openInternetExplorer) window.openInternetExplorer(); });
+      });
+    }
+
+    // Start button toggle & position
+    const startBtn = document.getElementById('start');
+    if(startBtn){
+      startBtn.style.cursor = 'pointer';
+      if(startBtn._handler) startBtn.removeEventListener('click', startBtn._handler);
+      startBtn._handler = function(ev){
+        ev.stopPropagation();
+        const frameRect = document.getElementById('frame').getBoundingClientRect();
+        const taskbarHeight = 40;
+        // Position directly above taskbar at bottom-left
+        const left = 8;
+        const bottom = taskbarHeight + 8;
+        startMenu.style.left = left + 'px';
+        startMenu.style.bottom = bottom + 'px';
+        startMenu.style.top = 'auto';
+        startMenu.style.display = startMenu.style.display === 'block' ? 'none' : 'block';
+      };
+      startBtn.addEventListener('click', startBtn._handler);
+      // close start menu on outside click
+      document.addEventListener('click', (e)=>{ if(!startMenu.contains(e.target) && e.target !== startBtn) startMenu.style.display = 'none'; });
+    }
+
+  } catch (e) {
+    console.warn('Initialization failed', e);
+  }
+
+  // Context menu for background change
+  const desktop = document.getElementById('desktop');
+  const contextMenu = document.getElementById('contextMenu');
+  if(desktop && contextMenu){
+    desktop.addEventListener('contextmenu', (e)=>{
+      if(e.target.closest('.icon') || e.target.closest('.window')) return;
+      e.preventDefault();
+      const frame = document.getElementById('frame');
+      const frameRect = frame.getBoundingClientRect();
+      const x = e.clientX - frameRect.left;
+      const y = e.clientY - frameRect.top;
+      contextMenu.style.left = x + 'px';
+      contextMenu.style.top = y + 'px';
+      contextMenu.style.display = 'block';
+    });
+    document.addEventListener('click', ()=> contextMenu.style.display = 'none');
+    
+    contextMenu.addEventListener('click', (e)=>{
+      const item = e.target.closest('.ctx-item');
+      if(!item) return;
+      const action = item.dataset.action;
+      const backgroundMap = {
+        bg1: 'url(https://upload.wikimedia.org/wikipedia/en/a/a9/Bliss_%28Windows_XP%29.png) center/cover',
+        bg2: 'linear-gradient(#4d8fc4 0%, #a2d8f4 50%, #4d8fc4 100%)',
+        bg3: 'linear-gradient(#7ec1ff 0%, #8cd05a 70%)'
+      };
+
+      const applyBackground = (background) => {
+        desktop.style.background = background;
+        if(window.syncBackground) window.syncBackground(background);
+      };
+      
+      // Ignore disabled items
+      if(action === 'paste' || action === 'properties') {
+        contextMenu.style.display = 'none';
+        return;
+      }
+      
+      if(backgroundMap[action]){
+        applyBackground(backgroundMap[action]);
+      } else if(action === 'customBg'){
+        const url = prompt('Entrez l\'URL de l\'image de fond d\'\u00e9cran:');
+        if(url) {
+          applyBackground(`url(${url}) center/cover`);
+        }
+      } else if(action === 'refresh'){
+        // Do nothing, just for show
+      } else if(action === 'arrange'){
+        // Do nothing, just for show
+      }
+      contextMenu.style.display = 'none';
+    });
+  }
+
+  // safe month-button wiring (in case calendar UI is not present yet)
+  const monthBtns = document.querySelectorAll('.month-btn');
+  if (monthBtns && monthBtns.length && typeof renderCalendar === 'function') {
+    monthBtns.forEach(btn => {
+      // avoid duplicate handlers if script executed twice
+      btn.removeEventListener('click', btn._monthHandler);
+      const handler = () => {
+        document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentMonth = parseInt(btn.dataset.month);
+        renderCalendar(currentYear, currentMonth);
+        clearEvent();
+      };
+      btn._monthHandler = handler;
+      btn.addEventListener('click', handler);
+    });
+  }
+}
+
+// Camera window with static image
+{
+  const camWinEl = document.getElementById('cameraWin');
+  const camTs = document.getElementById('cam-ts');
+
+  // timestamp updater (every second) with fixed date
+  function updateCamTS(){ 
+    if(!camTs) return; 
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit', second: '2-digit'});
+    camTs.textContent = '05/11/2003 ' + timeStr;
+  }
+  setInterval(updateCamTS, 1000);
+  updateCamTS();
+
+  // Make camera switching global
+  window.currentCameraIndex = 0;
+  window.cameras = [
+    {
+      url: 'https://static.wixstatic.com/media/7cbe3b_ffeb1b2ab1c249bfbf2f6a08e330fb43~mv2.png',
+      name: 'Camera 1'
+    },
+    {
+      url: 'https://static.wixstatic.com/media/7cbe3b_fece03db814548f7913d79949d28f391~mv2.png',
+      name: 'Camera 2'
+    }
+  ];
+  
+  window.switchToCamera = function(index){
+    if(index < 0) index = window.cameras.length - 1;
+    if(index >= window.cameras.length) index = 0;
+    
+    window.currentCameraIndex = index;
+    const camImg = document.getElementById('cam-img');
+    const camLocationName = document.getElementById('cam-location-name');
+    
+    if(camImg && window.cameras[index]){
+      camImg.src = window.cameras[index].url;
+    }
+    
+    if(camLocationName && window.cameras[index]){
+      camLocationName.textContent = window.cameras[index].name;
+    }
+  };
+  
+  function openCamera(){
+    if(!camWinEl) return;
+    openWindow(camWinEl);
+  }
+  window.openCamera = openCamera;
+}
+
+// Gallery window
+{
+  const galleryWin = document.getElementById('galleryWin');
+  const galleryGrid = document.getElementById('galleryGrid');
+  const galleryCount = document.getElementById('galleryCount');
+
+  function renderGallery(){
+    if(!galleryGrid) return;
+    galleryGrid.innerHTML = '';
+    const images = vfs.filter(f => f.type === 'image');
+    galleryCount.textContent = images.length + ' image' + (images.length !== 1 ? 's' : '');
+    
+    if(images.length === 0){
+      const emptyMsg = document.createElement('div');
+      emptyMsg.style.cssText = 'grid-column:1/-1;text-align:center;padding:100px 20px;color:#8a9aaa;font-size:12px';
+      emptyMsg.innerHTML = '<div style="font-size:48px;margin-bottom:12px;opacity:0.3">🖼️</div><div style="font-size:14px;font-weight:600;margin-bottom:6px;color:#5a7a9a">No images in gallery</div><div>Upload images from File Manager to see them here</div>';
+      galleryGrid.appendChild(emptyMsg);
+      return;
+    }
+    
+    images.forEach((img)=>{
+      const card = document.createElement('div');
+      card.style.cssText = 'cursor:pointer;border:1px solid #dae5f0;border-radius:4px;overflow:hidden;background:#fff;transition:all 0.2s ease;box-shadow:0 1px 3px rgba(0,40,80,0.08);aspect-ratio:1;display:flex;flex-direction:column';
+      
+      card.addEventListener('mouseenter', ()=>{
+        card.style.transform = 'translateY(-3px)';
+        card.style.boxShadow = '0 4px 12px rgba(0,60,120,0.15)';
+        card.style.borderColor = '#7aa5d0';
+      });
+      card.addEventListener('mouseleave', ()=>{
+        card.style.transform = 'translateY(0)';
+        card.style.boxShadow = '0 1px 3px rgba(0,40,80,0.08)';
+        card.style.borderColor = '#dae5f0';
+      });
+      card.addEventListener('dblclick', ()=>openPictureViewer(img.id));
+      
+      const imgWrapper = document.createElement('div');
+      imgWrapper.style.cssText = 'flex:1;overflow:hidden;background:#f5f8fa;display:flex;align-items:center;justify-content:center';
+      
+      const imgEl = document.createElement('img');
+      imgEl.src = img.text;
+      imgEl.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block';
+      
+      const label = document.createElement('div');
+      label.textContent = img.name;
+      label.style.cssText = 'padding:6px 8px;font-size:10px;color:#2a4a6a;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:#f8fbff;border-top:1px solid #e5eef5;font-weight:500';
+      
+      imgWrapper.appendChild(imgEl);
+      card.appendChild(imgWrapper);
+      card.appendChild(label);
+      galleryGrid.appendChild(card);
+    });
+  }
+
+  document.getElementById('galleryRefresh').addEventListener('click', renderGallery);
+
+  function openGallery(){
+    if(!galleryWin) return;
+    renderGallery();
+    openWindow(galleryWin);
+  }
+  window.openGallery = openGallery;
+}
+
+// Internet Explorer Browser
+function openInternetExplorer() {
+  const ieWin = document.getElementById('iexploreWin');
+  if (!ieWin) return;
+  openWindow(ieWin);
+}
+window.openInternetExplorer = openInternetExplorer;
+
+function ieGoBack() {
+  // No functionality needed
+}
+
+// Picture Viewer
+{
+  const viewerWin = document.getElementById('pictureViewerWin');
+  const viewerImage = document.getElementById('viewerImage');
+  const viewerTitle = document.getElementById('viewerTitle');
+  const viewerInfo = document.getElementById('viewerInfo');
+  let currentImageIndex = 0;
+  let imageList = [];
+  let zoomLevel = 1;
+
+  function openPictureViewer(imageId){
+    imageList = vfs.filter(f => f.type === 'image');
+    if(imageList.length === 0) return;
+    
+    currentImageIndex = imageList.findIndex(img => img.id === imageId);
+    if(currentImageIndex === -1) currentImageIndex = 0;
+    
+    zoomLevel = 1;
+    showCurrentImage();
+    openWindow(viewerWin);
+  }
+  window.openPictureViewer = openPictureViewer;
+
+  function showCurrentImage(){
+    if(!imageList[currentImageIndex]) return;
+    const img = imageList[currentImageIndex];
+    viewerImage.src = img.text;
+    viewerTitle.textContent = img.name + ' - Picture Viewer';
+    viewerInfo.textContent = `${currentImageIndex + 1} of ${imageList.length}`;
+    viewerImage.style.transform = `scale(${zoomLevel})`;
+  }
+
+  document.getElementById('viewerPrev').addEventListener('click', ()=>{
+    if(imageList.length === 0) return;
+    currentImageIndex = (currentImageIndex - 1 + imageList.length) % imageList.length;
+    zoomLevel = 1;
+    showCurrentImage();
+  });
+
+  document.getElementById('viewerNext').addEventListener('click', ()=>{
+    if(imageList.length === 0) return;
+    currentImageIndex = (currentImageIndex + 1) % imageList.length;
+    zoomLevel = 1;
+    showCurrentImage();
+  });
+
+  document.getElementById('viewerZoomIn').addEventListener('click', ()=>{
+    zoomLevel = Math.min(zoomLevel + 0.25, 4);
+    viewerImage.style.transform = `scale(${zoomLevel})`;
+  });
+
+  document.getElementById('viewerZoomOut').addEventListener('click', ()=>{
+    zoomLevel = Math.max(zoomLevel - 0.25, 0.25);
+    viewerImage.style.transform = `scale(${zoomLevel})`;
+  });
+
+  document.getElementById('viewerZoomReset').addEventListener('click', ()=>{
+    zoomLevel = 1;
+    viewerImage.style.transform = `scale(${zoomLevel})`;
+  });
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e)=>{
+    if(viewerWin.style.display !== 'none'){
+      if(e.key === 'ArrowLeft') document.getElementById('viewerPrev').click();
+      if(e.key === 'ArrowRight') document.getElementById('viewerNext').click();
+      if(e.key === '+' || e.key === '=') document.getElementById('viewerZoomIn').click();
+      if(e.key === '-') document.getElementById('viewerZoomOut').click();
+      if(e.key === '0') document.getElementById('viewerZoomReset').click();
+    }
+  });
+}
+
+// Paint App
+{
+  const paintWin = document.getElementById('paintWin');
+  const canvas = document.getElementById('paintCanvas');
+  const ctx = canvas.getContext('2d');
+  const colorDisplay1 = document.getElementById('paintColorDisplay1');
+  const colorDisplay2 = document.getElementById('paintColorDisplay2');
+  const paintStatus = document.getElementById('paintStatus');
+  const paintFileMenu = document.getElementById('paintFileMenu');
+  const paintFileDropdown = document.getElementById('paintFileDropdown');
+  
+  let painting = false;
+  let currentTool = 'pencil';
+  let color1 = '#000000';
+  let color2 = '#ffffff';
+  let currentSize = 3;
+  let lastX = 0, lastY = 0;
+  let shapeStartX = 0, shapeStartY = 0;
+  let tempCanvas = null;
+  let currentFileName = 'untitled';
+
+  // File menu dropdown toggle
+  paintFileMenu.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isVisible = paintFileDropdown.style.display === 'block';
+    paintFileDropdown.style.display = isVisible ? 'none' : 'block';
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', () => {
+    paintFileDropdown.style.display = 'none';
+  });
+
+  // File menu actions
+  document.querySelectorAll('.paint-dropdown-item').forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const action = item.dataset.action;
+      paintFileDropdown.style.display = 'none';
+      
+      if (action === 'new') {
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        currentFileName = 'untitled';
+        paintWin.querySelector('.title').textContent = 'untitled - Paint';
+      } else if (action === 'save' || action === 'saveas') {
+        const fileName = prompt('Save as:', currentFileName);
+        if (fileName) {
+          currentFileName = fileName.endsWith('.png') ? fileName : fileName + '.png';
+          paintWin.querySelector('.title').textContent = currentFileName + ' - Paint';
+          
+          // Save to gallery - use global vfs array
+          const imgData = canvas.toDataURL('image/png');
+          const newFile = {
+            id: 'f' + Date.now(),
+            name: currentFileName,
+            text: imgData,
+            type: 'image',
+            modifiedAt: Date.now()
+          };
+          
+          // Push to global vfs array
+          vfs.push(newFile);
+          
+          // Save to localStorage and sync to Firebase
+          saveVFS();
+          
+          // Refresh gallery and file manager display
+          setTimeout(() => {
+            if(window.renderGallery) {
+              window.renderGallery();
+            }
+            if(window.renderFiles) {
+              window.renderFiles();
+            }
+          }, 500);
+          
+          alert('Image saved to Gallery!');
+        }
+      } else if (action === 'close') {
+        paintWin.style.display = 'none';
+      }
+    });
+  });
+
+  // Reduced color palette (20 essential colors)
+  const defaultColors = [
+    '#000000', '#808080', '#800000', '#ff0000', '#ff8000', '#ffff00', '#80ff00', '#00ff00',
+    '#00ff80', '#00ffff', '#0080ff', '#0000ff', '#8000ff', '#ff00ff', '#ff0080', '#804000',
+    '#808040', '#ffffff', '#c0c0c0', '#ece9d8'
+  ];
+
+  // Initialize canvas
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  paintStatus.textContent = `${canvas.width} x ${canvas.height}px`;
+
+  // Create color palette
+  const palette = document.getElementById('paintPalette');
+  defaultColors.forEach(color => {
+    const swatch = document.createElement('div');
+    swatch.style.cssText = `width:14px;height:14px;background:${color};border:1px solid #000;cursor:pointer`;
+    swatch.addEventListener('click', (e)=>{
+      if(e.button === 0 || e.type === 'click'){
+        color1 = color;
+        colorDisplay1.style.background = color1;
+      }
+    });
+    swatch.addEventListener('contextmenu', (e)=>{
+      e.preventDefault();
+      color2 = color;
+      colorDisplay2.style.background = color2;
+    });
+    palette.appendChild(swatch);
+  });
+
+  // Tool selection
+  document.querySelectorAll('.paint-tool').forEach(btn => {
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.paint-tool').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentTool = btn.dataset.tool;
+      updateCursor();
+    });
+  });
+
+  function updateCursor(){
+    const cursors = {
+      'select': 'default',
+      'select-rect': 'crosshair',
+      'eraser': 'cell',
+      'fill': 'cell',
+      'picker': 'crosshair',
+      'magnifier': 'zoom-in',
+      'pencil': 'crosshair',
+      'brush': 'crosshair',
+      'airbrush': 'crosshair',
+      'text': 'text',
+      'line': 'crosshair',
+      'curve': 'crosshair',
+      'rectangle': 'crosshair',
+      'polygon': 'crosshair',
+      'ellipse': 'crosshair',
+      'rounded-rect': 'crosshair'
+    };
+    canvas.style.cursor = cursors[currentTool] || 'crosshair';
+  }
+
+  // Drawing functions
+  function getMousePos(e){
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    return {
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top) * scaleY
+    };
+  }
+
+  function drawLine(x1, y1, x2, y2, color, width){
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+  }
+
+  function drawAirbrush(x, y){
+    const density = 20;
+    const radius = currentSize * 3;
+    for(let i = 0; i < density; i++){
+      const angle = Math.random() * Math.PI * 2;
+      const dist = Math.random() * radius;
+      const px = x + Math.cos(angle) * dist;
+      const py = y + Math.sin(angle) * dist;
+      ctx.fillStyle = color1;
+      ctx.fillRect(px, py, 1, 1);
+    }
+  }
+
+  function drawRectangle(x1, y1, x2, y2, filled){
+    ctx.strokeStyle = color1;
+    ctx.lineWidth = currentSize;
+    if(filled){
+      ctx.fillStyle = color2;
+      ctx.fillRect(Math.min(x1,x2), Math.min(y1,y2), Math.abs(x2-x1), Math.abs(y2-y1));
+    }
+    ctx.strokeRect(Math.min(x1,x2), Math.min(y1,y2), Math.abs(x2-x1), Math.abs(y2-y1));
+  }
+
+  function drawEllipse(x1, y1, x2, y2, filled){
+    const centerX = (x1 + x2) / 2;
+    const centerY = (y1 + y2) / 2;
+    const radiusX = Math.abs(x2 - x1) / 2;
+    const radiusY = Math.abs(y2 - y1) / 2;
+    
+    ctx.beginPath();
+    ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2);
+    ctx.strokeStyle = color1;
+    ctx.lineWidth = currentSize;
+    if(filled){
+      ctx.fillStyle = color2;
+      ctx.fill();
+    }
+    ctx.stroke();
+  }
+
+  function floodFill(startX, startY, fillColor){
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const targetColor = getColorAtPixel(imageData, startX, startY);
+    const fillColorRgb = hexToRgb(fillColor);
+    
+    if(colorsMatch(targetColor, fillColorRgb)) return;
+    
+    const pixelsToCheck = [[startX, startY]];
+    while(pixelsToCheck.length > 0){
+      const [x, y] = pixelsToCheck.pop();
+      if(x < 0 || x >= canvas.width || y < 0 || y >= canvas.height) continue;
+      
+      const currentColor = getColorAtPixel(imageData, x, y);
+      if(!colorsMatch(currentColor, targetColor)) continue;
+      
+      setColorAtPixel(imageData, x, y, fillColorRgb);
+      pixelsToCheck.push([x+1, y], [x-1, y], [x, y+1], [x, y-1]);
+    }
+    ctx.putImageData(imageData, 0, 0);
+  }
+
+  function getColorAtPixel(imageData, x, y){
+    const index = (y * canvas.width + x) * 4;
+    return [imageData.data[index], imageData.data[index+1], imageData.data[index+2], imageData.data[index+3]];
+  }
+
+  function setColorAtPixel(imageData, x, y, color){
+    const index = (y * canvas.width + x) * 4;
+    imageData.data[index] = color[0];
+    imageData.data[index+1] = color[1];
+    imageData.data[index+2] = color[2];
+    imageData.data[index+3] = 255;
+  }
+
+  function hexToRgb(hex){
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16), 255] : [0,0,0,255];
+  }
+
+  function colorsMatch(a, b){
+    return a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3];
+  }
+
+  // Canvas events
+  canvas.addEventListener('mousedown', (e)=>{
+    const pos = getMousePos(e);
+    painting = true;
+    shapeStartX = lastX = pos.x;
+    shapeStartY = lastY = pos.y;
+
+    if(currentTool === 'fill'){
+      floodFill(Math.floor(pos.x), Math.floor(pos.y), color1);
+      painting = false;
+    } else if(currentTool === 'picker'){
+      const imageData = ctx.getImageData(Math.floor(pos.x), Math.floor(pos.y), 1, 1);
+      const r = imageData.data[0];
+      const g = imageData.data[1];
+      const b = imageData.data[2];
+      color1 = `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`;
+      colorDisplay1.style.background = color1;
+      painting = false;
+    } else if(['rectangle', 'ellipse', 'rounded-rect', 'line'].includes(currentTool)){
+      tempCanvas = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    }
+  });
+
+  canvas.addEventListener('mousemove', (e)=>{
+    if(!painting) return;
+    const pos = getMousePos(e);
+    
+    paintStatus.textContent = `${Math.floor(pos.x)}, ${Math.floor(pos.y)}`;
+
+    if(currentTool === 'pencil'){
+      drawLine(lastX, lastY, pos.x, pos.y, color1, currentSize);
+    } else if(currentTool === 'brush'){
+      drawLine(lastX, lastY, pos.x, pos.y, color1, currentSize * 2);
+    } else if(currentTool === 'airbrush'){
+      drawAirbrush(pos.x, pos.y);
+    } else if(currentTool === 'eraser'){
+      drawLine(lastX, lastY, pos.x, pos.y, '#ffffff', currentSize * 3);
+    } else if(['rectangle', 'ellipse', 'line'].includes(currentTool)){
+      if(tempCanvas){
+        ctx.putImageData(tempCanvas, 0, 0);
+        if(currentTool === 'rectangle'){
+          drawRectangle(shapeStartX, shapeStartY, pos.x, pos.y, false);
+        } else if(currentTool === 'ellipse'){
+          drawEllipse(shapeStartX, shapeStartY, pos.x, pos.y, false);
+        } else if(currentTool === 'line'){
+          drawLine(shapeStartX, shapeStartY, pos.x, pos.y, color1, currentSize);
+        }
+      }
+    }
+    
+    lastX = pos.x;
+    lastY = pos.y;
+  });
+
+  canvas.addEventListener('mouseup', (e)=>{
+    painting = false;
+    tempCanvas = null;
+    paintStatus.textContent = `${canvas.width} x ${canvas.height}px`;
+  });
+
+  canvas.addEventListener('mouseleave', (e)=>{
+    if(painting){
+      painting = false;
+      tempCanvas = null;
+    }
+    paintStatus.textContent = `${canvas.width} x ${canvas.height}px`;
+  });
+
+  // Edit Colors button (simple dialog simulation)
+  document.getElementById('paintEditColors').addEventListener('click', ()=>{
+    const newColor = prompt('Enter a hex color (e.g., #ff5500):', color1);
+    if(newColor && /^#[0-9A-F]{6}$/i.test(newColor)){
+      color1 = newColor;
+      colorDisplay1.style.background = color1;
+    }
+  });
+  
+  function openPaint(){
+    if(!paintWin) return;
+    openWindow(paintWin);
+  }
+  window.openPaint = openPaint;
+  
+  // Make paint window draggable
+  makeDraggable(paintWin);
+}
+
+// Fax Machine & Overlay System
+{
+  const faxOverlay = document.getElementById('faxOverlay');
+  const faxCloseBtn = document.getElementById('faxCloseBtn');
+  const faxWindowsContainer = document.getElementById('faxWindowsContainer');
+  
+  let faxes = JSON.parse(localStorage.getItem('fax_archives') || '[]');
+  
+  function saveFaxes() {
+    localStorage.setItem('fax_archives', JSON.stringify(faxes));
+  }
+  
+  function renderFaxOverlay() {
+    faxWindowsContainer.innerHTML = '';
+    
+    if (faxes.length === 0) {
+      const noFax = document.createElement('div');
+      noFax.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font-size:18px;text-shadow:0 2px 4px rgba(0,0,0,0.5)';
+      noFax.textContent = 'No faxes received yet.';
+      faxWindowsContainer.appendChild(noFax);
+      return;
+    }
+    
+    // Create desktop-like windows for each fax
+    faxes.forEach((fax, index) => {
+      const win = document.createElement('div');
+      const left = 50 + (index * 40);
+      const top = 40 + (index * 40);
+      win.className = 'fax-window';
+      win.style.cssText = `position:absolute;width:500px;height:400px;left:${left}px;top:${top}px;background:#fff;border:2px solid #154a9b;box-shadow:0 6px 18px rgba(0,0,0,0.5);z-index:${100 + index}`;
+      
+      const date = new Date(fax.timestamp).toLocaleString();
+      
+      win.innerHTML = `
+        <div class="titlebar" style="height:28px;background:linear-gradient(#1e68d9,#0b4fa0);color:#fff;display:flex;align-items:center;padding:0 8px;justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="font-weight:bold;font-size:13px">Fax - ${date}</div>
+          </div>
+          <button class="delete-fax-btn" data-index="${index}" style="background:linear-gradient(#4b86d6,#2b5fb8);border:1px solid rgba(0,0,0,0.2);color:#fff;padding:2px 6px;border-radius:2px;cursor:pointer">Delete</button>
+        </div>
+        <div style="padding:16px;background:#f8fbff;height:calc(100% - 28px);overflow-y:auto;font-family:monospace;font-size:12px;white-space:pre-wrap;word-break:break-word">${fax.message}</div>
+      `;
+      
+      faxWindowsContainer.appendChild(win);
+      makeFaxWindowDraggable(win);
+    });
+    
+    // Attach delete handlers
+    document.querySelectorAll('.delete-fax-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.index);
+        if (confirm('Delete this fax?')) {
+          faxes.splice(idx, 1);
+          saveFaxes();
+          renderFaxOverlay();
+        }
+      });
+    });
+  }
+  
+  function makeFaxWindowDraggable(win) {
+    const titlebar = win.querySelector('.titlebar');
+    let isDragging = false, offsetX = 0, offsetY = 0;
+    
+    titlebar.addEventListener('mousedown', (e) => {
+      if (e.target.classList.contains('delete-fax-btn')) return;
+      isDragging = true;
+      offsetX = e.clientX - win.offsetLeft;
+      offsetY = e.clientY - win.offsetTop;
+      win.style.zIndex = 1000 + faxes.length;
+    });
+    
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      win.style.left = (e.clientX - offsetX) + 'px';
+      win.style.top = (e.clientY - offsetY) + 'px';
+    });
+    
+    document.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+  }
+  
+  // Close fax overlay button
+  if (faxCloseBtn) {
+    faxCloseBtn.addEventListener('click', () => {
+      faxOverlay.style.display = 'none';
+    });
+  }
+  
+  // Prevent fax overlay clicks from bubbling to desktop
+  if (faxOverlay) {
+    faxOverlay.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+  }
+  
+  // Expose function to add fax (for testing)
+  window.addFax = function(message) {
+    faxes.unshift({
+      message: message,
+      timestamp: Date.now()
+    });
+    saveFaxes();
+  };
+  
+  // Expose function to render (called from marker click)
+  window.renderFaxOverlay = renderFaxOverlay;
+}
+
+// Minesweeper full implementation
+{
+  const MINES_X = 8, MINES_Y = 8, MINES_COUNT = 7;
+  let minesGrid = [], minesRevealed = [], minesFlagged = [], minesActive = false, minesRemaining = MINES_COUNT, minesStartTime = 0, minesTimer = null;
+
+  function idx(x,y){ return y * MINES_X + x; }
+  function inBounds(x,y){ return x>=0 && y>=0 && x<MINES_X && y<MINES_Y; }
+  
+  function newMines(){
+    minesGrid = new Array(MINES_X*MINES_Y).fill(0);
+    minesRevealed = new Array(MINES_X*MINES_Y).fill(false);
+    minesFlagged = new Array(MINES_X*MINES_Y).fill(false);
+    minesRemaining = MINES_COUNT;
+    minesStartTime = Date.now();
+    // place mines
+    let placed = 0;
+    while(placed < MINES_COUNT){
+      const x = Math.floor(Math.random()*MINES_X);
+      const y = Math.floor(Math.random()*MINES_Y);
+      const i = idx(x,y);
+      if(minesGrid[i] === 9) continue;
+      minesGrid[i] = 9; placed++;
+    }
+    // compute counts
+    for(let y=0;y<MINES_Y;y++){
+      for(let x=0;x<MINES_X;x++){
+        const i = idx(x,y);
+        if(minesGrid[i] === 9) continue;
+        let cnt = 0;
+        for(let dy=-1;dy<=1;dy++) for(let dx=-1;dx<=1;dx++){
+          const nx = x+dx, ny = y+dy;
+          if(inBounds(nx,ny) && minesGrid[idx(nx,ny)]===9) cnt++;
+        }
+        minesGrid[i] = cnt;
+      }
+    }
+    minesActive = true;
+    document.getElementById('minesRemaining').textContent = String(minesRemaining).padStart(3,'0');
+    document.getElementById('minesStatus').textContent = '000';
+    document.getElementById('minesNew').textContent = '🙂';
+    renderMines();
+  }
+
+  function renderMines(){
+    const gridEl = document.getElementById('minesGrid');
+    if(!gridEl) return;
+    gridEl.style.gridTemplateColumns = `repeat(${MINES_X}, 1fr)`;
+    gridEl.innerHTML = '';
+    for(let y=0;y<MINES_Y;y++){
+      for(let x=0;x<MINES_X;x++){
+        const i = idx(x,y);
+        const btn = document.createElement('button');
+        btn.dataset.x = x; btn.dataset.y = y;
+        if(minesRevealed[i]){
+          btn.classList.add('revealed');
+          if(minesGrid[i] === 9){ 
+            btn.textContent = '💣';
+            if(!minesActive) btn.classList.add('mine-exploded');
+          }
+          else if(minesGrid[i] > 0){ 
+            btn.textContent = minesGrid[i];
+            const colors = ['','#0000ff','#008000','#ff0000','#000080','#800000','#008080','#000','#808080'];
+            btn.style.color = colors[minesGrid[i]] || '#000';
+          }
+          else btn.textContent = '';
+        } else if(minesFlagged[i]){
+          btn.classList.add('flagged'); btn.textContent = '🚩';
+        } else {
+          btn.textContent = '';
+        }
+        btn.addEventListener('click', (e)=> { e.preventDefault(); revealCell(x,y); });
+        btn.addEventListener('contextmenu', (e)=> { e.preventDefault(); toggleFlag(x,y); });
+        gridEl.appendChild(btn);
+      }
+    }
+  }
+
+  function flood(x,y){
+    const stack = [[x,y]];
+    while(stack.length){
+      const [cx,cy] = stack.pop();
+      const i = idx(cx,cy);
+      if(minesRevealed[i] || minesFlagged[i]) continue;
+      minesRevealed[i] = true;
+      if(minesGrid[i] === 0){
+        for(let dy=-1;dy<=1;dy++) for(let dx=-1;dx<=1;dx++){
+          const nx = cx+dx, ny = cy+dy;
+          if(inBounds(nx,ny) && !minesRevealed[idx(nx,ny)]) stack.push([nx,ny]);
+        }
+      }
+    }
+  }
+
+  function revealCell(x,y){
+    if(!minesActive) return;
+    const i = idx(x,y);
+    if(minesFlagged[i] || minesRevealed[i]) return;
+    if(minesGrid[i] === 9){
+      minesRevealed[i] = true;
+      minesActive = false;
+      if(minesTimer) clearInterval(minesTimer);
+      document.getElementById('minesNew').textContent = '😵';
+      revealAll();
+      renderMines();
+      setTimeout(()=>alert('Désolé ! Vous avez Perdu !'), 10);
+      return;
+    }
+    flood(x,y);
+    renderMines();
+    checkWin();
+  }
+
+  function toggleFlag(x,y){
+    if(!minesActive) return;
+    const i = idx(x,y);
+    if(minesRevealed[i]) return;
+    minesFlagged[i] = !minesFlagged[i];
+    minesRemaining += minesFlagged[i] ? -1 : 1;
+    document.getElementById('minesRemaining').textContent = String(Math.max(0, minesRemaining)).padStart(3,'0');
+    renderMines();
+    checkWin();
+  }
+
+  function revealAll(){
+    for(let i=0;i<minesGrid.length;i++) if(minesGrid[i]===9) minesRevealed[i]=true;
+  }
+
+  function checkWin(){
+    for(let i=0;i<minesGrid.length;i++){
+      if(minesGrid[i] !== 9 && !minesRevealed[i]) return false;
+    }
+    minesActive = false;
+    if(minesTimer) clearInterval(minesTimer);
+    document.getElementById('minesNew').textContent = '😎';
+    setTimeout(()=>alert('Bravo ! Vous avez Gagné !'), 10);
+    return true;
+  }
+
+  document.getElementById('minesNew').addEventListener('click', ()=> newMines());
+
+  function openMines(){
+    const mw = document.getElementById('minesWin');
+    if(!mw) return;
+    const wasHidden = mw.style.display === 'none' || getComputedStyle(mw).display === 'none';
+    openWindow(mw);
+    if(wasHidden || !minesActive) newMines();
+  }
+  window.openMines = openMines;
+}
+
+// ===== FIREBASE REALTIME SYNC =====
+(function() {
+  // Wait for Firebase to be loaded
+  function initFirebaseSync() {
+    if(!window.firebaseDB) {
+      setTimeout(initFirebaseSync, 100);
+      return;
+    }
+
+    const { database, ref, set, onValue, update } = window.firebaseDB;
+    let syncLocks = { bg: false, events: false, vfs: false }; // Prevent write loops
+
+    console.log('🔥 Initializing Firebase sync...');
+
+    // 1. SYNC BACKGROUND
+    const bgRef = ref(database, 'desktop/background');
+    const desktop = document.getElementById('desktop');
+    
+    // Listen for background changes
+    onValue(bgRef, (snapshot) => {
+      if(syncLocks.bg) return;
+      const bg = snapshot.val();
+      console.log('📥 Received background:', bg);
+      if(bg && desktop) {
+        desktop.style.background = bg;
+      }
+    });
+
+    // Update background on change
+    function syncBackground(newBg) {
+      console.log('📤 Syncing background:', newBg);
+      syncLocks.bg = true;
+      set(bgRef, newBg).then(() => {
+        console.log('✅ Background synced');
+      }).catch(err => {
+        console.error('❌ Background sync failed:', err);
+      }).finally(() => {
+        setTimeout(() => syncLocks.bg = false, 200);
+      });
+    }
+    window.syncBackground = syncBackground;
+
+    // 2. SYNC CALENDAR EVENTS
+    const eventsRef = ref(database, 'calendar/events');
+    
+    // Listen for event changes
+    onValue(eventsRef, (snapshot) => {
+      if(syncLocks.events) return;
+      const data = snapshot.val();
+      console.log('📥 Received events:', data);
+      if(data) {
+        // Clear and reload events
+        for(let key in eventsData) delete eventsData[key];
+        Object.assign(eventsData, data);
+        if(typeof renderCalendar === 'function') {
+          renderCalendar(currentYear, currentMonth);
+        }
+      }
+    });
+
+    // Update events
+    function syncEvents() {
+      console.log('📤 Syncing events:', eventsData);
+      syncLocks.events = true;
+      set(eventsRef, eventsData).then(() => {
+        console.log('✅ Events synced');
+      }).catch(err => {
+        console.error('❌ Events sync failed:', err);
+      }).finally(() => {
+        setTimeout(() => syncLocks.events = false, 200);
+      });
+    }
+    window.syncEvents = syncEvents;
+
+    // 3. SYNC NOTEPAD FILES (VFS)
+    const vfsRef = ref(database, 'notepad/files');
+    
+    // Listen for VFS changes
+    onValue(vfsRef, (snapshot) => {
+      if(syncLocks.vfs) return;
+      const data = snapshot.val();
+      console.log('📥 Received VFS:', data);
+      if(data && Array.isArray(data)) {
+        vfs.length = 0;
+        vfs.push(...data);
+        if(typeof renderFiles === 'function') {
+          renderFiles();
+        }
+        // Also save to localStorage
+        try {
+          localStorage.setItem('win2003_vfs', JSON.stringify(vfs));
+        } catch(e) {}
+      }
+    });
+
+    // Update VFS
+    function syncVFS() {
+      console.log('📤 Syncing VFS:', vfs);
+      syncLocks.vfs = true;
+      set(vfsRef, vfs).then(() => {
+        console.log('✅ VFS synced');
+      }).catch(err => {
+        console.error('❌ VFS sync failed:', err);
+      }).finally(() => {
+        setTimeout(() => syncLocks.vfs = false, 200);
+      });
+    }
+    window.syncVFS = syncVFS;
+
+    console.log('🔥 Firebase Realtime Database sync initialized!');
+  }
+
+  initFirebaseSync();
+})();
+
+</script>
+</body>
+</html>
