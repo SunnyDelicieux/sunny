@@ -1,31 +1,21 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Page</title>
+    <title>What's in my bag</title>
+    <link rel="stylesheet" href="house.css">
+    <script src="house.js" defer></script>
     <style>
       body {
-        background-image: url('https://i.pinimg.com/originals/83/f1/de/83f1de60f7eae7c2815a654ad47ab004.gif');
-        background-repeat: no-repeat;
-        background-size: cover;
         background-color: darkred;
-      }
-      div {
-        text-align: center;
-        line-height: 160%;
-        color: white;
-        width: 35%;
-        margin: auto;      
-        padding: 15px;
-        position: relative;
-        left: -25%;
+        background-image: url('https://i.pinimg.com/originals/83/f1/de/83f1de60f7eae7c2815a654ad47ab004.gif');
       }
     </style>
   </head>
   <body>
-   <a href="chambre.html"> <IMG src="https://i.postimg.cc/D0x6ZkZx/Design-sans-titre-(12).png " style="width: 130px;" alt="Return"> </a>
-  <img src='https://i.postimg.cc/nVY1n4bS/Votre-texte-de-paragraphe-(2).png' height="800" alt='BLINDBOX' style="max-width:90vw; display:block; margin:0 auto;"><br>
-  <a href="trip.html"> <IMG src="https://i.pinimg.com/736x/d5/a1/a3/d5a1a3fb1ad60bfcfe0777ea53dd4992.jpg " style="width: 250px; display:block; margin:0 auto" alt="Return"> </a>
+    <a class="retour" href="chambre.html"><img src="https://i.postimg.cc/D0x6ZkZx/Design-sans-titre-(12).png" alt="Retour"></a>
+    <img class="centre" src="https://i.postimg.cc/nVY1n4bS/Votre-texte-de-paragraphe-(2).png" alt="What's in my bag" style="max-width: 90vw; height: 800px; object-fit: contain;"><br>
+    <a href="trip.html"><img class="centre" src="https://i.pinimg.com/736x/d5/a1/a3/d5a1a3fb1ad60bfcfe0777ea53dd4992.jpg" alt="Trip" style="width: 250px;"></a>
   </body>
 </html>

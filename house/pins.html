@@ -1,51 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Page</title>
+    <title>Pins</title>
+    <link rel="stylesheet" href="house.css">
+    <script src="house.js" defer></script>
     <style>
       body {
-        background-image: url('https://i.pinimg.com/736x/06/c8/3b/06c83be7599fa429bffd7a2a15dd0a62.jpg');
-        background-repeat: no-repeat;
-        background-size: cover;
         background-color: darkred;
+        background-image: url('https://i.pinimg.com/736x/06/c8/3b/06c83be7599fa429bffd7a2a15dd0a62.jpg');
       }
-      /* Remove global div styling that interferes with centering */
-      .centered-box {
+      .cadre {
         background: rgba(255,255,255,0.5);
         width: 80vw;
         max-width: 1200px;
-        margin: 40px auto;
+        margin: -20px auto 40px auto;
+        padding: 32px 0;
         border-radius: 20px;
         box-shadow: 0 4px 24px rgba(0,0,0,0.15);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 32px 0;
-      }
-      .centered-row {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        width: 100%;
-        flex-wrap: wrap;
-      }
-      .centered-img {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
       }
     </style>
   </head>
   <body>
-   <a href="chambre.html"> <IMG src="https://i.postimg.cc/D0x6ZkZx/Design-sans-titre-(12).png " style="width: 130px;" alt="Return"> </a>
+    <a class="retour" href="chambre.html"><img src="https://i.postimg.cc/D0x6ZkZx/Design-sans-titre-(12).png" alt="Retour"></a>
 
-  <div class="centered-box" style="margin-top: -20px;">
-    <div class="centered-row">
-      <img src='https://i.postimg.cc/hPBN9pFL/Design-sans-titre.png' height="500" alt='BLINDBOX' class="centered-img">
-</div></div>
-
-
+    <div class="cadre">
+      <img class="centre" src="https://i.postimg.cc/hPBN9pFL/Design-sans-titre.png" alt="Pins" style="height: 500px; object-fit: contain;">
+    </div>
   </body>
 </html>

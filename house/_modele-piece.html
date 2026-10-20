@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<!--
+  MODÈLE : PIÈCE (image avec des zones cliquables)
+  1. Copie ce fichier dans /house/ et renomme-le (ex. cuisine.html)
+  2. Change le <title>, le fond, l'image et le lien retour
+  3. Génère les zones sur image-map.net avec l'image EN TAILLE RÉELLE,
+     colle les <area> dans <map> ; shape = rect, circle ou poly
+  4. Une zone sans page : enlève le href (sinon ça recharge la page)
+  5. Ouvre la page et regarde la console (F12) : house.js y signale les erreurs
+  6. Ajoute la page dans le plan du site (/index.js, partie "maison")
+-->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nom de la pièce</title>
+    <link rel="stylesheet" href="house.css">
+    <script src="house.js" defer></script>
+    <style>
+      body {
+        background: #E9E3C6 url('bg.png') repeat;
+      }
+    </style>
+  </head>
+  <body>
+    <a class="retour" href="couloir.html"><img src="https://i.postimg.cc/D0x6ZkZx/Design-sans-titre-(12).png" alt="Retour"></a>
+
+    <img class="piece" src="IMAGE-DE-LA-PIECE.webp" usemap="#piece" alt="Nom de la pièce">
+    <map name="piece">
+      <area alt="objet" title="objet" href="page-objet.html" coords="0,0,100,100" shape="rect">
+      <area alt="bientôt" title="bientôt" coords="200,200,300,300" shape="rect">
+    </map>
+  </body>
+</html>

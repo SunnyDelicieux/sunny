@@ -1,97 +1,34 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Page</title>
+    <title>Mold</title>
+    <link rel="stylesheet" href="house.css">
+    <script src="house.js" defer></script>
     <style>
       body {
-        background-image: url('https://i.pinimg.com/736x/f8/59/aa/f859aac7f5f1f37c0e084315aa09a6f7.jpg');
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-attachment: fixed;
         background-color: darkred;
-        margin: 0;
-        padding: 0;
-      }
-      .mold-layout {
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        gap: 40px;
-        margin: 60px auto 0 auto;
-        max-width: 1200px;
-      }
-      .mold-img {
-        height: 800px;
-        width: auto;
-        border-radius: 18px;
-        box-shadow: 0 4px 32px rgba(0,0,0,0.25);
-        object-fit: cover;
-        background: #222;
-      }
-      .mold-text {
-        max-height: 800px;
-        overflow-y: auto;
-        background: rgba(0,0,0,0.55);
-        color: #fff !important;
-              }
-              .mold-text, .mold-text * {
-                color: #fff !important;
-        padding: 36px 32px;
-        border-radius: 18px;
-        box-shadow: 0 2px 16px rgba(0,0,0,0.18);
-        text-align: center;
-        font-size: 1.15rem;
-        line-height: 1.7;
-        max-width: 800px;
-        width: 100%;
-      }
-      .mold-summary {
-        font-size: 1.25rem;
-        font-weight: bold;
-        margin-bottom: 24px;
-        color: #e0ffb3;
-        text-shadow: 0 2px 8px #000;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        background-image: url('https://i.pinimg.com/736x/f8/59/aa/f859aac7f5f1f37c0e084315aa09a6f7.jpg');
       }
     </style>
   </head>
   <body>
-    <a href="skin.html"> <img src="https://i.postimg.cc/D0x6ZkZx/Design-sans-titre-(12).png" style="width: 130px;" alt="Return"> </a>
+    <a class="retour" href="skin.html"><img src="https://i.postimg.cc/D0x6ZkZx/Design-sans-titre-(12).png" alt="Retour"></a>
     <audio id="myAudio" src="https://file.garden/adZZkyqZuhDwy1E5/the%20rotrot.mp3" loop></audio>
-    <img 
-      src="https://i.postimg.cc/QVLSSs7Z/Design-sans-titre-(13).png" 
-      style="cursor: pointer; width: 150px; display: block; margin: 24px auto 8px auto;"
-      onclick="toggleAudio()"
-      alt="cute bunny"
-    >
-    <script>
-      function toggleAudio() {
-        var audio = document.getElementById('myAudio');
-        if (audio.paused) {
-          audio.play().catch(function(e) {
-            alert('Audio playback failed: ' + e.message);
-          });
-        } else {
-          audio.pause();
-        }
-      }
-    </script>
+    <img data-audio="myAudio" src="https://i.postimg.cc/QVLSSs7Z/Design-sans-titre-(13).png" alt="cute bunny">
 
-    <div style="max-width:800px; margin:40px auto 0 auto; color:#fff; text-align:center;">
+    <div class="histoire large">
       <p>Récemment, je suis devenue absolument fascinée par la <sub>moisissure</sub>, la <sup>décrépitude</sup> et la <sub>pourriture</sub>. Si c’est d’habitude quelque chose qui me dégoûte <i>-et à raison</i>, je crois que j'ai fini par m'y habituer. Pour dire, j’ai eu toutes les occasions pour finir par m’attacher à ma <strike>colocataire</strike>. Cela fait 2 ans que j’habite un appartement qui pourrit, envahi par un dégât des eaux depuis quelques temps, tout l’appartement s’effrite. J'ai l'impression de vivre dans mon petit <u>enfer personnel</u>, et si les spores ne m'attaquent pas directement, je ne peux l’affirmer pour mes affaires. Tout ce qui ne bouge pas, finit par moisir. Mes peluches, vêtements, livres. Rien n'y échappe, alors on déplace tout constamment, c'est une grande balade.</p>
       <p><b>Je peux mettre un visage, ou du moins une apparence sur cette malédiction, car tout est centralisé autour d'un placard.</b> Celui de la chambre, vissé au mur depuis qu'on est arrivé, là tout a commencé. Un espace de quelques centimètres, dont nous avons scellé l’entrée à l’aide de notre sapin de noël, présent au garde à vous depuis une grosse poignée de mois. Ce placard, si on ne l’utilise pas depuis longtemps, enchaîné à nous par le biais de notre bail, il est toujours là, à cracher sa moisissure dans l’appartement. Dans notre grande malchance, nous avons oublié un cadre dans ce meuble, un cadre en bois, tout neuf, dont le but principal était de présenter une petite affiche en papier que l'on avait acheté à un artiste indépendant. L’occasion ne s’est jamais présentée.<br>
       Alors il est là, depuis des semaines, des mois peut-être, oublié dans ce placard. J'ai récemment ouvert ce placard. Le cadre n'avait pas bougé, mais était maintenant couvert d'une couche de plusieurs centimètres de cette moisissure verte et orange. Elle avait recouvert le bois, mais rien d'autre, ni le placard en lui-même, ni la boîte en plastique sur lequel il était posé et encore moins l'affiche en papier qu'elle contenait. C'est comme si dans son grand œuvre, la pourriture avait évité l'art. Lorsque je l'ai trouvé, la poésie de la chose m'était bien loin, écrasée par l'horreur de ma découverte.</p>
       <h4>Je pense que ma fascination pour la moisissure vient de là. De ce placard, qui me nargue comme une créature dans le coin de mon œil.</h4>
       <details>
         <summary>Images de moisissure</summary>
-        <img src="https://i.postimg.cc/ZRCCmsgJ/19283a91e9ac2cd161ade69e9f2efdcb.jpg" class="one" style="height: 200px" alt="19283a91e9ac2cd161ade69e9f2efdcb">
-        <img src="https://i.postimg.cc/nLdC6fdZ/6f20b2dda893248b52977e396ad8722b.jpg" class="one"  style="height: 200px" alt="6f20b2dda893248b52977e396ad8722b">
-        <img src="https://i.postimg.cc/rphKv2hs/7735f075365d149698eac049355d8346.jpg" class="one"  style="height: 200px" alt="7735f075365d149698eac049355d8346">
-        <img src="https://i.postimg.cc/q7mz9Hmz/f3f5eba2686afb7ed123bb73234a2632.jpg" class="one" style="height: 200px" alt="f3f5eba2686afb7ed123bb73234a2632">
+        <img src="https://i.postimg.cc/ZRCCmsgJ/19283a91e9ac2cd161ade69e9f2efdcb.jpg" style="height: 200px" alt="19283a91e9ac2cd161ade69e9f2efdcb">
+        <img src="https://i.postimg.cc/nLdC6fdZ/6f20b2dda893248b52977e396ad8722b.jpg" style="height: 200px" alt="6f20b2dda893248b52977e396ad8722b">
+        <img src="https://i.postimg.cc/rphKv2hs/7735f075365d149698eac049355d8346.jpg" style="height: 200px" alt="7735f075365d149698eac049355d8346">
+        <img src="https://i.postimg.cc/q7mz9Hmz/f3f5eba2686afb7ed123bb73234a2632.jpg" style="height: 200px" alt="f3f5eba2686afb7ed123bb73234a2632">
       </details>
       <p>Il est ainsi naturel, que lorsque j’ai dû faire le design d’un perso pour mon JDR, une vampire ayant passé plus de 70 ans sous terre, à moitié immobilisée, l’idée de cette moisissure m’est apparue. J'ai beaucoup réfléchi à ce que le temps fait sur la chair, et certes, la sienne est immortelle, mais l'immobilisation est le temps, est-ce que ce n'est pas plus fort que l'immortalité ?<br>
       Est-ce qu'un corps immortel n'est pas aussi affecté par le temps, s'il pousse sa propre chair à sa limite ?<br>

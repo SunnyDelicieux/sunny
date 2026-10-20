@@ -2,4 +2,4 @@
 .gitignore
 .assetsignore
 wrangler.jsonc
-README.md
+README.mdhouse/_modele-*.html

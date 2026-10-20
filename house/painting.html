@@ -1,54 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Page</title>
+    <title>Painting</title>
+    <link rel="stylesheet" href="house.css">
+    <script src="house.js" defer></script>
     <style>
-      html, body {
-        padding: 0;
-        margin: 0;
+      body {
         background-color: beige;
-        min-height: 100vh;
-        width: 100vw;
-        height: 100vh;
-        overflow: hidden;
       }
-      .image-container {
+      .tableau {
         position: relative;
-        width: 98vw;
-        margin: 0 auto;
         display: flex;
         justify-content: center;
         align-items: center;
         height: 100vh;
+        width: 98vw;
+        margin: 0 auto;
       }
-      .main-img {
-        width: 100%;
-        height: auto;
-        display: block;
-        border-radius: 12px;
-        box-shadow: 0 4px 24px rgba(0,0,0,0.15);
-        object-fit: contain;
-        max-height: 100vh;
-      }
-      .return-arrow {
+      .tableau .retour {
         position: absolute;
         top: 24px;
         left: 24px;
-        z-index: 2;
       }
-
-      
+      .tableau .retour img {
+        width: 90px;
+      }
+      .tableau > img {
+        max-height: 100vh;
+        object-fit: contain;
+        border-radius: 12px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+      }
     </style>
   </head>
   <body>
-    <div class="image-container">
-      <a href="couloir.html" class="return-arrow">
-        <img src="https://i.postimg.cc/D0x6ZkZx/Design-sans-titre-(12).png" style="width: 90px;" alt="Return">
-      </a>
-      <img src="https://i.postimg.cc/WzGN5zbM/painting.png" class="main-img" alt="Main Painting">
+    <div class="tableau">
+      <a class="retour" href="couloir.html"><img src="https://i.postimg.cc/D0x6ZkZx/Design-sans-titre-(12).png" alt="Retour"></a>
+      <img src="https://i.postimg.cc/WzGN5zbM/painting.png" alt="Painting">
     </div>
   </body>
-  
 </html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<!--
+  MODÈLE : PAGE TEXTE (fond, musique optionnelle, texte)
+  1. Copie ce fichier dans /house/ et renomme-le
+  2. Change le <title>, le fond, la musique et le lien retour
+     (le lien retour sert si on arrive de l'extérieur ; sinon le
+     bouton revient tout seul à la pièce d'où on vient)
+  3. Pas de musique ? Supprime <audio> et l'image data-audio
+  4. <p class="decale"> = paragraphe décalé à droite (pas sur téléphone)
+     <div class="histoire large"> = texte large et centré
+  5. Ajoute la page dans le plan du site (/index.js, partie "maison")
+-->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Titre</title>
+    <link rel="stylesheet" href="house.css">
+    <script src="house.js" defer></script>
+    <style>
+      body {
+        background-color: darkred;
+        background-image: url('URL-DU-FOND.jpg');
+      }
+    </style>
+  </head>
+  <body>
+    <a class="retour" href="chambre.html"><img src="https://i.postimg.cc/D0x6ZkZx/Design-sans-titre-(12).png" alt="Retour"></a>
+    <audio id="myAudio" src="URL-DE-LA-MUSIQUE.mp3" loop></audio>
+    <img data-audio="myAudio" src="https://i.postimg.cc/3RZD88qb/Design-sans-titre-(11).png" alt="musique">
+
+    <div class="histoire">
+      <p>Premier paragraphe.</p>
+      <p class="decale">Paragraphe décalé.</p>
+    </div>
+  </body>
+</html>

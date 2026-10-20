@@ -1,0 +1,101 @@
+/* ==========================================================
+   Maison : styles communs à toutes les pages de /house/
+   Chaque page n'a plus qu'à définir son fond dans un petit
+   <style> (voir _modele-piece.html et _modele-texte.html).
+   ========================================================== */
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  color: white;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* ----- Bouton retour (même partout) ----- */
+.retour {
+  display: inline-block;
+  position: relative;
+  z-index: 2;
+}
+
+.retour img {
+  width: 130px;
+  display: block;
+}
+
+/* ----- Pièce : image cliquable (image map) ----- */
+.piece {
+  display: block;
+  width: 90%;
+  height: auto;
+  margin: 0 auto;
+}
+
+/* ----- Image centrée (affiche, photo...) ----- */
+.centre {
+  display: block;
+  margin: 0 auto;
+}
+
+/* ----- Lapin / image qui lance la musique ----- */
+[data-audio] {
+  display: block;
+  width: 150px;
+  margin: 24px auto 8px auto;
+  cursor: pointer;
+}
+
+/* ----- Texte (pages "histoire") ----- */
+.histoire {
+  width: 35%;
+  margin-left: 7.5%;
+  padding: 15px;
+  text-align: center;
+  line-height: 160%;
+  text-shadow: 0 2px 2px black;
+}
+
+/* paragraphe décalé vers la droite */
+.histoire .decale {
+  position: relative;
+  left: 70%;
+}
+
+/* texte large et centré (ex. mold) */
+.histoire.large {
+  width: auto;
+  max-width: 800px;
+  margin: 40px auto 0 auto;
+  text-shadow: none;
+  line-height: normal;
+}
+
+/* ----- Téléphone : on empile tout au centre ----- */
+@media (max-width: 700px) {
+  .piece {
+    width: 100%;
+  }
+
+  .histoire {
+    width: auto;
+    margin: 0 16px;
+  }
+
+  .histoire .decale {
+    left: 0;
+  }
+
+  .retour img {
+    width: 90px;
+  }
+}
